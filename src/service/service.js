@@ -32,5 +32,14 @@ function Service(name) {
             }
             return 0;
         });
-    }
+    };
+
+    instance.merge = function(otherService) {
+        // add each service from each host on otherService
+        Object.keys(otherService.instancesByHost).forEach(function(host) {
+            otherService.instancesByHost[host].forEach(function(serviceInstance) {
+                instance.addServiceInstance(host, serviceInstance);
+            });
+        });
+    };
 }

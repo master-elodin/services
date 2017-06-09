@@ -28,9 +28,9 @@ describe("A Host Group", function() {
             expect(hostGroup.services[2].name).toBe("charlie");
         });
 
-        it("should add services instances if service already exists", function() {
+        it("should merge services instances if service already exists", function() {
             var service1 = new Service("id1");
-            spyOn( service1, 'addServiceInstance' ).and.stub();
+            spyOn( service1, 'merge' ).and.stub();
 
             hostGroup.addService(service1);
 
@@ -45,7 +45,7 @@ describe("A Host Group", function() {
 
             hostGroup.addService(service3);
 
-            expect( service1.addServiceInstance ).toHaveBeenCalledWith( serviceInstance );
+            expect( service1.merge ).toHaveBeenCalledWith( service2 );
             expect( hostGroup.services.length ).toBe( 2 );
         });
     });

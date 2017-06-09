@@ -51,4 +51,23 @@ describe("A Service", function() {
             expect(service.instancesByHost["host2"][1].id).toBe("id4");
         });
     });
+
+    describe("merge", function() {
+
+        it("should add all service instances from other service", function() {
+            service.addServiceInstance("host1", new ServiceInstance("id1", "1.21.0"));
+            service.addServiceInstance("host1", new ServiceInstance("id2", "1.22.0"));
+
+            var otherService = new Service();
+            otherService.addServiceInstance("host2", new ServiceInstance("id3", "2.0.0"));
+            otherService.addServiceInstance("host2", new ServiceInstance("id4", "1.20.20"));
+
+            service.merge(otherService);
+
+            expect(service.instancesByHost["host1"][0].id).toBe("id2");
+            expect(service.instancesByHost["host1"][1].id).toBe("id1");
+            expect(service.instancesByHost["host2"][0].id).toBe("id3");
+            expect(service.instancesByHost["host2"][1].id).toBe("id4");
+        });
+    });
 });
