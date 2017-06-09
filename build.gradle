@@ -43,10 +43,10 @@ task combineJs {
     doLast {
         def combinedJs = ""
         new File(getBinFolder(), "combined.js").withWriter { writer ->
-            new File("src/shell.js").eachLine { line ->
+            new File("src/shell/shell.js").eachLine { line ->
                 def lineToWrite
                 if(line.length() > 0) {
-                    lineToWrite = new File("src/${line}/${line}.js").text
+                    lineToWrite = new File("src/${line}/${line}.js").text.split('\n').join('    ') + '\n'
                 } else {
                     lineToWrite = line
                 }
