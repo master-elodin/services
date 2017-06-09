@@ -1,3 +1,17 @@
+// ==UserScript==
+// @name         Services
+// @version      0.0.1
+// @updateURL    https://confluence-tools.swacorp.com/pages/viewpage.action?pageId=340558277
+// @description  Make the Service Console look nicer!
+// @author       Tim VanDoren
+// @match        /(swaservices).*(SWAServicesConsole)/
+// @require      https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.3/js.cookie.min.js
+// ==/UserScript==
+(function() {
+    'use strict';
+
     function ServiceInstance(id, version) {
     var instance = this;
 
@@ -111,3 +125,5 @@ ServiceInstance.Status = {
     }
 }
 
+
+})();

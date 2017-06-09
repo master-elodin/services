@@ -1,27 +1,90 @@
-def name = "Services"
-def version = '0.0.1'
+def scriptProperties = [
+    name: "Services",
+    version: "0.0.1",
+    author: "Tim VanDoren",
+    description: "Make the Service Console look nicer!",
+    // target is what Tampermonkey uses to decide which pages to run on
+    target: "/(swaservices).*(SWAServicesConsole)/",
+    externalDependencies: ["https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.3/js.cookie.min.js"]
+]
+
+def getBinFolder = {
+    def binFolder = new File("bin")
+    if(!binFolder.exists()) {
+        binFolder.mkdirs()
+    }
+    binFolder
+}
+
+def replacePlaceholder = { line, dependencyModifier ->
+    (line =~ /\$\{.*\}/).each {
+        def propertyName = it[2..-2]
+        def property = scriptProperties[propertyName]
+        if(propertyName == "content") {
+            property = file("bin/combined.js").text
+        } else if(property == null) {
+            throw new GradleScriptException("No property found for placeholder: ${it}", null)
+        }
+        if(propertyName == "externalDependencies") {
+            property = dependencyModifier(property)
+        }
+        logger.info "replacing ${it} with ${property}"
+        line = line.replace(it, property)
+    }
+    line
+}
 
 task combineJs {
     inputs.dir("src")
     outputs.dir("bin")
 
-    def SPECIAL_TAGS = ["HEADER", "FOOTER"]
-
-    def binFolder = new File("bin")
-    if(!binFolder.exists()) {
-        binFolder.mkdirs()
-    }
-    new File(binFolder, "combined.js").withWriter { writer ->
-        new File("src/shell.js").eachLine { line ->
-            def lineToWrite
-            if(line.length() > 0 && !SPECIAL_TAGS.contains(line)) {
-                lineToWrite = new File("src/${line}/${line}.js").text
-            } else {
-                // TODO: special tags
-                lineToWrite = ""
+    doLast {
+        def combinedJs = ""
+        new File(getBinFolder(), "combined.js").withWriter { writer ->
+            new File("src/shell.js").eachLine { line ->
+                def lineToWrite
+                if(line.length() > 0) {
+                    lineToWrite = new File("src/${line}/${line}.js").text
+                } else {
+                    lineToWrite = line
+                }
+                // add a tab because it looks better for both scripts
+                writer << "    ${lineToWrite}\n"
             }
-            writer << lineToWrite
-            writer << '\n'
         }
     }
 }
+
+task createDevtoolsScript {
+    dependsOn 'combineJs'
+    inputs.dir("src")
+
+    doLast {
+        new File(getBinFolder(), "${scriptProperties.name.toLowerCase()}-devtools.js").withWriter { writer ->
+            new File("src/templates/devtools.js").eachLine { line ->
+                writer << replacePlaceholder("${line}\n", { property -> "\"${property.collect { it }.join("\",\"")}\"" })
+            }
+        }
+    }
+}
+
+task createTampermonkeyScript {
+    dependsOn 'combineJs'
+    inputs.dir("src")
+
+    doLast {
+        new File(getBinFolder(), "${scriptProperties.name}.user.js").withWriter { writer ->
+            new File("src/templates/tampermonkey.js").eachLine { line ->
+                writer << replacePlaceholder("${line}\n", { property -> property.collect { "// @require      ${it}"}.join("\n") })
+            }
+        }
+    }
+}
+
+task clean << {
+    delete("bin")
+}
+
+tasks.create('build').dependsOn 'createTampermonkeyScript','createDevtoolsScript'

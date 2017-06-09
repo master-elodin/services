@@ -1,3 +1,13 @@
+// @name         Services
+// @version      0.0.1
+// @description  Make the Service Console look nicer!
+// @author       Tim VanDoren
+
+var addScript=function(a){var b=document.createElement("script");b.src=a,document.getElementsByTagName("head")[0].appendChild(b)};
+var scripts = ["https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js","https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js","https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.3/js.cookie.min.js"];
+scripts.forEach(addScript);
+
+setTimeout(function(){
     function ServiceInstance(id, version) {
     var instance = this;
 
@@ -111,3 +121,5 @@ ServiceInstance.Status = {
     }
 }
 
+
+}, 500);
