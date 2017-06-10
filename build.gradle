@@ -10,6 +10,10 @@ def scriptProperties = [
         "https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js",
         "https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.3/js.cookie.min.js"]
 ]
+def cssProperties = [
+    '$clouds': 'something',
+    '$somethingElse': 'blerg'
+]
 
 def getBinFolder = {
     def binFolder = new File("bin")
@@ -60,24 +64,44 @@ def combineStuff = { fileType, lineModifier={ text -> text } ->
 
 task combineHtml {
     inputs.dir("src")
-    outputs.dir("bin")
+    outputs.file('bin/combined.html')
 
     doLast {
-        def stripText = { text -> text.replaceAll(/(>\s*\n*<)(\n*)/, '><') }
+        def stripText = { text -> text.replaceAll(/(>\s*\n*<)/, '><') }
         combineStuff("html", stripText)
         def combinedHtml = file("bin/combined.html")
-        // TODO: figure out how to remove extra whitespace between elements
+        // TODO: find out how to remove extra spaces between HTML elements
         def html = combinedHtml.collect { stripText(replaceFromFile(it)) }.join('')
         combinedHtml.write("jQuery('html').html('${html}');");
     }
 }
 
-task combineJs {
+task combineCss {
     inputs.dir("src")
-    outputs.dir("bin")
-    dependsOn 'combineHtml'
+    outputs.file('bin/combined.css')
 
     doLast {
+        def css = ''
+        fileTree("src").include("**/*.css").collect({ cssFile ->
+            cssFile.eachLine { line ->
+                (line =~ /\$\w+/).each {
+                    line.replace(it, cssProperties[it])
+                }
+                css += "${line.trim()} "
+            }
+        })
+        new File(getBinFolder(), 'combined.css').text = css
+    }
+}
+
+task combineJs {
+    inputs.dir("src")
+    outputs.file('bin/combined.js')
+    dependsOn 'combineHtml'
+    dependsOn 'combineCss'
+
+    doLast {
+        // TODO: don't add tab for css
         // add a tab because it looks better for both scripts
         combineStuff("js", { text -> "    ${text.split('\n').join('\n    ')}"})
     }

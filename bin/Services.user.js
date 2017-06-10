@@ -13,6 +13,12 @@
 (function() {
     'use strict';
 
+(function() {
+    var style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = '    background-color: $somethingElse; font-size: 16px; color: $clouds; background-color: blue; ';
+    document.getElementsByTagName('head')[0].appendChild(style);
+});
     function ServiceInstance(id, version) {
         var instance = this;
     
