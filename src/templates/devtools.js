@@ -9,4 +9,4 @@ scripts.forEach(addScript);
 
 setTimeout(function(){
 ${content}
-}, 500);
+}, 1000);

@@ -1,2 +1,48 @@
-background-color: $somethingElse;
-font-size: 16px;
+.service-page {
+    background-color: $clouds;
+    min-height: 100%;
+}
+
+.service-page__header {
+    background-color: $midnight;
+    height: $pageHeaderHeight;
+    width: 100%;
+}
+
+.service-page__header-icon {
+    float: left;
+    height: 100%;
+}
+
+.service-page__header-icon .fa {
+    color: $clouds;
+    cursor: pointer;
+    font-size: 40px;
+    padding: 5px;
+}
+
+.service-page__body {
+    font-size: 18px;
+    height: 100%;
+    padding: 10px;
+}
+
+.service-page__data-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    text-align: left;
+    width: 400px;
+}
+
+.service-page__data-row--application {
+    padding-left: 15px;
+}
+
+.data-row__name {
+
+}
+
+.data-row__modify {
+    cursor: pointer;
+}

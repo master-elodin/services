@@ -7,12 +7,16 @@ def scriptProperties = [
     target: "/(swaservices).*(SWAServicesConsole)/",
     externalDependencies: ["https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js",
         "https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js",
-        "https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js",
-        "https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.1.3/js.cookie.min.js"]
+        "https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js"]
 ]
+
+// TODO: move CSS properties elsewhere
 def cssProperties = [
-    '$clouds': 'something',
-    '$somethingElse': 'blerg'
+    // colors
+    '$clouds': 'rgba(255, 255, 255, .7)',
+    '$midnight': 'rgba(0, 0, 0, .7)',
+    // other
+    '$pageHeaderHeight': '50px'
 ]
 
 def getBinFolder = {
@@ -72,7 +76,7 @@ task combineHtml {
         def combinedHtml = file("bin/combined.html")
         // TODO: find out how to remove extra spaces between HTML elements
         def html = combinedHtml.collect { stripText(replaceFromFile(it)) }.join('')
-        combinedHtml.write("jQuery('html').html('${html}');");
+        combinedHtml.write("jQuery('body').removeClass().removeAttr('style').html('${html}');");
     }
 }
 
@@ -85,7 +89,7 @@ task combineCss {
         fileTree("src").include("**/*.css").collect({ cssFile ->
             cssFile.eachLine { line ->
                 (line =~ /\$\w+/).each {
-                    line.replace(it, cssProperties[it])
+                    line = line.replace(it, cssProperties[it])
                 }
                 css += "${line.trim()} "
             }

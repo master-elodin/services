@@ -1,6 +1,19 @@
-<div class="page">
-    <h1>hello world, here are environments</h1>
-    <!-- ko foreach: environments -->
-    ${src/environment/environment.html}
-    <!-- /ko -->
+<div class="service-page">
+    <div class="service-page__header">
+        <div class="service-page__header-icon">
+            <i class="fa fa-home" aria-hidden="true"></i>
+        </div>
+    </div>
+    <div class="service-page__body">
+        <!-- ko foreach: applications -->
+        <div class="service-page__data-row service-page__data-row--application">
+            <div class="data-row__name">
+                <span data-bind="text: name"></span>
+            </div>
+            <div class="data-row__modify">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+            </div>
+        </div>
+        <!-- /ko -->
+    </div>
 </div>
