@@ -7,5 +7,5 @@ function Page() {
     instance.addApplication = function(name) {
         instance.applications.push(new Application(name));
     };
-    instance.addNewDataRow = new DataRow(instance.addApplication, "page");
+    instance.addNewDataRow = new DataRow(instance.addApplication, "application");
 }

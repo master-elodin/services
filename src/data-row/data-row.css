@@ -11,12 +11,16 @@
 }
 
 .data-row__data {
-    padding-left: 25px;
+    
 }
 
-.data-row__name {
+.data-row__name.data-row__name--editing{
     display: flex;
     justify-content: space-between;
+    padding-left: 25px;
+}
+.data-row__name.data-row__name--not-editing {
+    text-align: left;
 }
 
 .data-row__name input {

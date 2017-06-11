@@ -12,6 +12,6 @@ function Environment(name) {
         });
     }
 
-    instance.dataRow = new DataRow(instance.addHost, "application", instance.name);
-    instance.addHostGroupRow = new DataRow(instance.addHost, "environment");
+    instance.dataRow = new DataRow(instance.addHost, "environment", instance.name);
+    instance.addHostGroupRow = new DataRow(instance.addHost, "host-group");
 }

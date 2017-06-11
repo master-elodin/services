@@ -6,7 +6,7 @@ function DataRow(onSave, dataType, name, onSelect) {
     instance.isNewDataRow = !name || !name();
     instance.editing = ko.observable(instance.isNewDataRow);
 
-    instance.dataTypeClass = "data-row--" + dataType.toLowerCase();
+    instance.dataType = dataType;
 
     instance.name = name || ko.observable();
     instance.name.subscribe(function(newValue) {

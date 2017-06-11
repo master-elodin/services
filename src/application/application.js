@@ -8,6 +8,6 @@ function Application(name) {
         instance.environments.push(new Environment(name));
     };
 
-    instance.dataRow = new DataRow(null, "page", instance.name);
-    instance.addEnvironmentRow = new DataRow(instance.addEnvironment, "application");
+    instance.dataRow = new DataRow(null, "application", instance.name);
+    instance.addEnvironmentRow = new DataRow(instance.addEnvironment, "environment");
 }

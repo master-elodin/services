@@ -1,9 +1,17 @@
-<!-- ko with: dataRow -->
-${src/data-row/data-row.html}
-<!-- /ko -->
-<!-- ko foreach: environments -->
-${src/environment/environment.html}
-<!-- /ko -->
-<!-- ko with: addEnvironmentRow -->
-${src/data-row/data-row.html}
-<!-- /ko -->
+<div class="data-block data-block--application">
+    <!-- ko with: dataRow -->
+    ${src/data-row/data-row.html}
+    <!-- /ko -->
+    <!-- ko foreach: environments -->
+        ${src/environment/environment.html}
+        <!-- ko if: $index < $parent.environments.length - 1 -->
+        <span>,</span>
+        <!-- /ko -->
+    <!-- /ko -->
+    <!-- ko with: addEnvironmentRow -->
+    ${src/data-row/data-row.html}
+    <!-- /ko -->
+    <div class="data-row__braces">
+        <span>},</span>
+    </div>
+</div>

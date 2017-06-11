@@ -99,6 +99,9 @@ task combineCss {
                 cssPart += "${line.trim()} "
             }
             if(!cssPart.isEmpty()) {
+                if(cssPart.contains("'")) {
+                    throw new GradleScriptException("Cannot have single quotes in CSS.\nLine: ${cssPart}", null)
+                }
                 css.push("'${cssPart}'")
             }
         })
