@@ -3,11 +3,11 @@ function Environment(name) {
 
     instance.name = ko.observable(name);
 
-    instance.hosts = ko.observableArray();
+    instance.hostGroups = ko.observableArray();
 
-    instance.addHost = function(hostName) {
-        instance.hosts.push(new HostGroup(hostName));
-        instance.hosts.sort(function(a, b) {
+    instance.addHost = function(hostGroupName) {
+        instance.hostGroups.push(new HostGroup(hostGroupName));
+        instance.hostGroups.sort(function(a, b) {
             return a.name().localeCompare(b.name());
         });
     }

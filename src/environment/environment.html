@@ -1,9 +1,17 @@
-<!-- ko with: dataRow -->
-${src/data-row/data-row.html}
-<!-- /ko -->
-<!-- ko foreach: hosts -->
-${src/host-group/host-group.html}
-<!-- /ko -->
-<!-- ko with: addHostGroupRow -->
-${src/data-row/data-row.html}
-<!-- /ko -->
+<div class="data-block data-block--environment">
+    <!-- ko with: dataRow -->
+    ${src/data-row/data-row.html}
+    <!-- /ko -->
+    <!-- ko foreach: hostGroups -->
+        ${src/host-group/host-group.html}
+        <!-- ko if: $index < $parent.hostGroups - 1 -->
+        <span>,</span>
+        <!-- /ko -->
+    <!-- /ko -->
+    <!-- ko with: addHostGroupRow -->
+    ${src/data-row/data-row.html}
+    <!-- /ko -->
+    <div class="data-row__braces">
+        <span>},</span>
+    </div>
+</div>

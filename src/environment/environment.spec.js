@@ -24,10 +24,10 @@ describe("An Environment", function() {
             environment.addHost("beta-host2");
             environment.addHost("alpha-host2");
 
-            expect(environment.hosts()[0].name()).toBe("alpha-host2");
-            expect(environment.hosts()[1].name()).toBe("beta-host2");
-            expect(environment.hosts()[3].name()).toBe("host3");
-            expect(environment.hosts()[2].name()).toBe("host1");
+            expect(environment.hostGroups()[0].name()).toBe("alpha-host2");
+            expect(environment.hostGroups()[1].name()).toBe("beta-host2");
+            expect(environment.hostGroups()[3].name()).toBe("host3");
+            expect(environment.hostGroups()[2].name()).toBe("host1");
         });
     });
 });
