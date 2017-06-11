@@ -41,3 +41,9 @@
     font-size: 25px;
     margin: 0 10px;
 }
+
+/* TODO: rename? */
+.data-block {
+    text-align: left;
+    padding-left: 30px;
+}

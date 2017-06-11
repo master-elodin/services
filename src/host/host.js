@@ -17,4 +17,10 @@ function Host(name) {
             });
         }
     };
+
+    instance.select = function() {
+
+    };
+
+    instance.dataRow = new DataRow(null, "host", instance.name, instance.select, ",");
 }

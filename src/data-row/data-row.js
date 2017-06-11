@@ -1,9 +1,10 @@
-function DataRow(onSave, dataType, name, onSelect) {
+function DataRow(onSave, dataType, name, onSelect, separator) {
     var instance = this;
 
     instance.invalid = ko.observable(false);
     // if data row is for adding new data as opposed to changing existing data
     instance.isNewDataRow = !name || !name();
+    instance.separator = separator || ", {";
     instance.editing = ko.observable(instance.isNewDataRow);
 
     instance.dataType = dataType;

@@ -8,6 +8,10 @@ function Application(name) {
         instance.environments.push(new Environment(name));
     };
 
-    instance.dataRow = new DataRow(null, "application", instance.name);
-    instance.addEnvironmentRow = new DataRow(instance.addEnvironment, "environment");
+    instance.select = function() {
+
+    };
+
+    instance.dataRow = new DataRow(null, "application", instance.name, instance.select);
+    instance.addDataRow = new DataRow(instance.addEnvironment, "environment");
 }

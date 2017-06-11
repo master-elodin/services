@@ -1,7 +1,6 @@
 var style = document.createElement('style');
 style.type = 'text/css';
-style.innerHTML = [    '.data-block { text-align: left; }  .data-block--page {  }  .data-block--application { padding-left: 30px; }  .data-block--environment { padding-left: 60px; } ',
-    '.data-row { font-size: 18px; line-height: 25px; padding: 5px 0; text-align: left; width: 400px; }  .data-row--invalid { background-color: rgba(150, 0, 0, .2); }  .data-row__data {  }  .data-row__name.data-row__name--editing{ display: flex; justify-content: space-between; padding-left: 25px; } .data-row__name.data-row__name--not-editing { text-align: left; }  .data-row__name input { font-size: 18px; padding-left: 5px; }  .data-row__braces {  }  .data-row__actions {  }  .data-row__action { cursor: pointer; font-size: 25px; margin: 0 10px; } ',
+style.innerHTML = [    '.data-row { font-size: 18px; line-height: 25px; padding: 5px 0; text-align: left; width: 400px; }  .data-row--invalid { background-color: rgba(150, 0, 0, .2); }  .data-row__data {  }  .data-row__name.data-row__name--editing{ display: flex; justify-content: space-between; padding-left: 25px; } .data-row__name.data-row__name--not-editing { text-align: left; }  .data-row__name input { font-size: 18px; padding-left: 5px; }  .data-row__braces {  }  .data-row__actions { padding-left: 20px; }  .data-row__action { cursor: pointer; font-size: 25px; margin: 0 10px; }  /* TODO: rename? */ .data-block { text-align: left; padding-left: 30px; } ',
     '.service-page { background-color: rgba(255, 255, 255, .7); height: 100%; min-height: 100%; }  .service-page__header { background-color: rgba(0, 0, 0, .7); height: 50px; width: 100%; }  .service-page__header-icon { float: left; height: 100%; }  .service-page__header-icon .fa { color: rgba(255, 255, 255, .7); cursor: pointer; font-size: 40px; padding: 5px; }  .service-page__body { display: flex; font-size: 18px; height: calc(100% - 70px); min-height: calc(100% - 70px); padding: 10px; }  .service-page__data-rows { display: flex; flex-direction: column; margin-left: 30px; margin-top: 30px; } ',
     'html, body { background-color: rgba(255, 255, 255, .7); height: 100%; margin: 0; min-height: 100%; padding: 0; }  p { margin: 0 } '].join('');
 document.getElementsByTagName('head')[0].appendChild(style);
@@ -12,12 +11,13 @@ external.href = 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awe
 external.rel = "stylesheet";
 document.getElementsByTagName('head')[0].appendChild(external);
 
-    function DataRow(onSave, dataType, name, onSelect) {
+    function DataRow(onSave, dataType, name, onSelect, separator) {
         var instance = this;
     
         instance.invalid = ko.observable(false);
         // if data row is for adding new data as opposed to changing existing data
         instance.isNewDataRow = !name || !name();
+        instance.separator = separator || ", {";
         instance.editing = ko.observable(instance.isNewDataRow);
     
         instance.dataType = dataType;
@@ -125,6 +125,32 @@ document.getElementsByTagName('head')[0].appendChild(external);
             });
         };
     }
+    function Host(name) {
+        var instance = this;
+    
+        instance.name = ko.observable(name);
+        instance.services = [];
+    
+        instance.addService = function(newService) {
+            var existingService = instance.services.find(function(service) {
+                return service.name === newService.name;
+            });
+            if(existingService) {
+                existingService.merge(newService);
+            } else {
+                instance.services.push(newService);
+                instance.services.sort(function(a, b) {
+                    return a.name.localeCompare(b.name);
+                });
+            }
+        };
+    
+        instance.select = function() {
+    
+        };
+    
+        instance.dataRow = new DataRow(null, "host", instance.name, instance.select, ",");
+    }
     function HostGroup(name) {
         var instance = this;
     
@@ -137,6 +163,13 @@ document.getElementsByTagName('head')[0].appendChild(external);
                 return a.name().localeCompare(b.name());
             });
         };
+    
+        instance.select = function() {
+    
+        };
+    
+        instance.dataRow = new DataRow(null, "host-group", instance.name, instance.select);
+        instance.addDataRow = new DataRow(instance.addHost, "host");
     }
     function Environment(name) {
         var instance = this;
@@ -145,15 +178,19 @@ document.getElementsByTagName('head')[0].appendChild(external);
     
         instance.hostGroups = ko.observableArray();
     
-        instance.addHost = function(hostGroupName) {
+        instance.addHostGroup = function(hostGroupName) {
             instance.hostGroups.push(new HostGroup(hostGroupName));
             instance.hostGroups.sort(function(a, b) {
                 return a.name().localeCompare(b.name());
             });
-        }
+        };
     
-        instance.dataRow = new DataRow(instance.addHost, "environment", instance.name);
-        instance.addHostGroupRow = new DataRow(instance.addHost, "host-group");
+        instance.select = function() {
+    
+        };
+    
+        instance.dataRow = new DataRow(null, "environment", instance.name, instance.select);
+        instance.addDataRow = new DataRow(instance.addHostGroup, "host-group");
     }
     function Application(name) {
         var instance = this;
@@ -165,8 +202,12 @@ document.getElementsByTagName('head')[0].appendChild(external);
             instance.environments.push(new Environment(name));
         };
     
-        instance.dataRow = new DataRow(null, "application", instance.name);
-        instance.addEnvironmentRow = new DataRow(instance.addEnvironment, "environment");
+        instance.select = function() {
+    
+        };
+    
+        instance.dataRow = new DataRow(null, "application", instance.name, instance.select);
+        instance.addDataRow = new DataRow(instance.addEnvironment, "environment");
     }
     function Page() {
         var instance = this;
@@ -177,10 +218,10 @@ document.getElementsByTagName('head')[0].appendChild(external);
         instance.addApplication = function(name) {
             instance.applications.push(new Application(name));
         };
-        instance.addNewDataRow = new DataRow(instance.addApplication, "application");
+        instance.addDataRow = new DataRow(instance.addApplication, "application");
     }
 
-    jQuery('body').removeClass().removeAttr('style').html('<body><div class="service-page"><div class="service-page__header"><div class="service-page__header-icon"><i class="fa fa-home" aria-hidden="true"></i></div></div><div class="service-page__body"><div class="service-page__data-rows"><div class="data-block data-block--page"><div class="data-row__braces"><span>{</span></div><!-- ko foreach: applications --><div class="data-block data-block--application"><!-- ko with: dataRow --><div class="data-row"><div class="data-row__data"><!-- ko if: editing --><div class="data-row__name data-row__name--editing"><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div></div><!-- /ko --><!-- ko ifnot: editing --><div class="data-row__name data-row__name--not-editing"><span data-bind="text: name"></span><span>: {</span></div><!-- /ko --></div></div><!-- /ko --><!-- ko foreach: environments --><div class="data-block data-block--environment"><!-- ko with: dataRow --><div class="data-row"><div class="data-row__data"><!-- ko if: editing --><div class="data-row__name data-row__name--editing"><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div></div><!-- /ko --><!-- ko ifnot: editing --><div class="data-row__name data-row__name--not-editing"><span data-bind="text: name"></span><span>: {</span></div><!-- /ko --></div></div><!-- /ko --><!-- ko foreach: hostGroups --><div class="host-group"></div><!-- ko if: $index < $parent.hostGroups - 1 --><span>,</span><!-- /ko --><!-- /ko --><!-- ko with: addHostGroupRow --><div class="data-row"><div class="data-row__data"><!-- ko if: editing --><div class="data-row__name data-row__name--editing"><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div></div><!-- /ko --><!-- ko ifnot: editing --><div class="data-row__name data-row__name--not-editing"><span data-bind="text: name"></span><span>: {</span></div><!-- /ko --></div></div><!-- /ko --><div class="data-row__braces"><span>},</span></div></div><!-- ko if: $index < $parent.environments.length - 1 --><span>,</span><!-- /ko --><!-- /ko --><!-- ko with: addEnvironmentRow --><div class="data-row"><div class="data-row__data"><!-- ko if: editing --><div class="data-row__name data-row__name--editing"><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div></div><!-- /ko --><!-- ko ifnot: editing --><div class="data-row__name data-row__name--not-editing"><span data-bind="text: name"></span><span>: {</span></div><!-- /ko --></div></div><!-- /ko --><div class="data-row__braces"><span>},</span></div></div><!-- /ko --><!-- ko with: addNewDataRow --><div class="data-row"><div class="data-row__data"><!-- ko if: editing --><div class="data-row__name data-row__name--editing"><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div></div><!-- /ko --><!-- ko ifnot: editing --><div class="data-row__name data-row__name--not-editing"><span data-bind="text: name"></span><span>: {</span></div><!-- /ko --></div></div><!-- /ko --><div class="data-row__braces"><span>}</span></div></div></div></div></div></body>');
+    jQuery('body').removeClass().removeAttr('style').html('<body><div class="service-page"><div class="service-page__header"><div class="service-page__header-icon"><i class="fa fa-home" aria-hidden="true"></i></div></div><div class="service-page__body"><div class="service-page__data-rows"><div class="data-block"><div class="data-row__braces"><span>{</span></div><!-- ko foreach: applications --><div class="data-block"><!-- ko with: dataRow --><div class="data-row"><div class="data-row__data"><!-- ko if: editing --><div class="data-row__name data-row__name--editing"><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div></div><!-- /ko --><!-- ko ifnot: editing --><div class="data-row__name data-row__name--not-editing"><span data-bind="text: name"></span><span data-bind="text: separator"></span></div><!-- /ko --></div></div><!-- /ko --><!-- ko foreach: environments --><div class="data-block"><!-- ko with: dataRow --><div class="data-row"><div class="data-row__data"><!-- ko if: editing --><div class="data-row__name data-row__name--editing"><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div></div><!-- /ko --><!-- ko ifnot: editing --><div class="data-row__name data-row__name--not-editing"><span data-bind="text: name"></span><span data-bind="text: separator"></span></div><!-- /ko --></div></div><!-- /ko --><!-- ko foreach: hostGroups --><div class="data-block"><!-- ko with: dataRow --><div class="data-row"><div class="data-row__data"><!-- ko if: editing --><div class="data-row__name data-row__name--editing"><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div></div><!-- /ko --><!-- ko ifnot: editing --><div class="data-row__name data-row__name--not-editing"><span data-bind="text: name"></span><span data-bind="text: separator"></span></div><!-- /ko --></div></div><!-- /ko --><!-- ko foreach: hosts --><div class="data-block"><!-- ko with: dataRow --><div class="data-row"><div class="data-row__data"><!-- ko if: editing --><div class="data-row__name data-row__name--editing"><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div></div><!-- /ko --><!-- ko ifnot: editing --><div class="data-row__name data-row__name--not-editing"><span data-bind="text: name"></span><span data-bind="text: separator"></span></div><!-- /ko --></div></div><!-- /ko --></div><!-- ko if: $index < $parent.hosts - 1 --><span>,</span><!-- /ko --><!-- /ko --><!-- ko with: addDataRow --><div class="data-row"><div class="data-row__data"><!-- ko if: editing --><div class="data-row__name data-row__name--editing"><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div></div><!-- /ko --><!-- ko ifnot: editing --><div class="data-row__name data-row__name--not-editing"><span data-bind="text: name"></span><span data-bind="text: separator"></span></div><!-- /ko --></div></div><!-- /ko --><div class="data-row__braces"><span>},</span></div></div><!-- ko if: $index < $parent.hostGroups - 1 --><span>,</span><!-- /ko --><!-- /ko --><!-- ko with: addDataRow --><div class="data-row"><div class="data-row__data"><!-- ko if: editing --><div class="data-row__name data-row__name--editing"><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div></div><!-- /ko --><!-- ko ifnot: editing --><div class="data-row__name data-row__name--not-editing"><span data-bind="text: name"></span><span data-bind="text: separator"></span></div><!-- /ko --></div></div><!-- /ko --><div class="data-row__braces"><span>},</span></div></div><!-- ko if: $index < $parent.environments.length - 1 --><span>,</span><!-- /ko --><!-- /ko --><!-- ko with: addDataRow --><div class="data-row"><div class="data-row__data"><!-- ko if: editing --><div class="data-row__name data-row__name--editing"><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div></div><!-- /ko --><!-- ko ifnot: editing --><div class="data-row__name data-row__name--not-editing"><span data-bind="text: name"></span><span data-bind="text: separator"></span></div><!-- /ko --></div></div><!-- /ko --><div class="data-row__braces"><span>},</span></div></div><!-- /ko --><!-- ko with: addDataRow --><div class="data-row"><div class="data-row__data"><!-- ko if: editing --><div class="data-row__name data-row__name--editing"><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div></div><!-- /ko --><!-- ko ifnot: editing --><div class="data-row__name data-row__name--not-editing"><span data-bind="text: name"></span><span data-bind="text: separator"></span></div><!-- /ko --></div></div><!-- /ko --><div class="data-row__braces"><span>}</span></div></div></div></div></div></body>');
 
     ko.bindingHandlers.enterkey = {
         init: function (element, valueAccessor, allBindings, viewModel) {

@@ -5,13 +5,17 @@ function Environment(name) {
 
     instance.hostGroups = ko.observableArray();
 
-    instance.addHost = function(hostGroupName) {
+    instance.addHostGroup = function(hostGroupName) {
         instance.hostGroups.push(new HostGroup(hostGroupName));
         instance.hostGroups.sort(function(a, b) {
             return a.name().localeCompare(b.name());
         });
-    }
+    };
 
-    instance.dataRow = new DataRow(instance.addHost, "environment", instance.name);
-    instance.addHostGroupRow = new DataRow(instance.addHost, "host-group");
+    instance.select = function() {
+
+    };
+
+    instance.dataRow = new DataRow(null, "environment", instance.name, instance.select);
+    instance.addDataRow = new DataRow(instance.addHostGroup, "host-group");
 }

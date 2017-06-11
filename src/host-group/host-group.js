@@ -10,4 +10,11 @@ function HostGroup(name) {
             return a.name().localeCompare(b.name());
         });
     };
+
+    instance.select = function() {
+
+    };
+
+    instance.dataRow = new DataRow(null, "host-group", instance.name, instance.select);
+    instance.addDataRow = new DataRow(instance.addHost, "host");
 }
