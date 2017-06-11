@@ -14,8 +14,9 @@
 
 var style = document.createElement('style');
 style.type = 'text/css';
-style.innerHTML = [    '.data-row__data--application { padding-left: 15px; } ',
+style.innerHTML = [    '.data-row.data-row--application { padding-left: 30px; } ',
     '.data-row { font-size: 18px; line-height: 25px; padding: 5px 0; text-align: left; width: 400px; }  .data-row--invalid { background-color: rgba(150, 0, 0, .2); }  .data-row__data { padding-left: 25px; }  .data-row__name { display: flex; justify-content: space-between; }  .data-row__name input { font-size: 18px; padding-left: 5px; }  .data-row__braces {  }  .data-row__actions {  }  .data-row__action { cursor: pointer; font-size: 25px; margin: 0 10px; } ',
+    '.data-row.data-row--environment { padding-left: 60px; } ',
     '.service-page { background-color: rgba(255, 255, 255, .7); height: 100%; min-height: 100%; }  .service-page__header { background-color: rgba(0, 0, 0, .7); height: 50px; width: 100%; }  .service-page__header-icon { float: left; height: 100%; }  .service-page__header-icon .fa { color: rgba(255, 255, 255, .7); cursor: pointer; font-size: 40px; padding: 5px; }  .service-page__body { display: flex; font-size: 18px; height: calc(100% - 70px); min-height: calc(100% - 70px); padding: 10px; }  .service-page__data-rows { display: flex; flex-direction: column; margin-left: 30px; margin-top: 30px; } ',
     'html, body { background-color: rgba(255, 255, 255, .7); height: 100%; margin: 0; min-height: 100%; padding: 0; }  p { margin: 0 } '].join('');
 document.getElementsByTagName('head')[0].appendChild(style);
@@ -34,7 +35,7 @@ document.getElementsByTagName('head')[0].appendChild(external);
         instance.isNewDataRow = !name || !name();
         instance.editing = ko.observable(instance.isNewDataRow);
     
-        instance.dataTypeClass = "data-row-" + dataType.toLowerCase();
+        instance.dataTypeClass = "data-row--" + dataType.toLowerCase();
     
         instance.name = name || ko.observable();
         instance.name.subscribe(function(newValue) {
@@ -43,9 +44,9 @@ document.getElementsByTagName('head')[0].appendChild(external);
     
         instance.onSave = function() {
             if(instance.name()) {
-                onSave(instance.name());
                 instance.invalid(false);
                 if(instance.isNewDataRow) {
+                    onSave(instance.name());
                     instance.name("");
                 } else {
                     instance.editing(false);
@@ -139,10 +140,10 @@ document.getElementsByTagName('head')[0].appendChild(external);
             });
         };
     }
-    function HostGroup(id) {
+    function HostGroup(name) {
         var instance = this;
     
-        instance.id = id;
+        instance.name = ko.observable(name);
         instance.services = [];
     
         instance.addService = function(newService) {
@@ -162,14 +163,19 @@ document.getElementsByTagName('head')[0].appendChild(external);
     function Environment(name) {
         var instance = this;
     
-        instance.name = name;
+        instance.name = ko.observable(name);
     
-        instance.hosts = [];
+        instance.hosts = ko.observableArray();
     
         instance.addHost = function(hostName) {
-            instance.hosts.push(hostName);
-            instance.hosts.sort();
+            instance.hosts.push(new HostGroup(hostName));
+            instance.hosts.sort(function(a, b) {
+                return a.name().localeCompare(b.name());
+            });
         }
+    
+        instance.dataRow = new DataRow(instance.addHost, "application", instance.name);
+        instance.addHostGroupRow = new DataRow(instance.addHost, "environment");
     }
     function Application(name) {
         var instance = this;
@@ -178,10 +184,11 @@ document.getElementsByTagName('head')[0].appendChild(external);
         instance.environments = ko.observableArray();
     
         instance.addEnvironment = function(name) {
-            console.log("add environment!");
+            instance.environments.push(new Environment(name));
         };
     
-        instance.dataRow = new DataRow(instance.addEnvironment, "application", instance.name);
+        instance.dataRow = new DataRow(null, "page", instance.name);
+        instance.addEnvironmentRow = new DataRow(instance.addEnvironment, "application");
     }
     function Page() {
         var instance = this;
@@ -192,17 +199,10 @@ document.getElementsByTagName('head')[0].appendChild(external);
         instance.addApplication = function(name) {
             instance.applications.push(new Application(name));
         };
-        instance.dataRow = new DataRow(instance.addApplication, "page");
+        instance.addNewDataRow = new DataRow(instance.addApplication, "page");
     }
 
-    var html = ['<body>',
-    '    <div class="service-page"><div class="service-page__header"><div class="service-page__header-icon"><i class="fa fa-home" aria-hidden="true"></i></div></div><div class="service-page__body"><div class="service-page__data-rows"><!-- ko foreach: applications -->',
-    '            <!-- ko with: dataRow --><div data-bind="css: dataTypeClass" class="data-row"><div class="data-row__braces"><span>{</span></div><div class="data-row__data"><div class="data-row__name"><!-- ko if: editing --><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div><!-- /ko --><!-- ko ifnot: editing --><span data-bind="text: name"></span><!-- /ko --></div></div><div class="data-row__braces"><span>}</span><span data-bind="visible: $root.editMode() && !isNewDataRow">,</span></div></div><!-- /ko -->',
-    '            <!-- /ko -->',
-    '            <!-- ko with: dataRow --><div data-bind="css: dataTypeClass" class="data-row"><div class="data-row__braces"><span>{</span></div><div class="data-row__data"><div class="data-row__name"><!-- ko if: editing --><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div><!-- /ko --><!-- ko ifnot: editing --><span data-bind="text: name"></span><!-- /ko --></div></div><div class="data-row__braces"><span>}</span><span data-bind="visible: $root.editMode() && !isNewDataRow">,</span></div></div><!-- /ko -->',
-    '        </div></div></div>',
-    '</body>'];
-    jQuery('body').removeClass().removeAttr('style').html(html.join(''));
+    jQuery('body').removeClass().removeAttr('style').html('<body><div class="service-page"><div class="service-page__header"><div class="service-page__header-icon"><i class="fa fa-home" aria-hidden="true"></i></div></div><div class="service-page__body"><div class="service-page__data-rows"><!-- ko foreach: applications --><!-- ko with: dataRow --><div data-bind="css: dataTypeClass" class="data-row"><div class="data-row__braces"><span>{</span></div><div class="data-row__data"><div class="data-row__name"><!-- ko if: editing --><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div><!-- /ko --><!-- ko ifnot: editing --><span data-bind="text: name"></span><!-- /ko --></div></div><div class="data-row__braces"><span>}</span><span data-bind="visible: $root.editMode() && !isNewDataRow">,</span></div></div><!-- /ko --><!-- ko foreach: environments --><!-- ko with: dataRow --><div data-bind="css: dataTypeClass" class="data-row"><div class="data-row__braces"><span>{</span></div><div class="data-row__data"><div class="data-row__name"><!-- ko if: editing --><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div><!-- /ko --><!-- ko ifnot: editing --><span data-bind="text: name"></span><!-- /ko --></div></div><div class="data-row__braces"><span>}</span><span data-bind="visible: $root.editMode() && !isNewDataRow">,</span></div></div><!-- /ko --><!-- ko foreach: hosts --><div class="host-group"></div><!-- /ko --><!-- ko with: addHostGroupRow --><div data-bind="css: dataTypeClass" class="data-row"><div class="data-row__braces"><span>{</span></div><div class="data-row__data"><div class="data-row__name"><!-- ko if: editing --><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div><!-- /ko --><!-- ko ifnot: editing --><span data-bind="text: name"></span><!-- /ko --></div></div><div class="data-row__braces"><span>}</span><span data-bind="visible: $root.editMode() && !isNewDataRow">,</span></div></div><!-- /ko --><!-- /ko --><!-- ko with: addEnvironmentRow --><div data-bind="css: dataTypeClass" class="data-row"><div class="data-row__braces"><span>{</span></div><div class="data-row__data"><div class="data-row__name"><!-- ko if: editing --><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div><!-- /ko --><!-- ko ifnot: editing --><span data-bind="text: name"></span><!-- /ko --></div></div><div class="data-row__braces"><span>}</span><span data-bind="visible: $root.editMode() && !isNewDataRow">,</span></div></div><!-- /ko --><!-- /ko --><!-- ko with: addNewDataRow --><div data-bind="css: dataTypeClass" class="data-row"><div class="data-row__braces"><span>{</span></div><div class="data-row__data"><div class="data-row__name"><!-- ko if: editing --><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div><!-- /ko --><!-- ko ifnot: editing --><span data-bind="text: name"></span><!-- /ko --></div></div><div class="data-row__braces"><span>}</span><span data-bind="visible: $root.editMode() && !isNewDataRow">,</span></div></div><!-- /ko --></div></div></div></body>');
 
     ko.bindingHandlers.enterkey = {
         init: function (element, valueAccessor, allBindings, viewModel) {

@@ -66,6 +66,15 @@ describe("A Data Row", function() {
             expect(onSave).not.toHaveBeenCalled();
         });
 
+        it("should not call given onSave if is not new data row", function() {
+            dataRow.name("something");
+            dataRow.isNewDataRow = false;
+
+            dataRow.onSave();
+
+            expect(onSave).not.toHaveBeenCalled();
+        });
+
         it("should set invalid=true if name is blank", function() {
             dataRow.name("");
 

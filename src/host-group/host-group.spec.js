@@ -10,10 +10,10 @@ describe("A Host Group", function() {
         hostGroup = null;
     });
 
-    it("should set ID on creation", function() {
-        hostGroup = new HostGroup("id");
+    it("should set name on creation", function() {
+        hostGroup = new HostGroup("name");
 
-        expect(hostGroup.id).toBe("id");
+        expect(hostGroup.name()).toBe("name");
     });
 
     describe("addService", function() {
@@ -29,18 +29,18 @@ describe("A Host Group", function() {
         });
 
         it("should merge services instances if service already exists", function() {
-            var service1 = new Service("id1");
+            var service1 = new Service("name1");
             spyOn( service1, 'merge' ).and.stub();
 
             hostGroup.addService(service1);
 
-            var service2 = new Service("id1");
+            var service2 = new Service("name1");
             var serviceInstance = new ServiceInstance("serviceInstance1");
             service2.addServiceInstance(serviceInstance);
 
             hostGroup.addService(service2);
 
-            var service3 = new Service("id2");
+            var service3 = new Service("name2");
             service3.addServiceInstance(new Service("serviceInstance2"));
 
             hostGroup.addService(service3);

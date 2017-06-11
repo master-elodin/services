@@ -7,9 +7,11 @@
     <div class="service-page__body">
         <div class="service-page__data-rows">
             <!-- ko foreach: applications -->
+            ${src/application/application.html}
+            <!-- /ko -->
+            <!-- ko with: addNewDataRow -->
             ${src/data-row/data-row.html}
             <!-- /ko -->
-            ${src/data-row/data-row.html}
         </div>
     </div>
 </div>

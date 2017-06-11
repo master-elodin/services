@@ -1,7 +1,7 @@
-function HostGroup(id) {
+function HostGroup(name) {
     var instance = this;
 
-    instance.id = id;
+    instance.name = ko.observable(name);
     instance.services = [];
 
     instance.addService = function(newService) {

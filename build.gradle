@@ -71,13 +71,16 @@ task combineHtml {
     outputs.file('bin/combined.html')
 
     doLast {
-        def stripText = { text -> text.replaceAll(/(>\s*\n*<)/, '><') }
-        combineStuff("html", stripText)
-        def combinedHtml = file("bin/combined.html")
-        // TODO: find out how to remove extra spaces between HTML elements
-        // TODO: this doesn't work if there is a newline at the end of a file
-        def html = combinedHtml.collect { stripText(replaceFromFile(it)) }.join('\',\n\'')
-        combinedHtml.write("var html = ['${html}'];\njQuery('body').removeClass().removeAttr('style').html(html.join(''));");
+        def html = file("src/shell/shell.html").text
+        def placeholders = getPlaceholderMatches(html)
+        while(placeholders) {
+            placeholders.each { placeholder ->
+                html = html.replace(placeholder, new File("${getPlaceholderName(placeholder)}").text)
+            }
+            placeholders = getPlaceholderMatches(html)
+        }
+        html = html.replaceAll(/>\s*</, '><').replaceAll(/\n/, '')
+        new File(getBinFolder(), "combined.html").write("jQuery('body').removeClass().removeAttr('style').html('${html}');");
     }
 }
 

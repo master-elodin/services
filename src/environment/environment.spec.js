@@ -13,7 +13,7 @@ describe("An Environment", function() {
     it("should set name on creation", function() {
         environment = new Environment("name");
 
-        expect(environment.name).toBe("name");
+        expect(environment.name()).toBe("name");
     });
 
     describe("addHost", function() {
@@ -24,10 +24,10 @@ describe("An Environment", function() {
             environment.addHost("beta-host2");
             environment.addHost("alpha-host2");
 
-            expect(environment.hosts[0]).toBe("alpha-host2");
-            expect(environment.hosts[1]).toBe("beta-host2");
-            expect(environment.hosts[2]).toBe("host1");
-            expect(environment.hosts[3]).toBe("host3");
+            expect(environment.hosts()[0].name()).toBe("alpha-host2");
+            expect(environment.hosts()[1].name()).toBe("beta-host2");
+            expect(environment.hosts()[3].name()).toBe("host3");
+            expect(environment.hosts()[2].name()).toBe("host1");
         });
     });
 });

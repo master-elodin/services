@@ -5,8 +5,9 @@ function Application(name) {
     instance.environments = ko.observableArray();
 
     instance.addEnvironment = function(name) {
-        console.log("add environment!");
+        instance.environments.push(new Environment(name));
     };
 
-    instance.dataRow = new DataRow(instance.addEnvironment, "application", instance.name);
+    instance.dataRow = new DataRow(null, "page", instance.name);
+    instance.addEnvironmentRow = new DataRow(instance.addEnvironment, "application");
 }
