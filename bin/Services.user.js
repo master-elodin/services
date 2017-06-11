@@ -15,7 +15,7 @@
 var style = document.createElement('style');
 style.type = 'text/css';
 style.innerHTML = [    '.data-row__data--application { padding-left: 15px; } ',
-    '.data-row { font-size: 18px; line-height: 25px; padding: 5px 0; text-align: left; width: 400px; }  .data-row--invalid { background-color: rgba(150, 0, 0, .2); }  .data-row__data { padding-left: 25px; }  .data-row__name { display: flex; justify-content: space-between; }  .data-row__name input { padding-left: 5px; }  .data-row__braces {  }  .data-row__actions {  }  .data-row__action { cursor: pointer; font-size: 25px; margin: 0 10px; } ',
+    '.data-row { font-size: 18px; line-height: 25px; padding: 5px 0; text-align: left; width: 400px; }  .data-row--invalid { background-color: rgba(150, 0, 0, .2); }  .data-row__data { padding-left: 25px; }  .data-row__name { display: flex; justify-content: space-between; }  .data-row__name input { font-size: 18px; padding-left: 5px; }  .data-row__braces {  }  .data-row__actions {  }  .data-row__action { cursor: pointer; font-size: 25px; margin: 0 10px; } ',
     '.service-page { background-color: rgba(255, 255, 255, .7); height: 100%; min-height: 100%; }  .service-page__header { background-color: rgba(0, 0, 0, .7); height: 50px; width: 100%; }  .service-page__header-icon { float: left; height: 100%; }  .service-page__header-icon .fa { color: rgba(255, 255, 255, .7); cursor: pointer; font-size: 40px; padding: 5px; }  .service-page__body { display: flex; font-size: 18px; height: calc(100% - 70px); min-height: calc(100% - 70px); padding: 10px; }  .service-page__data-rows { display: flex; flex-direction: column; margin-left: 30px; margin-top: 30px; } ',
     'html, body { background-color: rgba(255, 255, 255, .7); height: 100%; margin: 0; min-height: 100%; padding: 0; }  p { margin: 0 } '].join('');
 document.getElementsByTagName('head')[0].appendChild(style);
@@ -187,6 +187,7 @@ document.getElementsByTagName('head')[0].appendChild(external);
         var instance = this;
     
         instance.applications = ko.observableArray();
+        instance.editMode = ko.observable(true);
     
         instance.addApplication = function(name) {
             instance.applications.push(new Application(name));
@@ -196,12 +197,27 @@ document.getElementsByTagName('head')[0].appendChild(external);
 
     var html = ['<body>',
     '    <div class="service-page"><div class="service-page__header"><div class="service-page__header-icon"><i class="fa fa-home" aria-hidden="true"></i></div></div><div class="service-page__body"><div class="service-page__data-rows"><!-- ko foreach: applications -->',
-    '            <!-- ko with: dataRow --><div data-bind="css: dataTypeClass" class="data-row"><div class="data-row__braces"><span>{</span></div><div class="data-row__data"><div class="data-row__name"><!-- ko if: editing --><input data-bind="textInput: name, css: {\'data-row--invalid\' : invalid }"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div><!-- /ko --><!-- ko ifnot: editing --><span data-bind="text: name"></span><!-- /ko --></div></div><div class="data-row__braces"><span>}</span></div></div><!-- /ko -->',
+    '            <!-- ko with: dataRow --><div data-bind="css: dataTypeClass" class="data-row"><div class="data-row__braces"><span>{</span></div><div class="data-row__data"><div class="data-row__name"><!-- ko if: editing --><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div><!-- /ko --><!-- ko ifnot: editing --><span data-bind="text: name"></span><!-- /ko --></div></div><div class="data-row__braces"><span>}</span><span data-bind="visible: $root.editMode() && !isNewDataRow">,</span></div></div><!-- /ko -->',
     '            <!-- /ko -->',
-    '            <!-- ko with: dataRow --><div data-bind="css: dataTypeClass" class="data-row"><div class="data-row__braces"><span>{</span></div><div class="data-row__data"><div class="data-row__name"><!-- ko if: editing --><input data-bind="textInput: name, css: {\'data-row--invalid\' : invalid }"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div><!-- /ko --><!-- ko ifnot: editing --><span data-bind="text: name"></span><!-- /ko --></div></div><div class="data-row__braces"><span>}</span></div></div><!-- /ko -->',
+    '            <!-- ko with: dataRow --><div data-bind="css: dataTypeClass" class="data-row"><div class="data-row__braces"><span>{</span></div><div class="data-row__data"><div class="data-row__name"><!-- ko if: editing --><input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div><!-- /ko --><!-- ko ifnot: editing --><span data-bind="text: name"></span><!-- /ko --></div></div><div class="data-row__braces"><span>}</span><span data-bind="visible: $root.editMode() && !isNewDataRow">,</span></div></div><!-- /ko -->',
     '        </div></div></div>',
     '</body>'];
     jQuery('body').removeClass().removeAttr('style').html(html.join(''));
+
+    ko.bindingHandlers.enterkey = {
+        init: function (element, valueAccessor, allBindings, viewModel) {
+            var callback = valueAccessor();
+            $(element).keypress(function (event) {
+                var keyCode = (event.which ? event.which : event.keyCode);
+                if (keyCode === 13) {
+                    callback.call(viewModel);
+                    return false;
+                }
+                return true;
+            });
+        }
+    };
+
     ko.applyBindings(new Page());
 
 })();
