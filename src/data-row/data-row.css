@@ -1,0 +1,39 @@
+.data-row {
+    font-size: 18px;
+    line-height: 25px;
+    padding: 5px 0;
+    text-align: left;
+    width: 400px;
+}
+
+.data-row--invalid {
+    background-color: rgba(150, 0, 0, .2);
+}
+
+.data-row__data {
+    padding-left: 25px;
+}
+
+.data-row__name {
+    display: flex;
+    justify-content: space-between;
+}
+
+.data-row__name input {
+    font-size: 18px;
+    padding-left: 5px;
+}
+
+.data-row__braces {
+    
+}
+
+.data-row__actions {
+
+}
+
+.data-row__action {
+    cursor: pointer;
+    font-size: 25px;
+    margin: 0 10px;
+}

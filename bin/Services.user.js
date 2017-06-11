@@ -14,7 +14,10 @@
 
 var style = document.createElement('style');
 style.type = 'text/css';
-style.innerHTML = '    .service-page { background-color: rgba(255, 255, 255, .7); min-height: 100%; }  .service-page__header { background-color: rgba(0, 0, 0, .7); height: 50px; width: 100%; }  .service-page__header-icon { float: left; height: 100%; }  .service-page__header-icon .fa { color: rgba(255, 255, 255, .7); cursor: pointer; font-size: 40px; padding: 5px; }  .service-page__body { font-size: 18px; height: 100%; padding: 10px; }  .service-page__data-row { display: flex; justify-content: space-between; width: 400px; }  .service-page__data-row--application { padding-left: 15px; }  .data-row__name {  } html, body { background-color: rgba(255, 255, 255, .7); height: 100%; margin: 0; min-height: 100%; padding: 0; } ';
+style.innerHTML = [    '.data-row__data--application { padding-left: 15px; } ',
+    '.data-row { font-size: 18px; line-height: 25px; padding: 5px 0; text-align: left; width: 400px; }  .data-row--invalid { background-color: rgba(150, 0, 0, .2); }  .data-row__data { padding-left: 25px; }  .data-row__name { display: flex; justify-content: space-between; }  .data-row__name input { padding-left: 5px; }  .data-row__braces {  }  .data-row__actions {  }  .data-row__action { cursor: pointer; font-size: 25px; margin: 0 10px; } ',
+    '.service-page { background-color: rgba(255, 255, 255, .7); height: 100%; min-height: 100%; }  .service-page__header { background-color: rgba(0, 0, 0, .7); height: 50px; width: 100%; }  .service-page__header-icon { float: left; height: 100%; }  .service-page__header-icon .fa { color: rgba(255, 255, 255, .7); cursor: pointer; font-size: 40px; padding: 5px; }  .service-page__body { display: flex; font-size: 18px; height: calc(100% - 70px); min-height: calc(100% - 70px); padding: 10px; }  .service-page__data-rows { display: flex; flex-direction: column; margin-left: 30px; margin-top: 30px; } ',
+    'html, body { background-color: rgba(255, 255, 255, .7); height: 100%; margin: 0; min-height: 100%; padding: 0; }  p { margin: 0 } '].join('');
 document.getElementsByTagName('head')[0].appendChild(style);
 
 // TODO: modularize external CSS
@@ -23,6 +26,42 @@ external.href = 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awe
 external.rel = "stylesheet";
 document.getElementsByTagName('head')[0].appendChild(external);
 
+    function DataRow(onSave, dataType, name, onSelect) {
+        var instance = this;
+    
+        instance.invalid = ko.observable(false);
+        // if data row is for adding new data as opposed to changing existing data
+        instance.isNewDataRow = !name || !name();
+        instance.editing = ko.observable(instance.isNewDataRow);
+    
+        instance.dataTypeClass = "data-row-" + dataType.toLowerCase();
+    
+        instance.name = name || ko.observable();
+        instance.name.subscribe(function(newValue) {
+            instance.invalid(false);
+        });
+    
+        instance.onSave = function() {
+            if(instance.name()) {
+                onSave(instance.name());
+                instance.invalid(false);
+                if(instance.isNewDataRow) {
+                    instance.name("");
+                } else {
+                    instance.editing(false);
+                }
+            } else {
+                instance.invalid(true);
+            }
+        };
+    
+        instance.onSelect = onSelect || function() { console.log("select!") };
+    
+        instance.previousName = "";
+        instance.onCancel = function() {
+            instance.name(instance.previousName);
+        }
+    }
     function ServiceInstance(id, version) {
         var instance = this;
     
@@ -135,15 +174,34 @@ document.getElementsByTagName('head')[0].appendChild(external);
     function Application(name) {
         var instance = this;
     
-        instance.name = name;
+        instance.name = ko.observable(name);
+        instance.environments = ko.observableArray();
+    
+        instance.addEnvironment = function(name) {
+            console.log("add environment!");
+        };
+    
+        instance.dataRow = new DataRow(instance.addEnvironment, "application", instance.name);
     }
     function Page() {
         var instance = this;
     
-        instance.applications = ko.observableArray([new Application("Suite")]);
+        instance.applications = ko.observableArray();
+    
+        instance.addApplication = function(name) {
+            instance.applications.push(new Application(name));
+        };
+        instance.dataRow = new DataRow(instance.addApplication, "page");
     }
 
-    jQuery('body').removeClass().removeAttr('style').html('<body>    <div class="service-page"><div class="service-page__header"><div class="service-page__header-icon"><i class="fa fa-home" aria-hidden="true"></i></div></div><div class="service-page__body"><!-- ko foreach: applications --><div class="service-page__data-row service-page__data-row--application"><div class="data-row__name"><span data-bind="text: name"></span></div><div class="data-row__add"><i class="fa fa-plus" aria-hidden="true"></i></div></div><!-- /ko --></div></div></body>');
+    var html = ['<body>',
+    '    <div class="service-page"><div class="service-page__header"><div class="service-page__header-icon"><i class="fa fa-home" aria-hidden="true"></i></div></div><div class="service-page__body"><div class="service-page__data-rows"><!-- ko foreach: applications -->',
+    '            <!-- ko with: dataRow --><div data-bind="css: dataTypeClass" class="data-row"><div class="data-row__braces"><span>{</span></div><div class="data-row__data"><div class="data-row__name"><!-- ko if: editing --><input data-bind="textInput: name, css: {\'data-row--invalid\' : invalid }"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div><!-- /ko --><!-- ko ifnot: editing --><span data-bind="text: name"></span><!-- /ko --></div></div><div class="data-row__braces"><span>}</span></div></div><!-- /ko -->',
+    '            <!-- /ko -->',
+    '            <!-- ko with: dataRow --><div data-bind="css: dataTypeClass" class="data-row"><div class="data-row__braces"><span>{</span></div><div class="data-row__data"><div class="data-row__name"><!-- ko if: editing --><input data-bind="textInput: name, css: {\'data-row--invalid\' : invalid }"><div class="data-row__actions"><i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i><i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i></div><!-- /ko --><!-- ko ifnot: editing --><span data-bind="text: name"></span><!-- /ko --></div></div><div class="data-row__braces"><span>}</span></div></div><!-- /ko -->',
+    '        </div></div></div>',
+    '</body>'];
+    jQuery('body').removeClass().removeAttr('style').html(html.join(''));
     ko.applyBindings(new Page());
 
 })();

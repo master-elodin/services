@@ -1,6 +1,6 @@
 var style = document.createElement('style');
 style.type = 'text/css';
-style.innerHTML = '${bin/combined.css}';
+style.innerHTML = [${bin/combined.css}].join('');
 document.getElementsByTagName('head')[0].appendChild(style);
 
 // TODO: modularize external CSS
@@ -9,6 +9,7 @@ external.href = 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awe
 external.rel = "stylesheet";
 document.getElementsByTagName('head')[0].appendChild(external);
 
+${src/data-row/data-row.js}
 ${src/service-instance/service-instance.js}
 ${src/service/service.js}
 ${src/host-group/host-group.js}

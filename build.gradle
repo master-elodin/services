@@ -75,8 +75,9 @@ task combineHtml {
         combineStuff("html", stripText)
         def combinedHtml = file("bin/combined.html")
         // TODO: find out how to remove extra spaces between HTML elements
-        def html = combinedHtml.collect { stripText(replaceFromFile(it)) }.join('')
-        combinedHtml.write("jQuery('body').removeClass().removeAttr('style').html('${html}');");
+        // TODO: this doesn't work if there is a newline at the end of a file
+        def html = combinedHtml.collect { stripText(replaceFromFile(it)) }.join('\',\n\'')
+        combinedHtml.write("var html = ['${html}'];\njQuery('body').removeClass().removeAttr('style').html(html.join(''));");
     }
 }
 
@@ -85,16 +86,20 @@ task combineCss {
     outputs.file('bin/combined.css')
 
     doLast {
-        def css = ''
+        def css = []
         fileTree("src").include("**/*.css").collect({ cssFile ->
+            def cssPart = ''
             cssFile.eachLine { line ->
                 (line =~ /\$\w+/).each {
                     line = line.replace(it, cssProperties[it])
                 }
-                css += "${line.trim()} "
+                cssPart += "${line.trim()} "
+            }
+            if(!cssPart.isEmpty()) {
+                css.push("'${cssPart}'")
             }
         })
-        new File(getBinFolder(), 'combined.css').text = css
+        new File(getBinFolder(), 'combined.css').text = css.join(",\n")
     }
 }
 

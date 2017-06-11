@@ -1,5 +1,6 @@
 .service-page {
     background-color: $clouds;
+    height: 100%;
     min-height: 100%;
 }
 
@@ -22,27 +23,16 @@
 }
 
 .service-page__body {
+    display: flex;
     font-size: 18px;
-    height: 100%;
+    height: calc(100% - 70px);
+    min-height: calc(100% - 70px);
     padding: 10px;
 }
 
-.service-page__data-row {
+.service-page__data-rows {
     display: flex;
-    justify-content: space-between;
-    padding: 5px 0;
-    text-align: left;
-    width: 400px;
-}
-
-.service-page__data-row--application {
-    padding-left: 15px;
-}
-
-.data-row__name {
-
-}
-
-.data-row__modify {
-    cursor: pointer;
+    flex-direction: column;
+    margin-left: 30px;
+    margin-top: 30px;
 }

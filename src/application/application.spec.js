@@ -13,6 +13,6 @@ describe("An Application", function() {
     it("should set name on creation", function() {
         application = new Application("name");
 
-        expect(application.name).toBe("name");
+        expect(application.name()).toBe("name");
     });
 });

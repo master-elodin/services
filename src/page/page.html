@@ -5,15 +5,11 @@
         </div>
     </div>
     <div class="service-page__body">
-        <!-- ko foreach: applications -->
-        <div class="service-page__data-row service-page__data-row--application">
-            <div class="data-row__name">
-                <span data-bind="text: name"></span>
-            </div>
-            <div class="data-row__modify">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-            </div>
+        <div class="service-page__data-rows">
+            <!-- ko foreach: applications -->
+            ${src/data-row/data-row.html}
+            <!-- /ko -->
+            ${src/data-row/data-row.html}
         </div>
-        <!-- /ko -->
     </div>
 </div>
