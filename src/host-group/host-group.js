@@ -15,6 +15,6 @@ function HostGroup(name) {
 
     };
 
-    instance.dataRow = new DataRow(null, "host-group", instance.name, instance.select);
+    instance.dataRow = new DataRow(null, "host-group", instance.name, instance.select, ",", ", {");
     instance.addDataRow = new DataRow(instance.addHost, "host");
 }

@@ -8,10 +8,15 @@
         <span>,</span>
         <!-- /ko -->
     <!-- /ko -->
-    <!-- ko with: addDataRow -->
-    ${src/data-row/data-row.html}
+    <!-- ko if: $root.editMode -->
+        <!-- ko with: addDataRow -->
+        ${src/data-row/data-row.html}
+        <!-- /ko -->
     <!-- /ko -->
     <div class="data-row__braces">
-        <span>},</span>
+        <span>}</span>
+        <!-- ko if: $root.editMode -->
+        <span>,</span>
+        <!-- /ko -->
     </div>
 </div>

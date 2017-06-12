@@ -3,6 +3,17 @@
         <div class="service-page__header-icon">
             <i class="fa fa-home" aria-hidden="true"></i>
         </div>
+        <div data-bind="click: toggleEdit" class="service-page__edit-toggle">
+            <!-- ko ifnot: editMode -->
+            <label>EDIT</label>
+            <i class="fa fa-toggle-off" aria-hidden="true"></i>
+            <!-- /ko -->
+            <!-- ko if: editMode -->
+            <label>SAVE</label>
+            <a href="#">cancel</a>
+            <i class="fa fa-toggle-on" aria-hidden="true"></i>
+            <!-- /ko -->
+        </div>
     </div>
     <div class="service-page__body">
         <div class="service-page__data-rows">
@@ -11,10 +22,12 @@
                     <span>{</span>
                 </div>
                 <!-- ko foreach: applications -->
-                ${src/application/application.html}
+                    ${src/application/application.html}
                 <!-- /ko -->
-                <!-- ko with: addDataRow -->
-                ${src/data-row/data-row.html}
+                <!-- ko if: editMode -->
+                    <!-- ko with: addDataRow -->
+                    ${src/data-row/data-row.html}
+                    <!-- /ko -->
                 <!-- /ko -->
                 <div class="data-row__braces">
                     <span>}</span>

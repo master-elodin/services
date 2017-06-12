@@ -10,9 +10,20 @@ describe("An Application", function() {
         application = null;
     });
 
-    it("should set name on creation", function() {
-        application = new Application("name");
+    describe("creation", function() {
 
-        expect(application.name()).toBe("name");
+        it("should set name on creation if given string", function() {
+            application = new Application("name");
+
+            expect(application.name()).toBe("name");
+        });
+
+        it("should set name and add environments on creation if given object", function() {
+            application = new Application({name: "name", environments: [{name: "env1"}, {name: "env2"}]});
+
+            expect(application.name()).toBe("name");
+            expect(application.environments()[0].name()).toBe("env1");
+            expect(application.environments()[0].name()).toBe("env2");
+        });
     });
 });

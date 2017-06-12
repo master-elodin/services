@@ -36,3 +36,21 @@
     margin-left: 30px;
     margin-top: 30px;
 }
+
+.service-page__edit-toggle {
+    color: $clouds;
+    cursor: pointer;
+    font-size: 30px;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+}
+
+.service-page__edit-toggle label {
+    cursor: pointer;
+    padding-right: 10px;
+}
+
+.service-page a:visited {
+    color: $lightBlue;
+}

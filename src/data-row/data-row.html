@@ -11,7 +11,13 @@
         <!-- /ko -->
         <!-- ko ifnot: editing -->
         <div class="data-row__name data-row__name--not-editing">
-            <span data-bind="text: name"></span><span data-bind="text: separator"></span>
+            <span data-bind="text: name"></span>
+            <!-- ko if: $root.editMode -->
+            <span data-bind="text: editModeSeparator"></span>
+            <!-- /ko -->
+            <!-- ko ifnot: $root.editMode -->
+            <span data-bind="text: separator"></span>
+            <!-- /ko -->
         </div>
         <!-- /ko -->
     </div>
