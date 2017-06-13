@@ -5,8 +5,8 @@ def scriptProperties = [
     description: "Make the Service Console look nicer!",
     // target is what Tampermonkey uses to decide which pages to run on
     target: "/(swaservices).*(SWAServicesConsole)/",
-    externalDependencies: ["https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js",
-        "https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js",
+    externalDependencies: ["https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js",
+        "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js",
         "https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js"]
 ]
 

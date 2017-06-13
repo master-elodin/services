@@ -5,7 +5,14 @@
 
 var addScript=function(a){var b=document.createElement("script");b.src=a,document.getElementsByTagName("head")[0].appendChild(b)};
 var scripts = [${externalDependencies}];
-scripts.forEach(addScript);
+var addedCount = 0;
+var scriptAddInterval = setInterval(function() {
+    if(addedCount === scripts.length) {
+        clearInterval(scriptAddInterval);
+    } else {
+        addScript(scripts[addedCount++]);
+    }
+}, 200);
 
 setTimeout(function(){
 ${content}

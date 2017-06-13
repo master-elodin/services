@@ -4,8 +4,15 @@
 // @author       Tim VanDoren
 
 var addScript=function(a){var b=document.createElement("script");b.src=a,document.getElementsByTagName("head")[0].appendChild(b)};
-var scripts = ["https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js","https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js","https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js"];
-scripts.forEach(addScript);
+var scripts = ["https://cdnjs.cloudflare.com/ajax/libs/knockout/3.4.0/knockout-min.js","https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js","https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js"];
+var addedCount = 0;
+var scriptAddInterval = setInterval(function() {
+    if(addedCount === scripts.length) {
+        clearInterval(scriptAddInterval);
+    } else {
+        addScript(scripts[addedCount++]);
+    }
+}, 200);
 
 setTimeout(function(){
 // hide existing body while things are loading
@@ -18,7 +25,7 @@ var style = document.createElement('style');
 style.type = 'text/css';
 style.innerHTML = [    '.data-row { font-size: 18px; line-height: 25px; padding: 5px 0; text-align: left; width: 400px; }  .data-row--invalid { background-color: rgba(150, 0, 0, .2); }  .data-row__data {  }  .data-row__name.data-row__name--editing{ display: flex; justify-content: space-between; padding-left: 25px; } .data-row__name.data-row__name--not-editing { cursor: pointer; text-align: left; }  .data-row__name input { font-size: 18px; padding-left: 5px; }  .data-row__braces {  }  .data-row__actions { padding-left: 20px; }  .data-row__action { cursor: pointer; font-size: 25px; margin: 0 10px; }  /* TODO: rename? */ .data-block { text-align: left; padding-left: 30px; } ',
     '.service-page { background-color: #ecf0f1; height: 100%; min-height: 100%; }  .service-page__header { background-color: #2c3e50; height: 50px; width: 100%; }  .service-page__header-icon { float: left; height: 100%; }  .service-page__header-icon .fa { color: #ecf0f1; cursor: pointer; font-size: 40px; padding: 5px; }  .service-page__body { display: flex; font-size: 18px; height: calc(100% - 70px); min-height: calc(100% - 70px); padding: 10px; }  .service-page__data-rows { display: flex; flex-direction: column; margin-left: 30px; margin-top: 30px; }  .service-page__edit-toggle { color: #ecf0f1; cursor: pointer; font-size: 30px; position: absolute; right: 20px; top: 10px; }  .service-page__edit-toggle label { cursor: pointer; padding-right: 10px; }  .service-page a:visited { color: #2683f0; } ',
-    'html, body { background-color: #ecf0f1; height: 100%; margin: 0; min-height: 100%; padding: 0; }  p { margin: 0 }  a { color: #2683f0; } '].join('');
+    'html, body { background-color: #ecf0f1; font-family: Helvetica, sans-serif; height: 100%; margin: 0; min-height: 100%; padding: 0; }  p { margin: 0 }  a { color: #2683f0; } '].join('');
 document.getElementsByTagName('head')[0].appendChild(style);
 
 // TODO: modularize external CSS

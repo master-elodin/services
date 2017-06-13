@@ -46,6 +46,28 @@ describe("A Page", function() {
             expect(env.hostGroups()[1].name()).toBe("group2");
         });
 
+        it("should read 'active' status from local storage", function() {
+            localStorage.setItem(Page.DATA_NAME, 
+            '{"applications":[' +
+                '{"name":"app","active":"true","environments":[' + 
+                    '{"name":"env","active":"true","hostGroups":[' +
+                        '{"name":"group1","active":"true","hosts":[' +
+                            '{"name":"host1"},{"name":"host2"}],"services": []},' +
+                        ']}' +
+                    ']}' +
+                ']}' +
+            ']}');
+
+            page.load();
+
+            expect(page.applications().length).toBe(1);
+            expect(page.applications()[0].name()).toBe("app");
+            var env = page.applications()[0].environments()[0];
+            expect(env.name()).toBe("env");
+            expect(env.hostGroups()[0].name()).toBe("group1");
+            expect(env.hostGroups()[0].hosts()[0].name()).toBe("host1");
+        });
+
         it("should not read from local storage if local storage does not exist", function() {
             page.load();
 
