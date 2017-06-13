@@ -2,7 +2,7 @@
     <!-- ko with: dataRow -->
     ${src/data-row/data-row.html}
     <!-- /ko -->
-    <!-- ko if: isActive -->
+    <!-- ko if: isActive() ||  $root.editMode() -->
         <!-- ko foreach: environments -->
             ${src/environment/environment.html}
             <!-- ko if: $index < $parent.environments.length - 1 -->

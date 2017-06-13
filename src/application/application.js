@@ -12,7 +12,7 @@ function Application(name) {
 
     instance.isActive = ko.observable(false);
     instance.select = function() {
-        instance.isActive(true);
+        instance.isActive(!instance.isActive());
     };
 
     instance.dataRow = new DataRow(null, "application", instance.name, instance.select);

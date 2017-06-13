@@ -15,7 +15,7 @@ function Environment(name) {
 
     instance.isActive = ko.observable(false);
     instance.select = function() {
-        instance.isActive(true);
+        instance.isActive(!instance.isActive());
     };
 
     instance.dataRow = new DataRow(null, "environment", instance.name, instance.select);

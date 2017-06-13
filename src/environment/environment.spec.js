@@ -40,12 +40,16 @@ describe("An Environment", function() {
 
     describe("select", function() {
 
-        it("should set active true", function() {
+        it("should toggle active", function() {
             expect(environment.isActive()).toBe(false);
 
             environment.select();
 
             expect(environment.isActive()).toBe(true);
+
+            environment.select();
+
+            expect(environment.isActive()).toBe(false);
         });
     });
 });

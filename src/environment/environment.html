@@ -2,10 +2,12 @@
     <!-- ko with: dataRow -->
     ${src/data-row/data-row.html}
     <!-- /ko -->
-    <!-- ko foreach: hostGroups -->
-        ${src/host-group/host-group.html}
-        <!-- ko if: $index < $parent.hostGroups - 1 -->
-        <span>,</span>
+    <!-- ko if: isActive() ||  $root.editMode() -->
+        <!-- ko foreach: hostGroups -->
+            ${src/host-group/host-group.html}
+            <!-- ko if: $index < $parent.hostGroups - 1 -->
+            <span>,</span>
+            <!-- /ko -->
         <!-- /ko -->
     <!-- /ko -->
     <!-- ko if: $root.editMode -->

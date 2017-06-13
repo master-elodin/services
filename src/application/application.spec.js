@@ -22,12 +22,16 @@ describe("An Application", function() {
 
     describe("select", function() {
 
-        it("should set active true", function() {
+        it("should toggle active", function() {
             expect(application.isActive()).toBe(false);
 
             application.select();
 
             expect(application.isActive()).toBe(true);
+
+            application.select();
+
+            expect(application.isActive()).toBe(false);
         });
     });
 });
