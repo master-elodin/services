@@ -47,11 +47,15 @@ describe("A Page", function() {
         });
 
         it("should not read from local storage if local storage does not exist", function() {
-            localStorage.removeItem(Page.DATA_NAME);
-
             page.load();
 
             expect(page.applications().length).toBe(0);
+        });
+
+        it("should set editMode=true if local storage does not exist", function() {
+            page.load();
+
+            expect(page.editMode()).toBe(true);
         });
     });
 

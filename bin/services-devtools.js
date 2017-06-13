@@ -8,6 +8,12 @@ var scripts = ["https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.j
 scripts.forEach(addScript);
 
 setTimeout(function(){
+// hide existing body while things are loading
+document.body = document.createElement("body");
+document.body.innerHTML = "<div><h2>Loading...</h2></div>";
+// remove existing css so it doesn't conflict
+for(var i=0;i<document.styleSheets.length;i++){document.styleSheets[i].disabled=true;}
+
 var style = document.createElement('style');
 style.type = 'text/css';
 style.innerHTML = [    '.data-row { font-size: 18px; line-height: 25px; padding: 5px 0; text-align: left; width: 400px; }  .data-row--invalid { background-color: rgba(150, 0, 0, .2); }  .data-row__data {  }  .data-row__name.data-row__name--editing{ display: flex; justify-content: space-between; padding-left: 25px; } .data-row__name.data-row__name--not-editing { cursor: pointer; text-align: left; }  .data-row__name input { font-size: 18px; padding-left: 5px; }  .data-row__braces {  }  .data-row__actions { padding-left: 20px; }  .data-row__action { cursor: pointer; font-size: 25px; margin: 0 10px; }  /* TODO: rename? */ .data-block { text-align: left; padding-left: 30px; } ',
@@ -180,9 +186,7 @@ document.getElementsByTagName('head')[0].appendChild(external);
             }
         };
     
-        instance.isActive = ko.observable(false);
         instance.select = function() {
-            instance.isActive(!instance.isActive());
         };
     
         instance.dataRow = new DataRow(null, "host-group", instance.name, instance.select, ",", ", {");
@@ -269,6 +273,8 @@ document.getElementsByTagName('head')[0].appendChild(external);
                         });
                     });
                 });
+            } else {
+                instance.editMode(true);
             }
         };
     }

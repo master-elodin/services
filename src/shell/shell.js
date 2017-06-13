@@ -1,3 +1,9 @@
+// hide existing body while things are loading
+document.body = document.createElement("body");
+document.body.innerHTML = "<div><h2>Loading...</h2></div>";
+// remove existing css so it doesn't conflict
+for(var i=0;i<document.styleSheets.length;i++){document.styleSheets[i].disabled=true;}
+
 var style = document.createElement('style');
 style.type = 'text/css';
 style.innerHTML = [${bin/combined.css}].join('');

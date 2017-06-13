@@ -36,6 +36,8 @@ function Page() {
                     });
                 });
             });
+        } else {
+            instance.editMode(true);
         }
     };
 }

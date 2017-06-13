@@ -65,16 +65,7 @@ describe("A Host Group", function() {
 
     describe("select", function() {
 
-        it("should toggle active", function() {
-            expect(hostGroup.isActive()).toBe(false);
-
-            hostGroup.select();
-
-            expect(hostGroup.isActive()).toBe(true);
-
-            hostGroup.select();
-
-            expect(hostGroup.isActive()).toBe(false);
+        it("should do something", function() {
         });
     });
 });
