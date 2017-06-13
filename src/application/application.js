@@ -5,7 +5,9 @@ function Application(name) {
     instance.environments = ko.observableArray();
 
     instance.addEnvironment = function(name) {
-        instance.environments.push(new Environment(name));
+        var environment = new Environment(name);
+        instance.environments.push(environment);
+        return environment;
     };
 
     instance.select = function() {

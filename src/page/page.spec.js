@@ -4,23 +4,54 @@ describe("A Page", function() {
 
     beforeEach(function() {
         page = new Page();
-        localStorage.setItem(Page.DATA_NAME, null);
+        localStorage.removeItem(Page.DATA_NAME);
     });
 
     afterEach(function() {
         page = null;
     });
 
-    describe("creating", function() {
+    describe("load", function() {
 
-        xit("should read from local storage if local storage exists", function() {
-            page.addApplication("application");
-            page.toggleEdit();
+        it("should read from local storage if local storage exists", function() {
+            localStorage.setItem(Page.DATA_NAME, 
+            '{"applications":[' +
+                '{"name":"app","environments":[' + 
+                    '{"name":"env","hostGroups":[' +
+                        '{"name":"group1","hosts":[' +
+                            '{"name":"host1"},{"name":"host2"}],"services": []},' +
+                        '{"name":"group2","hosts":[' +
+                            '{"name":"host3"},{"name":"host4"}],"services": [' +
+                                '{"name": "service1", "instancesByHost": { "host3": [' +
+                                    '{"id": "id1", "version": "1.2.3"}' +
+                                ']}}' +
+                            ']}' +
+                        ']}' +
+                    ']}' +
+                ']}');
 
-            page = new Page();
+            page.load();
 
             expect(page.applications().length).toBe(1);
-            expect(page.applications()[0].name()).toBe("application");
+            expect(page.applications()[0].name()).toBe("app");
+            var env = page.applications()[0].environments()[0];
+            expect(env.name()).toBe("env");
+            expect(env.hostGroups()[0].name()).toBe("group1");
+            expect(env.hostGroups()[0].hosts()[0].name()).toBe("host1");
+
+            expect(env.hostGroups()[1].services()[0].name).toBe("service1");
+            expect(env.hostGroups()[1].services()[0].instancesByHost["host3"][0].id).toBe("id1");
+            expect(env.hostGroups()[1].services()[0].instancesByHost["host3"][0].version).toBe("1.2.3");
+
+            expect(env.hostGroups()[1].name()).toBe("group2");
+        });
+
+        it("should not read from local storage if local storage does not exist", function() {
+            localStorage.removeItem(Page.DATA_NAME);
+
+            page.load();
+
+            expect(page.applications().length).toBe(0);
         });
     });
 

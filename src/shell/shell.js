@@ -33,5 +33,7 @@ ${bin/combined.html}
             });
         }
     };
+    var page = new Page();
+    page.load();
 
-    ko.applyBindings(new Page());
+    ko.applyBindings(page);

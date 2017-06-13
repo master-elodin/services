@@ -6,10 +6,12 @@ function Environment(name) {
     instance.hostGroups = ko.observableArray();
 
     instance.addHostGroup = function(hostGroupName) {
-        instance.hostGroups.push(new HostGroup(hostGroupName));
+        var hostGroup = new HostGroup(hostGroupName);
+        instance.hostGroups.push(hostGroup);
         instance.hostGroups.sort(function(a, b) {
             return a.name().localeCompare(b.name());
         });
+        return hostGroup;
     };
 
     instance.select = function() {

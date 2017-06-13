@@ -4,7 +4,7 @@ function DataRow(onSave, dataType, name, onSelect, separator, editModeSeparator)
     instance.invalid = ko.observable(false);
     // if data row is for adding new data as opposed to changing existing data
     instance.isNewDataRow = !name || !name();
-    instance.separator = separator || ", {";
+    instance.separator = separator || ": {";
     instance.editModeSeparator = editModeSeparator || instance.separator;
     instance.editing = ko.observable(instance.isNewDataRow);
 

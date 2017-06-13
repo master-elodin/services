@@ -18,6 +18,13 @@ describe("An Environment", function() {
 
     describe("addHostGroup", function() {
 
+        it("should return host group", function() {
+            var hostGroup = environment.addHostGroup("host-group");
+
+            expect(hostGroup.name()).toBe("host-group");
+            expect(environment.hostGroups()[0]).toBe(hostGroup);
+        });
+
         it("should add a host group alphabetic order", function() {
             environment.addHostGroup("host-group1");
             environment.addHostGroup("host-group3");

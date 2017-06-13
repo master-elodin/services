@@ -31,7 +31,7 @@ document.getElementsByTagName('head')[0].appendChild(external);
         instance.invalid = ko.observable(false);
         // if data row is for adding new data as opposed to changing existing data
         instance.isNewDataRow = !name || !name();
-        instance.separator = separator || ", {";
+        instance.separator = separator || ": {";
         instance.editModeSeparator = editModeSeparator || instance.separator;
         instance.editing = ko.observable(instance.isNewDataRow);
     
@@ -144,21 +144,6 @@ document.getElementsByTagName('head')[0].appendChild(external);
         var instance = this;
     
         instance.name = ko.observable(name);
-        instance.services = [];
-    
-        instance.addService = function(newService) {
-            var existingService = instance.services.find(function(service) {
-                return service.name === newService.name;
-            });
-            if(existingService) {
-                existingService.merge(newService);
-            } else {
-                instance.services.push(newService);
-                instance.services.sort(function(a, b) {
-                    return a.name.localeCompare(b.name);
-                });
-            }
-        };
     
         instance.select = function() {
     
@@ -171,12 +156,29 @@ document.getElementsByTagName('head')[0].appendChild(external);
     
         instance.name = ko.observable(name);
         instance.hosts = ko.observableArray();
+        instance.services = ko.observableArray();
     
         instance.addHost = function(hostName) {
-            instance.hosts.push(new Host(hostName));
+            var host = new Host(hostName);
+            instance.hosts.push(host);
             instance.hosts.sort(function(a, b) {
                 return a.name().localeCompare(b.name());
             });
+            return host;
+        };
+    
+        instance.addService = function(newService) {
+            var existingService = instance.services().find(function(service) {
+                return service.name === newService.name;
+            });
+            if(existingService) {
+                existingService.merge(newService);
+            } else {
+                instance.services.push(newService);
+                instance.services.sort(function(a, b) {
+                    return a.name.localeCompare(b.name);
+                });
+            }
         };
     
         instance.select = function() {
@@ -194,10 +196,12 @@ document.getElementsByTagName('head')[0].appendChild(external);
         instance.hostGroups = ko.observableArray();
     
         instance.addHostGroup = function(hostGroupName) {
-            instance.hostGroups.push(new HostGroup(hostGroupName));
+            var hostGroup = new HostGroup(hostGroupName);
+            instance.hostGroups.push(hostGroup);
             instance.hostGroups.sort(function(a, b) {
                 return a.name().localeCompare(b.name());
             });
+            return hostGroup;
         };
     
         instance.select = function() {
@@ -214,7 +218,9 @@ document.getElementsByTagName('head')[0].appendChild(external);
         instance.environments = ko.observableArray();
     
         instance.addEnvironment = function(name) {
-            instance.environments.push(new Environment(name));
+            var environment = new Environment(name);
+            instance.environments.push(environment);
+            return environment;
         };
     
         instance.select = function() {
@@ -228,17 +234,42 @@ document.getElementsByTagName('head')[0].appendChild(external);
         var instance = this;
     
         instance.applications = ko.observableArray();
-        instance.editMode = ko.observable(true);
+        instance.editMode = ko.observable(false);
         instance.toggleEdit = function() {
             instance.editMode(!instance.editMode());
+            // TODO: remove unnecessary data before saving
             localStorage.setItem(Page.DATA_NAME, JSON.stringify(ko.mapping.toJS(instance)));
-            console.log(JSON.stringify(ko.mapping.toJS(instance)));
         }
     
         instance.addApplication = function(name) {
-            instance.applications.push(new Application(name));
+            var application = new Application(name);
+            instance.applications.push(application);
+            return application;
         };
         instance.addDataRow = new DataRow(instance.addApplication, "application");
+    
+        instance.load = function() {
+            var existingPageJson = localStorage.getItem(Page.DATA_NAME);
+            if(existingPageJson) {
+                var existingPage = JSON.parse(existingPageJson);
+                // TODO: find better way to do this rather than lots of loops.
+                existingPage.applications.forEach(function(app) {
+                    var application = instance.addApplication(app.name);
+                    app.environments.forEach(function(env) {
+                        var environment = application.addEnvironment(env.name);
+                        env.hostGroups.forEach(function(group) {
+                            var hostGroup = environment.addHostGroup(group.name);
+                            group.hosts.forEach(function(host) {
+                                hostGroup.addHost(host.name);
+                            });
+                            group.services.forEach(function(service) {
+                                hostGroup.addService(service);
+                            });
+                        });
+                    });
+                });
+            }
+        };
     }
     
     Page.DATA_NAME = "all-data";
@@ -258,7 +289,9 @@ document.getElementsByTagName('head')[0].appendChild(external);
             });
         }
     };
+    var page = new Page();
+    page.load();
 
-    ko.applyBindings(new Page());
+    ko.applyBindings(page);
 
 })();
