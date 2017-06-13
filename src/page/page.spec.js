@@ -46,25 +46,34 @@ describe("A Page", function() {
             expect(env.hostGroups()[1].name()).toBe("group2");
         });
 
-        xit("should read 'active' status from local storage", function() {
-            localStorage.setItem(Page.DATA_NAME, 
-            '{"applications":[' +
-                '{"name":"app","active":"true","environments":[' + 
-                    '{"name":"env","active":"true","hostGroups":[' +
-                        '{"name":"group1","active":"true","hosts":[' +
-                            '{"name":"host1"},{"name":"host2"}],"services": []},' +
-                        ']}' +
-                    ']}' +
-                ']}' +
-            ']}');
+        it("should read 'isisActive' from local storage", function() {
+            var savedData = {
+                applications: [
+                    {name: "app", 
+                    isActive: true, 
+                    environments: [
+                        {name:"env", 
+                        isActive: true, 
+                        hostGroups:[
+                            {name: "group1",
+                            isActive: true,
+                            hosts: [
+                                {name: "host1"},
+                                {name: "host2"}
+                            ],
+                            services: []}
+                        ]}
+                    ]}
+                ]
+            };
+            localStorage.setItem(Page.DATA_NAME, JSON.stringify(savedData));
 
             page.load();
 
             expect(page.applications().length).toBe(1);
-            expect(page.applications()[0].active()).toBe(true);
+            expect(page.applications()[0].isActive()).toBe(true);
             var env = page.applications()[0].environments()[0];
-            expect(env.active()).toBe(true);
-            expect(env.hostGroups()[0].active()).toBe("group1");
+            expect(env.isActive()).toBe(true);
         });
 
         it("should not read from local storage if local storage does not exist", function() {

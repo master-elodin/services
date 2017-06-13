@@ -28,7 +28,9 @@ function HostGroup(name) {
         }
     };
 
+    instance.isActive = ko.observable(false);
     instance.select = function() {
+        instance.isActive(!instance.isActive());
     };
 
     instance.dataRow = new DataRow(null, "host-group", instance.name, instance.select, ",", ", {");
