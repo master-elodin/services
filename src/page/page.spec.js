@@ -46,7 +46,7 @@ describe("A Page", function() {
             expect(env.hostGroups()[1].name()).toBe("group2");
         });
 
-        it("should read 'active' status from local storage", function() {
+        xit("should read 'active' status from local storage", function() {
             localStorage.setItem(Page.DATA_NAME, 
             '{"applications":[' +
                 '{"name":"app","active":"true","environments":[' + 
@@ -61,11 +61,10 @@ describe("A Page", function() {
             page.load();
 
             expect(page.applications().length).toBe(1);
-            expect(page.applications()[0].name()).toBe("app");
+            expect(page.applications()[0].active()).toBe(true);
             var env = page.applications()[0].environments()[0];
-            expect(env.name()).toBe("env");
-            expect(env.hostGroups()[0].name()).toBe("group1");
-            expect(env.hostGroups()[0].hosts()[0].name()).toBe("host1");
+            expect(env.active()).toBe(true);
+            expect(env.hostGroups()[0].active()).toBe("group1");
         });
 
         it("should not read from local storage if local storage does not exist", function() {
