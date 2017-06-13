@@ -48,10 +48,24 @@ function Page() {
         }
     };
 
-    // could be application, environment, or host group
+    instance.activeApp = ko.observable();
+    instance.activeEnv = ko.observable();
+    instance.activeHostGroup = ko.observable();
     instance.activateItem = function(item) {
-        console.log("typeof: " + (typeof item));
-        console.log("item: " + item);
+        var updateActiveItem = function(current, newVal) {
+            if(current()) {
+                current().isActive(false);
+            }
+            newVal.isActive(true);
+            current(newVal);
+        }
+        if(item.constructor === Application) {
+            updateActiveItem(instance.activeApp, item);
+        } else if(item.constructor === Environment) {
+            updateActiveItem(instance.activeEnv, item);
+        } else if(item.constructor === HostGroup) {
+            updateActiveItem(instance.activeHostGroup, item);
+        }
     }
 }
 

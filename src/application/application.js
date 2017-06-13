@@ -11,6 +11,11 @@ function Application(name) {
     };
 
     instance.isActive = ko.observable(false);
+    instance.isActive.subscribe(function(newVal) {
+        if(newVal === true) {
+            page.activateItem(instance);
+        }
+    })
     instance.select = function() {
         instance.isActive(!instance.isActive());
     };

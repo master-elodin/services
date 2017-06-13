@@ -6,6 +6,7 @@
 
 .service-page__header {
     background-color: $midnight;
+    color: $clouds;
     height: $pageHeaderHeight;
     width: 100%;
 }
@@ -16,7 +17,6 @@
 }
 
 .service-page__header-icon .fa {
-    color: $clouds;
     cursor: pointer;
     font-size: 40px;
     padding: 5px;
@@ -53,4 +53,16 @@
 
 .service-page a:visited {
     color: $lightBlue;
+}
+
+.service-page__active-items {
+    float: left;
+    font-size: 25px;
+    height: 100%;
+    line-height: 50px;
+    margin-left: 50px;
+}
+
+.service-page__active-item {
+    padding-right: 30px;
 }

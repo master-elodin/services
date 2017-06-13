@@ -121,4 +121,76 @@ describe("A Page", function() {
             expect(localStorage.setItem).toHaveBeenCalledWith(Page.DATA_NAME, JSON.stringify(ko.mapping.toJS(page)));
         });
     });
+
+    describe("activateItem", function() {
+
+        it("should set as activeApp and set isActive=true if Application", function() {
+            var app = new Application();
+
+            page.activateItem(app);
+
+            expect(page.activeApp()).toBe(app);
+            expect(app.isActive()).toBe(true);
+        });
+
+        it("should set previous activeApp isActive=false if Application and previous activeApp", function() {
+            var previous = new Application();
+            previous.isActive(true);
+            page.activeApp(previous);
+
+            var app = new Application();
+
+            page.activateItem(app);
+
+            expect(page.activeApp()).toBe(app);
+            expect(app.isActive()).toBe(true);
+            expect(previous.isActive()).toBe(false);
+        });
+
+        it("should set as activeEnv and set isActive=true if Environment", function() {
+            var env = new Environment();
+
+            page.activateItem(env);
+
+            expect(page.activeEnv()).toBe(env);
+            expect(env.isActive()).toBe(true);
+        });
+
+        it("should set previous activeEnv isActive=false if Environment and previous activeEnv", function() {
+            var previous = new Environment();
+            previous.isActive(true);
+            page.activeEnv(previous);
+
+            var env = new Environment();
+
+            page.activateItem(env);
+
+            expect(page.activeEnv()).toBe(env);
+            expect(env.isActive()).toBe(true);
+            expect(previous.isActive()).toBe(false);
+        });
+
+        it("should set as activeHostGroup and set isActive=true if HostGroup", function() {
+            var hostGroup = new HostGroup();
+
+            page.activateItem(hostGroup);
+
+            expect(page.activeHostGroup()).toBe(hostGroup);
+            expect(hostGroup.isActive()).toBe(true);
+        });
+
+        it("should set previous activeHostGroup isActive=false if HostGroup and previous activeHostGroup", function() {
+            var previous = new HostGroup();
+            previous.isActive(true);
+            page.activeHostGroup(previous);
+
+            var hostGroup = new HostGroup();
+
+            page.activateItem(hostGroup);
+
+            expect(page.activeHostGroup()).toBe(hostGroup);
+            expect(hostGroup.isActive()).toBe(true);
+            expect(previous.isActive()).toBe(false);
+        });
+    });
 });

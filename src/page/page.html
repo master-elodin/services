@@ -3,6 +3,23 @@
         <div class="service-page__header-icon">
             <i class="fa fa-home" aria-hidden="true"></i>
         </div>
+        <div class="service-page__active-items">
+            <!-- ko with: activeApp -->
+            <div class="service-page__active-item">
+                <span data-bind="text: name"></span><span> >></span>
+            </div>
+            <!-- /ko -->
+            <!-- ko with: activeEnv -->
+            <div class="service-page__active-item">
+                <span data-bind="text: name"></span><span> >></span>
+            </div>
+            <!-- /ko -->
+            <!-- ko with: activeHostGroup -->
+            <div class="service-page__active-item">
+                <span data-bind="text: name"></span><span> >></span>
+            </div>
+            <!-- /ko -->
+        </div>
         <div data-bind="click: toggleEdit" class="service-page__edit-toggle">
             <!-- ko ifnot: editMode -->
             <label>EDIT</label>
