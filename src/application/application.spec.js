@@ -19,4 +19,15 @@ describe("An Application", function() {
             expect(application.environments()[0]).toBe(env);
         });
     });
+
+    describe("select", function() {
+
+        it("should set active true", function() {
+            expect(application.isActive()).toBe(false);
+
+            application.select();
+
+            expect(application.isActive()).toBe(true);
+        });
+    });
 });

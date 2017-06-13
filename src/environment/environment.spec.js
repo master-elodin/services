@@ -37,4 +37,15 @@ describe("An Environment", function() {
             expect(environment.hostGroups()[2].name()).toBe("host-group1");
         });
     });
+
+    describe("select", function() {
+
+        it("should set active true", function() {
+            expect(environment.isActive()).toBe(false);
+
+            environment.select();
+
+            expect(environment.isActive()).toBe(true);
+        });
+    });
 });

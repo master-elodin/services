@@ -20,6 +20,7 @@
     padding-left: 25px;
 }
 .data-row__name.data-row__name--not-editing {
+    cursor: pointer;
     text-align: left;
 }
 

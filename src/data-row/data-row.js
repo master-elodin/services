@@ -7,6 +7,9 @@ function DataRow(onSave, dataType, name, onSelect, separator, editModeSeparator)
     instance.separator = separator || ": {";
     instance.editModeSeparator = editModeSeparator || instance.separator;
     instance.editing = ko.observable(instance.isNewDataRow);
+    instance.toggleEdit = function() {
+        instance.editing(!instance.editing());
+    };
 
     instance.dataType = dataType;
 

@@ -62,4 +62,15 @@ describe("A Host Group", function() {
             expect( hostGroup.services().length ).toBe( 2 );
         });
     });
+
+    describe("select", function() {
+
+        it("should set active true", function() {
+            expect(hostGroup.isActive()).toBe(false);
+
+            hostGroup.select();
+
+            expect(hostGroup.isActive()).toBe(true);
+        });
+    });
 });

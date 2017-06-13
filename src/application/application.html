@@ -2,10 +2,12 @@
     <!-- ko with: dataRow -->
     ${src/data-row/data-row.html}
     <!-- /ko -->
-    <!-- ko foreach: environments -->
-        ${src/environment/environment.html}
-        <!-- ko if: $index < $parent.environments.length - 1 -->
-        <span>,</span>
+    <!-- ko if: isActive -->
+        <!-- ko foreach: environments -->
+            ${src/environment/environment.html}
+            <!-- ko if: $index < $parent.environments.length - 1 -->
+            <span>,</span>
+            <!-- /ko -->
         <!-- /ko -->
     <!-- /ko -->
     <!-- ko if: $root.editMode -->

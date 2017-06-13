@@ -140,4 +140,19 @@ describe("A Data Row", function() {
             expect(dataRow.name()).toBe(dataRow.previousName);
         });
     });
+
+    describe("toggleEdit", function() {
+
+        it("should reverse editing", function() {
+            dataRow.editing(true);
+
+            dataRow.toggleEdit();
+
+            expect(dataRow.editing()).toBe(false);
+
+            dataRow.toggleEdit();
+
+            expect(dataRow.editing()).toBe(true);
+        });
+    });
 });

@@ -1,4 +1,4 @@
-<div class="data-row">
+<div data-bind="click: onSelect" class="data-row">
     <div class="data-row__data">
         <!-- ko if: editing -->
         <div class="data-row__name data-row__name--editing">
@@ -10,15 +10,18 @@
         </div>
         <!-- /ko -->
         <!-- ko ifnot: editing -->
-        <div class="data-row__name data-row__name--not-editing">
-            <span data-bind="text: name"></span>
             <!-- ko if: $root.editMode -->
-            <span data-bind="text: editModeSeparator"></span>
+            <div data-bind="click: toggleEdit" class="data-row__name data-row__name--not-editing">
+                <span data-bind="text: name"></span>
+                <span data-bind="text: editModeSeparator"></span>
+            </div>
             <!-- /ko -->
             <!-- ko ifnot: $root.editMode -->
-            <span data-bind="text: separator"></span>
+            <div class="data-row__name data-row__name--not-editing">
+                <span data-bind="text: name"></span>
+                <span data-bind="text: separator"></span>
+            </div>
             <!-- /ko -->
-        </div>
         <!-- /ko -->
     </div>
 </div>

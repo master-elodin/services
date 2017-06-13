@@ -4,7 +4,6 @@ function Environment(name) {
     instance.name = ko.observable(name);
 
     instance.hostGroups = ko.observableArray();
-
     instance.addHostGroup = function(hostGroupName) {
         var hostGroup = new HostGroup(hostGroupName);
         instance.hostGroups.push(hostGroup);
@@ -14,8 +13,9 @@ function Environment(name) {
         return hostGroup;
     };
 
+    instance.isActive = ko.observable(false);
     instance.select = function() {
-
+        instance.isActive(true);
     };
 
     instance.dataRow = new DataRow(null, "environment", instance.name, instance.select);
