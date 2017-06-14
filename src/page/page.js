@@ -5,7 +5,9 @@ function Page() {
     instance.editMode = ko.observable(false);
     instance.toggleEdit = function() {
         instance.editMode(!instance.editMode());
-        instance.save();
+        if(!instance.editMode()) {
+            instance.save();
+        }
     }
 
     instance.save = function() {

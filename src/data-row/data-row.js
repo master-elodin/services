@@ -7,8 +7,11 @@ function DataRow(onSave, dataType, name, onSelect, separator, editModeSeparator)
     instance.separator = separator || ": {";
     instance.editModeSeparator = editModeSeparator || instance.separator;
     instance.editing = ko.observable(instance.isNewDataRow);
-    instance.toggleEdit = function() {
+    instance.toggleEdit = function(dataRow, target) {
         instance.editing(!instance.editing());
+        if(instance.editing()) {
+            // TODO: focus on selected
+        }
     };
 
     instance.dataType = dataType;
@@ -34,8 +37,11 @@ function DataRow(onSave, dataType, name, onSelect, separator, editModeSeparator)
 
     instance.onSelect = onSelect || function() { console.log("select!") };
 
-    instance.previousName = "";
+    instance.previousName = instance.name();
     instance.onCancel = function() {
         instance.name(instance.previousName);
+        if(!instance.isNewDataRow) {
+            instance.editing(false);
+        }
     }
 }

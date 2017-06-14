@@ -17,8 +17,12 @@
 .data-row__name.data-row__name--editing{
     display: flex;
     justify-content: space-between;
+}
+
+.data-row__name.data-row__name--new-data{
     padding-left: 25px;
 }
+
 .data-row__name.data-row__name--not-editing {
     cursor: pointer;
     text-align: left;

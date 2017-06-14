@@ -139,6 +139,24 @@ describe("A Data Row", function() {
 
             expect(dataRow.name()).toBe(dataRow.previousName);
         });
+
+        it("should set editing=false if not new data row", function() {
+            dataRow.isNewDataRow = false;
+            dataRow.editing(true);
+
+            dataRow.onCancel();
+
+            expect(dataRow.editing()).toBe(false);
+        });
+
+        it("should not set editing=false if new data row", function() {
+            dataRow.isNewDataRow = true;
+            dataRow.editing(true);
+
+            dataRow.onCancel();
+
+            expect(dataRow.editing()).toBe(true);
+        });
     });
 
     describe("toggleEdit", function() {

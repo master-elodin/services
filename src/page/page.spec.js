@@ -245,12 +245,22 @@ describe("A Page", function() {
             expect(page.editMode()).toBe(true);
         });
 
-        it("should save to localStorage", function() {
+        it("should save to localStorage if no longer editing", function() {
+            page.editMode(true);
             spyOn(page, "save").and.stub();
 
             page.toggleEdit();
 
             expect(page.save).toHaveBeenCalled();
+        });
+
+        it("should not save to localStorage if editing", function() {
+            page.editMode(false);
+            spyOn(page, "save").and.stub();
+
+            page.toggleEdit();
+
+            expect(page.save).not.toHaveBeenCalled();
         });
     });
 
