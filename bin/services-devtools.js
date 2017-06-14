@@ -164,6 +164,15 @@ document.getElementsByTagName('head')[0].appendChild(external);
         instance.name = ko.observable(name);
     
         instance.dataRow = new DataRow(null, "host", instance.name, null, ",");
+    
+        instance.getData = function() {
+            var createFakeService = function(serviceName) {
+                var service = new Service(serviceName);
+                service.addServiceInstance(instance.name(), {id: serviceName + instance.name()});
+                return service;
+            }
+            return jQuery.Deferred().resolve([createFakeService("service1"), createFakeService("service2")]);
+        };
     }
     function HostGroup(loadingData) {
         var instance = this;
@@ -184,9 +193,7 @@ document.getElementsByTagName('head')[0].appendChild(external);
         };
     
         instance.addService = function(newService) {
-            var existingService = instance.services().find(function(service) {
-                return service.name === newService.name;
-            });
+            var existingService = instance.getService(newService.name);
             if(existingService) {
                 existingService.merge(newService);
             } else {
@@ -202,12 +209,34 @@ document.getElementsByTagName('head')[0].appendChild(external);
             instance.isActive(!instance.isActive());
             if(instance.isActive()) {
                 instance.page.activateItem(instance);
+                instance.loadData();
             }
             instance.page.save();
         };
     
         instance.dataRow = new DataRow(null, "host-group", instance.name, instance.select, ",", ", {");
         instance.addDataRow = new DataRow(instance.addHost, "host");
+    
+        instance.getService = function(serviceName) {
+            return instance.services().find(function(service) {
+                return service.name === serviceName;
+            });
+        };
+    
+        instance.loadData = function() {
+            var loadCompleted = jQuery.Deferred();
+            var numHosts = instance.hosts().length;
+            var numCompleted = 0;
+            instance.hosts().forEach(function(host) {
+                host.getData().then(function(servicesDataForHost) {
+                    servicesDataForHost.forEach(instance.addService);
+                    if(++numCompleted === numHosts) {
+                        loadCompleted.resolve();
+                    }
+                });
+            });
+            return loadCompleted;
+        };
     }
     function Environment(loadingData) {
         var instance = this;
