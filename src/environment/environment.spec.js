@@ -4,7 +4,7 @@ describe("An Environment", function() {
     var page;
 
     beforeEach(function() {
-        page = {activateItem: function(){}};
+        page = {activateItem: function(){}, save: function(){}};
         spyOn(page, "activateItem").and.stub();
         environment = new Environment({name: "env", page: page});
     });
@@ -21,6 +21,14 @@ describe("An Environment", function() {
 
             expect(hostGroup.name()).toBe("host-group");
             expect(environment.hostGroups()[0]).toBe(hostGroup);
+        });
+        
+        it("should set name, page, parent when adding host group", function() {
+            var hostGroup = environment.addHostGroup("host-group");
+
+            expect(hostGroup.name()).toBe("host-group");
+            expect(hostGroup.page).toBe(environment.page);
+            expect(hostGroup.parent).toBe(environment);
         });
 
         it("should add a host group alphabetic order", function() {
@@ -56,6 +64,14 @@ describe("An Environment", function() {
             environment.select();
 
             expect(page.activateItem).toHaveBeenCalledWith(environment);
+        });
+        
+        it("should save page", function() {
+            spyOn(page, "save").and.stub();
+
+            environment.select();
+
+            expect(page.save).toHaveBeenCalled();
         });
     });
 });

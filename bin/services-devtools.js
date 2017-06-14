@@ -166,6 +166,7 @@ document.getElementsByTagName('head')[0].appendChild(external);
     function HostGroup(loadingData) {
         var instance = this;
     
+        instance.parent = loadingData.parent;
         instance.page = loadingData.page;
         instance.name = ko.observable(loadingData.name);
         instance.hosts = ko.observableArray();
@@ -200,6 +201,7 @@ document.getElementsByTagName('head')[0].appendChild(external);
             if(instance.isActive()) {
                 instance.page.activateItem(instance);
             }
+            instance.page.save();
         };
     
         instance.dataRow = new DataRow(null, "host-group", instance.name, instance.select, ",", ", {");
@@ -209,11 +211,12 @@ document.getElementsByTagName('head')[0].appendChild(external);
         var instance = this;
     
         instance.page = loadingData.page;
+        instance.parent = loadingData.parent;
         instance.name = ko.observable(loadingData.name);
     
         instance.hostGroups = ko.observableArray();
         instance.addHostGroup = function(hostGroupName) {
-            var hostGroup = new HostGroup({name: hostGroupName, page: instance.page});
+            var hostGroup = new HostGroup({name: hostGroupName, page: instance.page, parent: instance});
             instance.hostGroups.push(hostGroup);
             instance.hostGroups.sort(function(a, b) {
                 return a.name().localeCompare(b.name());
@@ -227,6 +230,7 @@ document.getElementsByTagName('head')[0].appendChild(external);
             if(instance.isActive()) {
                 instance.page.activateItem(instance);
             }
+            instance.page.save();
         };
     
         instance.dataRow = new DataRow(null, "environment", instance.name, instance.select);
@@ -240,7 +244,7 @@ document.getElementsByTagName('head')[0].appendChild(external);
     
         instance.environments = ko.observableArray();
         instance.addEnvironment = function(name) {
-            var environment = new Environment({name: name, page: instance.page});
+            var environment = new Environment({name: name, page: instance.page, parent: instance});
             instance.environments.push(environment);
             return environment;
         };
@@ -251,6 +255,7 @@ document.getElementsByTagName('head')[0].appendChild(external);
             if(instance.isActive()) {
                 instance.page.activateItem(instance);
             }
+            instance.page.save();
         };
     
         instance.dataRow = new DataRow(null, "application", instance.name, instance.select);
@@ -267,8 +272,28 @@ document.getElementsByTagName('head')[0].appendChild(external);
         }
     
         instance.save = function() {
-            // TODO: remove unnecessary data before saving
-            localStorage.setItem(Page.DATA_NAME, JSON.stringify(ko.mapping.toJS(instance)));
+            var SAVEABLE_TYPES = [String, Boolean];
+            var addObservables = function(obj) {
+                var objToSave = {};
+                Object.keys(obj).forEach(function(key) {
+                    if(ko.isObservable(obj[key])) {
+                        var value = obj[key]();
+                        if(!value || SAVEABLE_TYPES.indexOf(value.constructor) > -1) {
+                            objToSave[key] = value;
+                        } else if(value.constructor === Array) {
+                            objToSave[key] = [];
+                            value.forEach(function(val) {
+                                objToSave[key].push(addObservables(val));
+                            });
+                        } else {
+                            objToSave[key] = addObservables(value);
+                        }
+                    }
+                });
+                return objToSave;
+            }
+            var objToSave = addObservables(instance);
+            localStorage.setItem(Page.DATA_NAME, JSON.stringify(ko.mapping.toJS(objToSave)));
         }
     
         instance.addApplication = function(name) {
@@ -286,12 +311,23 @@ document.getElementsByTagName('head')[0].appendChild(external);
                 existingPage.applications.forEach(function(app) {
                     var application = instance.addApplication(app.name);
                     application.isActive(!!app.isActive);
+                    var isActiveApp = existingPage.activeApp && existingPage.activeApp.name === app.name;
+                    if(isActiveApp) {
+                        instance.activateItem(application);
+                    }
                     app.environments.forEach(function(env) {
                         var environment = application.addEnvironment(env.name);
                         environment.isActive(!!env.isActive);
+                        var isActiveEnv = isActiveApp && existingPage.activeEnv && existingPage.activeEnv.name === env.name;
+                        if(isActiveEnv) {
+                            instance.activateItem(environment);
+                        }
                         env.hostGroups.forEach(function(group) {
                             var hostGroup = environment.addHostGroup(group.name);
                             hostGroup.isActive(!!group.isActive);
+                            if(isActiveEnv && existingPage.activeHostGroup && existingPage.activeHostGroup.name === group.name) {
+                                instance.activateItem(hostGroup);
+                            }
                             group.hosts.forEach(function(host) {
                                 hostGroup.addHost(host.name);
                             });
@@ -315,17 +351,29 @@ document.getElementsByTagName('head')[0].appendChild(external);
                     if(current()) {
                         current().isActive(false);
                     }
+                    onChange();
                     newVal.isActive(true);
                     current(newVal);
-                    onChange && onChange();
                 }
             }
             if(item.constructor === Application) {
-                updateActiveItem(instance.activeApp, item, function() { instance.activeEnv(null); instance.activeHostGroup(null); });
+                var onChange = function() {
+                    instance.activeEnv(null); 
+                    instance.activeHostGroup(null);
+                };
+                updateActiveItem(instance.activeApp, item, onChange);
             } else if(item.constructor === Environment) {
-                updateActiveItem(instance.activeEnv, item, function() { instance.activeHostGroup(null); });
+                var onChange = function() {
+                    instance.activateItem(item.parent);
+                    instance.activeHostGroup(null);
+                };
+                updateActiveItem(instance.activeEnv, item, onChange);
             } else if(item.constructor === HostGroup) {
-                updateActiveItem(instance.activeHostGroup, item);
+                var onChange = function() {
+                    instance.activateItem(item.parent);
+                    instance.activeHostGroup(null);
+                };
+                updateActiveItem(instance.activeHostGroup, item, onChange);
             }
         }
     }

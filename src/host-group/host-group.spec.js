@@ -4,7 +4,7 @@ describe("A Host Group", function() {
     var page;
 
     beforeEach(function() {
-        page = {activateItem: function(){}};
+        page = {activateItem: function(){}, save: function(){}};
         spyOn(page, "activateItem").and.stub();
         hostGroup = new HostGroup({name: "", page: page});
     });
@@ -87,6 +87,14 @@ describe("A Host Group", function() {
             hostGroup.select();
 
             expect(page.activateItem).toHaveBeenCalledWith(hostGroup);
+        });
+                
+        it("should save page", function() {
+            spyOn(page, "save").and.stub();
+
+            hostGroup.select();
+
+            expect(page.save).toHaveBeenCalled();
         });
     });
 });

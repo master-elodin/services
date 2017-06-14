@@ -6,7 +6,7 @@ function Application(loadingData) {
 
     instance.environments = ko.observableArray();
     instance.addEnvironment = function(name) {
-        var environment = new Environment({name: name, page: instance.page});
+        var environment = new Environment({name: name, page: instance.page, parent: instance});
         instance.environments.push(environment);
         return environment;
     };
@@ -17,6 +17,7 @@ function Application(loadingData) {
         if(instance.isActive()) {
             instance.page.activateItem(instance);
         }
+        instance.page.save();
     };
 
     instance.dataRow = new DataRow(null, "application", instance.name, instance.select);

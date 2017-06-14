@@ -150,22 +150,23 @@ describe("A Page", function() {
                     {name: "app2", 
                     isActive: true, 
                     environments: [
-                        {name:"env1", 
+                        {name:"env2", 
                         isActive: true, 
                         hostGroups:[]},
                         {name:"env2", 
                         isActive: true, 
-                        hostGroups:[{name: "group1"}]}
+                        hostGroups:[{name: "group1", hosts: [], services: []}]}
                     ]}
                 ],
                 activeApp: {name: "app2"},
-                activeEnv: {name: "env1"}
+                activeEnv: {name: "env2"},
+                activeHostGroup: {name: "group1"}
             };
             localStorage.setItem(Page.DATA_NAME, JSON.stringify(savedData));
 
             page.load();
 
-            expect(page.activeHostGroup()).toBe(page.applications()[1].environments()[0].hostGroups()[0]);
+            expect(page.activeHostGroup()).toBe(page.applications()[1].environments()[1].hostGroups()[0]);
         });
 
         it("should not read from local storage if local storage does not exist", function() {
@@ -178,6 +179,45 @@ describe("A Page", function() {
             page.load();
 
             expect(page.editMode()).toBe(true);
+        });
+    });
+
+    describe("save", function() {
+
+        var parentApp;
+        var parentEnv;
+        var hostGroup;
+
+        beforeEach(function() {
+            parentApp = new Application({name: "app", page: page});
+            parentEnv = new Environment({name: "env", page: page, parent: parentApp});
+            hostGroup = new HostGroup({name: "host-group", page: page, parent: parentEnv});
+        });
+
+        afterEach(function() {
+            parentApp = null;
+            parentEnv = null;
+            hostGroup = null;
+        });
+
+        it("should not include non-knockout functions", function() {
+            spyOn(localStorage, "setItem").and.stub();
+            page.addApplication("app1");
+            page.activateItem(hostGroup);
+
+            page.save();
+
+            var savedData = JSON.parse(localStorage.setItem.calls.first().args[1]);
+            // just picking a few methods to make sure they don't exist
+            expect(savedData.addApplication).toBe(undefined);
+            expect(savedData.toggleEdit).toBe(undefined);
+            expect(savedData.activateItem).toBe(undefined);
+            // make sure variables do exist
+            expect(savedData.activeApp).not.toBe(undefined);
+            expect(savedData.activeEnv).not.toBe(undefined);
+            expect(savedData.activeHostGroup).not.toBe(undefined);
+            expect(savedData.applications).not.toBe(undefined);
+            expect(savedData.applications[0].name).toBe("app1");
         });
     });
 
@@ -206,11 +246,11 @@ describe("A Page", function() {
         });
 
         it("should save to localStorage", function() {
-            spyOn(localStorage, "setItem").and.stub();
+            spyOn(page, "save").and.stub();
 
             page.toggleEdit();
 
-            expect(localStorage.setItem).toHaveBeenCalledWith(Page.DATA_NAME, JSON.stringify(ko.mapping.toJS(page)));
+            expect(page.save).toHaveBeenCalled();
         });
     });
 
@@ -273,20 +313,30 @@ describe("A Page", function() {
 
         describe("for Environment", function() {
             var env;
+            var parentApp;
 
             beforeEach(function() {
-                env = new Environment({name: "env", page: page});
+                parentApp = new Application({name: "app", page: page});
+                env = new Environment({name: "env", page: page, parent: parentApp});
             });
 
             afterEach(function() {
+                parentApp = null;
                 env = null;
             });
 
-            it("should set as activeEnv and set isActive=truehostGroup", function() {
+            it("should set as activeEnv and set isActive=true", function() {
                 page.activateItem(env);
 
                 expect(page.activeEnv()).toBe(env);
                 expect(env.isActive()).toBe(true);
+            });
+
+            it("should set parent as activeApp", function() {
+                page.activateItem(env);
+
+                expect(page.activeApp()).toBe(parentApp);
+                expect(page.activeEnv()).toBe(env);
             });
 
             it("should remove activeHostGroup if env changes", function() {
@@ -322,13 +372,19 @@ describe("A Page", function() {
         });
 
         describe("for HostGroup", function() {
+            var parentApp;
+            var parentEnv;
             var hostGroup;
 
             beforeEach(function() {
-                hostGroup = new HostGroup({name: "host-group", page: page});
+                parentApp = new Application({name: "app", page: page});
+                parentEnv = new Environment({name: "env", page: page, parent: parentApp});
+                hostGroup = new HostGroup({name: "host-group", page: page, parent: parentEnv});
             });
 
             afterEach(function() {
+                parentApp = null;
+                parentEnv = null;
                 hostGroup = null;
             });
 
@@ -349,6 +405,15 @@ describe("A Page", function() {
                 expect(page.activeHostGroup()).toBe(hostGroup);
                 expect(hostGroup.isActive()).toBe(true);
                 expect(previous.isActive()).toBe(false);
+            });
+
+            it("should select parent environment and app", function() {
+
+                page.activateItem(hostGroup);
+
+                expect(page.activeApp()).toBe(parentApp);
+                expect(page.activeEnv()).toBe(parentEnv);
+                expect(page.activeHostGroup()).toBe(hostGroup);
             });
         });
     });

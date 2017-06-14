@@ -9,8 +9,28 @@ function Page() {
     }
 
     instance.save = function() {
-        // TODO: remove unnecessary data before saving
-        localStorage.setItem(Page.DATA_NAME, JSON.stringify(ko.mapping.toJS(instance)));
+        var SAVEABLE_TYPES = [String, Boolean];
+        var addObservables = function(obj) {
+            var objToSave = {};
+            Object.keys(obj).forEach(function(key) {
+                if(ko.isObservable(obj[key])) {
+                    var value = obj[key]();
+                    if(!value || SAVEABLE_TYPES.indexOf(value.constructor) > -1) {
+                        objToSave[key] = value;
+                    } else if(value.constructor === Array) {
+                        objToSave[key] = [];
+                        value.forEach(function(val) {
+                            objToSave[key].push(addObservables(val));
+                        });
+                    } else {
+                        objToSave[key] = addObservables(value);
+                    }
+                }
+            });
+            return objToSave;
+        }
+        var objToSave = addObservables(instance);
+        localStorage.setItem(Page.DATA_NAME, JSON.stringify(ko.mapping.toJS(objToSave)));
     }
 
     instance.addApplication = function(name) {
@@ -42,6 +62,9 @@ function Page() {
                     env.hostGroups.forEach(function(group) {
                         var hostGroup = environment.addHostGroup(group.name);
                         hostGroup.isActive(!!group.isActive);
+                        if(isActiveEnv && existingPage.activeHostGroup && existingPage.activeHostGroup.name === group.name) {
+                            instance.activateItem(hostGroup);
+                        }
                         group.hosts.forEach(function(host) {
                             hostGroup.addHost(host.name);
                         });
@@ -65,17 +88,29 @@ function Page() {
                 if(current()) {
                     current().isActive(false);
                 }
+                onChange();
                 newVal.isActive(true);
                 current(newVal);
-                onChange && onChange();
             }
         }
         if(item.constructor === Application) {
-            updateActiveItem(instance.activeApp, item, function() { instance.activeEnv(null); instance.activeHostGroup(null); });
+            var onChange = function() {
+                instance.activeEnv(null); 
+                instance.activeHostGroup(null);
+            };
+            updateActiveItem(instance.activeApp, item, onChange);
         } else if(item.constructor === Environment) {
-            updateActiveItem(instance.activeEnv, item, function() { instance.activeHostGroup(null); });
+            var onChange = function() {
+                instance.activateItem(item.parent);
+                instance.activeHostGroup(null);
+            };
+            updateActiveItem(instance.activeEnv, item, onChange);
         } else if(item.constructor === HostGroup) {
-            updateActiveItem(instance.activeHostGroup, item);
+            var onChange = function() {
+                instance.activateItem(item.parent);
+                instance.activeHostGroup(null);
+            };
+            updateActiveItem(instance.activeHostGroup, item, onChange);
         }
     }
 }
