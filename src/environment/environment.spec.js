@@ -1,19 +1,17 @@
 describe("An Environment", function() {
 
     var environment;
+    var page;
 
     beforeEach(function() {
-        environment = new Environment();
+        page = {activateItem: function(){}};
+        spyOn(page, "activateItem").and.stub();
+        environment = new Environment({name: "env", page: page});
     });
 
     afterEach(function() {
+        page = null;
         environment = null;
-    });
-
-    it("should set name on creation", function() {
-        environment = new Environment("name");
-
-        expect(environment.name()).toBe("name");
     });
 
     describe("addHostGroup", function() {
@@ -50,6 +48,14 @@ describe("An Environment", function() {
             environment.select();
 
             expect(environment.isActive()).toBe(false);
+        });
+
+        it("should active item if active is true", function() {
+            environment.isActive(false);
+
+            environment.select();
+
+            expect(page.activateItem).toHaveBeenCalledWith(environment);
         });
     });
 });

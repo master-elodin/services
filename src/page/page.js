@@ -14,7 +14,7 @@ function Page() {
     }
 
     instance.addApplication = function(name) {
-        var application = new Application(name);
+        var application = new Application({name: name, page: instance});
         instance.applications.push(application);
         return application;
     };
@@ -28,9 +28,17 @@ function Page() {
             existingPage.applications.forEach(function(app) {
                 var application = instance.addApplication(app.name);
                 application.isActive(!!app.isActive);
+                var isActiveApp = existingPage.activeApp && existingPage.activeApp.name === app.name;
+                if(isActiveApp) {
+                    instance.activateItem(application);
+                }
                 app.environments.forEach(function(env) {
                     var environment = application.addEnvironment(env.name);
                     environment.isActive(!!env.isActive);
+                    var isActiveEnv = isActiveApp && existingPage.activeEnv && existingPage.activeEnv.name === env.name;
+                    if(isActiveEnv) {
+                        instance.activateItem(environment);
+                    }
                     env.hostGroups.forEach(function(group) {
                         var hostGroup = environment.addHostGroup(group.name);
                         hostGroup.isActive(!!group.isActive);
@@ -52,17 +60,20 @@ function Page() {
     instance.activeEnv = ko.observable();
     instance.activeHostGroup = ko.observable();
     instance.activateItem = function(item) {
-        var updateActiveItem = function(current, newVal) {
-            if(current()) {
-                current().isActive(false);
+        var updateActiveItem = function(current, newVal, onChange) {
+            if(current() !== newVal) {
+                if(current()) {
+                    current().isActive(false);
+                }
+                newVal.isActive(true);
+                current(newVal);
+                onChange && onChange();
             }
-            newVal.isActive(true);
-            current(newVal);
         }
         if(item.constructor === Application) {
-            updateActiveItem(instance.activeApp, item);
+            updateActiveItem(instance.activeApp, item, function() { instance.activeEnv(null); instance.activeHostGroup(null); });
         } else if(item.constructor === Environment) {
-            updateActiveItem(instance.activeEnv, item);
+            updateActiveItem(instance.activeEnv, item, function() { instance.activeHostGroup(null); });
         } else if(item.constructor === HostGroup) {
             updateActiveItem(instance.activeHostGroup, item);
         }

@@ -1,12 +1,16 @@
 describe("An Application", function() {
 
     var application;
+    var page;
 
     beforeEach(function() {
-        application = new Application();
+        page = {activateItem: function(){}};
+        spyOn(page, "activateItem").and.stub();
+        application = new Application({name:"", page: page});
     });
 
     afterEach(function() {
+        page = null;
         application = null;
     });
 
@@ -32,6 +36,14 @@ describe("An Application", function() {
             application.select();
 
             expect(application.isActive()).toBe(false);
+        });
+
+        it("should active item if active is true", function() {
+            application.isActive(false);
+
+            application.select();
+
+            expect(page.activateItem).toHaveBeenCalledWith(application);
         });
     });
 });

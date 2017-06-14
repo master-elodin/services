@@ -1,7 +1,8 @@
-function HostGroup(name) {
+function HostGroup(loadingData) {
     var instance = this;
 
-    instance.name = ko.observable(name);
+    instance.page = loadingData.page;
+    instance.name = ko.observable(loadingData.name);
     instance.hosts = ko.observableArray();
     instance.services = ko.observableArray();
 
@@ -31,6 +32,9 @@ function HostGroup(name) {
     instance.isActive = ko.observable(false);
     instance.select = function() {
         instance.isActive(!instance.isActive());
+        if(instance.isActive()) {
+            instance.page.activateItem(instance);
+        }
     };
 
     instance.dataRow = new DataRow(null, "host-group", instance.name, instance.select, ",", ", {");

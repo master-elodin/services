@@ -64,5 +64,11 @@
 }
 
 .service-page__active-item {
+    float: left;
     padding-right: 30px;
+    width: 120px;
+}
+
+.service-page__active-item-divider {
+    float: left;
 }
