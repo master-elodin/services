@@ -3,7 +3,7 @@ describe("A Service Instance", function() {
     var serviceInstance;
 
     beforeEach(function() {
-        serviceInstance = new ServiceInstance();
+        serviceInstance = new ServiceInstance({id: "id", version: "1.2.0"});
     });
 
     afterEach(function() {
@@ -11,15 +11,11 @@ describe("A Service Instance", function() {
     });
 
     it("should set ID on creation", function() {
-        serviceInstance = new ServiceInstance( "someId" );
-
-        expect( serviceInstance.id ).toBe( "someId" );
+        expect( serviceInstance.id() ).toBe( "id" );
     });
 
     it("should set version on creation", function() {
-        serviceInstance = new ServiceInstance( "someId", "1.17.3" );
-
-        expect( serviceInstance.version ).toBe( "1.17.3" );
+        expect( serviceInstance.version() ).toBe( "1.2.0" );
     });
 
     it("should be able to update status", function() {

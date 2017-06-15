@@ -17,13 +17,13 @@ function HostGroup(loadingData) {
     };
 
     instance.addService = function(newService) {
-        var existingService = instance.getService(newService.name);
+        var existingService = instance.getService(newService.name());
         if(existingService) {
             existingService.merge(newService);
         } else {
             instance.services.push(newService);
             instance.services.sort(function(a, b) {
-                return a.name.localeCompare(b.name);
+                return a.name().localeCompare(b.name());
             });
         }
     };
@@ -43,7 +43,7 @@ function HostGroup(loadingData) {
 
     instance.getService = function(serviceName) {
         return instance.services().find(function(service) {
-            return service.name === serviceName;
+            return service.name() === serviceName;
         });
     };
 

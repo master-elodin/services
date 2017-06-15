@@ -36,29 +36,29 @@ describe("A Host Group", function() {
     describe("addService", function() {
 
         it("should add services in alphabetical order", function() {
-            hostGroup.addService(new Service("charlie"));
-            hostGroup.addService(new Service("beta"));
-            hostGroup.addService(new Service("alpha"));
+            hostGroup.addService(new Service({name: "charlie"}));
+            hostGroup.addService(new Service({name: "beta"}));
+            hostGroup.addService(new Service({name: "alpha"}));
 
-            expect(hostGroup.services()[0].name).toBe("alpha");
-            expect(hostGroup.services()[1].name).toBe("beta");
-            expect(hostGroup.services()[2].name).toBe("charlie");
+            expect(hostGroup.services()[0].name()).toBe("alpha");
+            expect(hostGroup.services()[1].name()).toBe("beta");
+            expect(hostGroup.services()[2].name()).toBe("charlie");
         });
 
         it("should merge services instances if service already exists", function() {
-            var service1 = new Service("name1");
+            var service1 = new Service({name: "name1"});
             spyOn( service1, 'merge' ).and.stub();
 
             hostGroup.addService(service1);
 
-            var service2 = new Service("name1");
+            var service2 = new Service({name: "name1"});
             var serviceInstance = new ServiceInstance("serviceInstance1");
             service2.addServiceInstance(serviceInstance);
 
             hostGroup.addService(service2);
 
-            var service3 = new Service("name2");
-            service3.addServiceInstance(new Service("serviceInstance2"));
+            var service3 = new Service({name: "name2"});
+            service3.addServiceInstance(new ServiceInstance("serviceInstance2"));
 
             hostGroup.addService(service3);
 
@@ -101,11 +101,11 @@ describe("A Host Group", function() {
     describe("getService", function() {
 
         it("should get the service with the same name", function() {
-            var service1 = new Service("service1");
+            var service1 = new Service({name: "service1"});
             hostGroup.addService(service1);
-            var service2 = new Service("service2");
+            var service2 = new Service({name: "service2"});
             hostGroup.addService(service2);
-            var service3 = new Service("service3");
+            var service3 = new Service({name: "service3"});
             hostGroup.addService(service3);
 
             expect(hostGroup.getService("service3")).toBe(service3);

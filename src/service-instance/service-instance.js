@@ -1,8 +1,8 @@
-function ServiceInstance(id, version) {
+function ServiceInstance(loadingData) {
     var instance = this;
 
-    instance.id = id;
-    instance.version = version;
+    instance.id = ko.observable(loadingData.id);
+    instance.version = ko.observable(loadingData.version);
     
     instance.status = ko.observable(ServiceInstance.Status.UNKNOWN);
 

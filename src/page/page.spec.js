@@ -39,9 +39,9 @@ describe("A Page", function() {
             expect(env.hostGroups()[0].name()).toBe("group1");
             expect(env.hostGroups()[0].hosts()[0].name()).toBe("host1");
 
-            expect(env.hostGroups()[1].services()[0].name).toBe("service1");
-            expect(env.hostGroups()[1].services()[0].instancesByHost["host3"][0].id).toBe("id1");
-            expect(env.hostGroups()[1].services()[0].instancesByHost["host3"][0].version).toBe("1.2.3");
+            expect(env.hostGroups()[1].services()[0].name()).toBe("service1");
+            expect(env.hostGroups()[1].services()[0].instancesByHost()["host3"][0].id()).toBe("id1");
+            expect(env.hostGroups()[1].services()[0].instancesByHost()["host3"][0].version()).toBe("1.2.3");
 
             expect(env.hostGroups()[1].name()).toBe("group2");
         });

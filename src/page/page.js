@@ -71,7 +71,7 @@ function Page() {
                             hostGroup.addHost(host.name);
                         });
                         group.services.forEach(function(service) {
-                            hostGroup.addService(service);
+                            hostGroup.addService(new Service(service));
                         });
                     });
                 });

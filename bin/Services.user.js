@@ -78,11 +78,11 @@ document.getElementsByTagName('head')[0].appendChild(external);
             }
         }
     }
-    function ServiceInstance(id, version) {
+    function ServiceInstance(loadingData) {
         var instance = this;
     
-        instance.id = id;
-        instance.version = version;
+        instance.id = ko.observable(loadingData.id);
+        instance.version = ko.observable(loadingData.version);
         
         instance.status = ko.observable(ServiceInstance.Status.UNKNOWN);
     
@@ -110,32 +110,37 @@ document.getElementsByTagName('head')[0].appendChild(external);
         STARTING: "Starting",
         UNKNOWN: "Unknown"
     };
-    function Service(name) {
+    function Service(loadingData) {
         var instance = this;
     
-        instance.name = name;
-        instance.instancesByHost = {};
+        instance.name = ko.observable(loadingData.name);
+        instance.instancesByHost = ko.observable({});
+    
+        instance.getInstancesForHost = function(hostName) {
+            if(!instance.instancesByHost()[hostName]) {
+                instance.instancesByHost()[hostName] = [];
+            }
+            return instance.instancesByHost()[hostName];
+        };
     
         instance.addServiceInstance = function(hostName, serviceInstance) {
-            if(!instance.instancesByHost[hostName]) {
-                instance.instancesByHost[hostName] = [];
-            }
+            var instancesForHost = instance.getInstancesForHost(hostName);
             // find an existing one with the same ID
             var foundExisting = false;
-            for(var i = 0; i < instance.instancesByHost[hostName].length; i++) {
-                if(instance.instancesByHost[hostName][i].id === serviceInstance.id) {
-                    instance.instancesByHost[hostName][i] = serviceInstance;
+            for(var i = 0; i < instancesForHost.length; i++) {
+                if(instancesForHost[i].id() === serviceInstance.id()) {
+                    instancesForHost[i] = serviceInstance;
                     foundExisting = true;
                     break;
                 }
             }
             if(!foundExisting) {
-                instance.instancesByHost[hostName].push(serviceInstance);
+                instancesForHost.push(serviceInstance);
             }
-            instance.instancesByHost[hostName].sort(function(a, b) {
+            instancesForHost.sort(function(a, b) {
                 // sort in descending order by version (major.minor.patch)
-                var partsA = a.version.split(".");
-                var partsB = b.version.split(".");
+                var partsA = a.version().split(".");
+                var partsB = b.version().split(".");
                 for(var i = 0; i < partsA.length; i++) {
                     var diff = parseInt(partsB[i]) - parseInt(partsA[i]);
                     if(diff !== 0) {
@@ -148,12 +153,18 @@ document.getElementsByTagName('head')[0].appendChild(external);
     
         instance.merge = function(otherService) {
             // add each service from each host on otherService
-            Object.keys(otherService.instancesByHost).forEach(function(host) {
-                otherService.instancesByHost[host].forEach(function(serviceInstance) {
+            Object.keys(otherService.instancesByHost()).forEach(function(host) {
+                otherService.getInstancesForHost(host).forEach(function(serviceInstance) {
                     instance.addServiceInstance(host, serviceInstance);
                 });
             });
         };
+    
+        Object.keys(loadingData.instancesByHost || {}).forEach(function(host) {
+            loadingData.instancesByHost[host].forEach(function(serviceInstanceData) {
+                instance.addServiceInstance(host, new ServiceInstance(serviceInstanceData));
+            });
+        });
     }
     function Host(name) {
         var instance = this;
@@ -165,7 +176,7 @@ document.getElementsByTagName('head')[0].appendChild(external);
         instance.getData = function() {
             var createFakeService = function(serviceName) {
                 var service = new Service(serviceName);
-                service.addServiceInstance(instance.name(), {id: serviceName + instance.name()});
+                service.addServiceInstance(instance.name(), new ServiceInstance({id: serviceName + instance.name(), version:"1.0.0"}));
                 return service;
             }
             return jQuery.Deferred().resolve([createFakeService("service1"), createFakeService("service2")]);
@@ -190,13 +201,13 @@ document.getElementsByTagName('head')[0].appendChild(external);
         };
     
         instance.addService = function(newService) {
-            var existingService = instance.getService(newService.name);
+            var existingService = instance.getService(newService.name());
             if(existingService) {
                 existingService.merge(newService);
             } else {
                 instance.services.push(newService);
                 instance.services.sort(function(a, b) {
-                    return a.name.localeCompare(b.name);
+                    return a.name().localeCompare(b.name());
                 });
             }
         };
@@ -216,7 +227,7 @@ document.getElementsByTagName('head')[0].appendChild(external);
     
         instance.getService = function(serviceName) {
             return instance.services().find(function(service) {
-                return service.name === serviceName;
+                return service.name() === serviceName;
             });
         };
     
@@ -362,7 +373,7 @@ document.getElementsByTagName('head')[0].appendChild(external);
                                 hostGroup.addHost(host.name);
                             });
                             group.services.forEach(function(service) {
-                                hostGroup.addService(service);
+                                hostGroup.addService(new Service(service));
                             });
                         });
                     });
