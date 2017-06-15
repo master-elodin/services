@@ -10,6 +10,10 @@ function Page() {
         }
     }
 
+    instance.showHostGroupHealth = ko.pureComputed(function() {
+        return !!instance.activeHostGroup();
+    });
+
     instance.save = function() {
         var SAVEABLE_TYPES = [String, Boolean];
         var addObservables = function(obj) {
@@ -86,14 +90,12 @@ function Page() {
     instance.activeHostGroup = ko.observable();
     instance.activateItem = function(item) {
         var updateActiveItem = function(current, newVal, onChange) {
-            if(current() !== newVal) {
-                if(current()) {
-                    current().isActive(false);
-                }
-                onChange();
-                newVal.isActive(true);
-                current(newVal);
+            if(current()) {
+                current().isActive(false);
             }
+            onChange();
+            newVal.isActive(true);
+            current(newVal);
         }
         if(item.constructor === Application) {
             var onChange = function() {

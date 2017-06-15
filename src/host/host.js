@@ -7,7 +7,7 @@ function Host(name) {
 
     instance.getData = function() {
         var createFakeService = function(serviceName) {
-            var service = new Service(serviceName);
+            var service = new Service({name: serviceName});
             service.addServiceInstance(instance.name(), new ServiceInstance({id: serviceName + instance.name(), version:"1.0.0"}));
             return service;
         }

@@ -5,27 +5,18 @@
         </div>
         <div class="service-page__active-items">
             <!-- ko with: activeApp -->
-            <div class="service-page__active-item">
+            <div data-bind="click: $root.activateItem" class="service-page__active-item service-page__active-item--application">
                 <span data-bind="text: name"></span>
-            </div>
-            <div class="service-page__active-item-divider">
-                <span> >></span>
             </div>
             <!-- /ko -->
             <!-- ko with: activeEnv -->
-            <div class="service-page__active-item">
+            <div data-bind="click: $root.activateItem" class="service-page__active-item service-page__active-item--environment">
                 <span data-bind="text: name"></span>
-            </div>
-            <div class="service-page__active-item-divider">
-                <span> >></span>
             </div>
             <!-- /ko -->
             <!-- ko with: activeHostGroup -->
-            <div class="service-page__active-item">
+            <div class="service-page__active-item service-page__active-item--host-group">
                 <span data-bind="text: name"></span>
-            </div>
-            <div class="service-page__active-item-divider">
-                <span> >></span>
             </div>
             <!-- /ko -->
         </div>
@@ -42,6 +33,16 @@
         </div>
     </div>
     <div class="service-page__body">
+        <!-- ko if: showHostGroupHealth -->
+            <!-- ko with: activeHostGroup -->
+                <div class="service-page__host-group-health">
+                    <!-- ko foreach: getServiceHealths -->
+                        ${src/service-health/service-health.html}
+                    <!-- /ko -->
+                </div>
+            <!-- /ko -->
+        <!-- /ko -->
+        <!-- ko ifnot: showHostGroupHealth -->
         <div class="service-page__data-rows">
             <div class="data-block">
                 <div class="data-row__braces">
@@ -60,5 +61,6 @@
                 </div>
             </div>
         </div>
+        <!-- /ko -->
     </div>
 </div>

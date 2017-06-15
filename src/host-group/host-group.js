@@ -61,4 +61,17 @@ function HostGroup(loadingData) {
         });
         return loadCompleted;
     };
+
+    instance.getServiceHealths = ko.pureComputed(function() {
+        var serviceHealths = [];
+        instance.services().forEach(function(service) {
+            var serviceHealth = new ServiceHealth({name: service.name()});
+            instance.hosts().forEach(function(host) {
+                var serviceInstance = service.getRunningOrHighestVersionInstance(host.name());
+                serviceHealth.addHostHealth(new HostHealth({hostName: host.name(), status: serviceInstance.status()}));
+            });
+            serviceHealths.push(serviceHealth);
+        });
+        return serviceHealths;
+    });
 }

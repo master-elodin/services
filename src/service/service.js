@@ -53,4 +53,10 @@ function Service(loadingData) {
             instance.addServiceInstance(host, new ServiceInstance(serviceInstanceData));
         });
     });
+
+    instance.getRunningOrHighestVersionInstance = function(hostName) {
+        // versions are already sorted, so just grab the first one
+        return instance.getInstancesForHost(hostName)[0] || Service.UNKNOWN_INSTANCE;
+    }
 }
+Service.UNKNOWN_INSTANCE = new ServiceInstance({id: "UNKNOWN", version: "0.0.0"});

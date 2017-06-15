@@ -144,4 +144,48 @@ describe("A Host Group", function() {
             });
         });
     });
+
+    describe("getServiceHealths", function() {
+
+        var host1;
+        var host2;
+
+        beforeEach(function() {
+           host1 = hostGroup.addHost("host1");
+           host2 = hostGroup.addHost("host2");
+        });
+
+        it("should return a ServiceHealth for each service for each host", function() {
+            var service1 = new Service({name: "alpha-service"});
+            service1.addServiceInstance("host1", new ServiceInstance({id: "service1-host1", version: "1.0.0"}));
+            service1.addServiceInstance("host2", new ServiceInstance({id: "service1-host2", version: "1.0.0"}));
+            hostGroup.addService(service1);
+            var service2 = new Service({name: "beta-service"});
+            service2.addServiceInstance("host1", new ServiceInstance({id: "service2-host1", version: "1.0.0"}));
+            service2.addServiceInstance("host2", new ServiceInstance({id: "service2-host2", version: "1.0.0"}));
+            hostGroup.addService(service2);
+
+            var serviceHealths = hostGroup.getServiceHealths();
+
+            expect(serviceHealths[0].name()).toBe("alpha-service");
+            expect(serviceHealths[0].hostHealths()[0].hostName()).toBe("host1");
+            expect(serviceHealths[0].hostHealths()[1].hostName()).toBe("host2");
+
+            expect(serviceHealths[1].name()).toBe("beta-service");
+            expect(serviceHealths[1].hostHealths()[0].hostName()).toBe("host1");
+            expect(serviceHealths[1].hostHealths()[1].hostName()).toBe("host2");
+        });
+
+        it("should set HostHealth as unknown if no ServiceInstance for host", function() {
+            var service1 = new Service({name: "alpha-service"});
+            service1.addServiceInstance("host1", new ServiceInstance({id: "service1-host1", version: "1.0.0"}));
+            hostGroup.addService(service1);
+
+            var serviceHealths = hostGroup.getServiceHealths();
+
+            expect(serviceHealths[0].name()).toBe("alpha-service");
+            expect(serviceHealths[0].hostHealths()[1].hostName()).toBe("host2");
+            expect(serviceHealths[0].hostHealths()[1].status()).toBe(ServiceInstance.Status.UNKNOWN);
+        });
+    });
 });

@@ -64,4 +64,24 @@ describe("A Service", function() {
             expect(service.instancesByHost()["host2"][1].id()).toBe("id4");
         });
     });
+
+    describe("getRunningOrHighestVersionInstance", function() {
+
+        var HOST_NAME = "host1";
+
+        it("should return UNKNOWN instance if no data found for given host name", function() {
+            expect(service.getRunningOrHighestVersionInstance(HOST_NAME)).toBe(Service.UNKNOWN_INSTANCE);
+        })
+
+        it("should return highest version instance if no instances RUNNING for given host", function() {
+            var serviceInstance1 = new ServiceInstance({id: "id1", version: "1.21.0"});
+            service.addServiceInstance(HOST_NAME, serviceInstance1);
+            var serviceInstance2 = new ServiceInstance({id: "id2", version: "1.22.0"});
+            service.addServiceInstance(HOST_NAME, serviceInstance2);
+            var serviceInstance3 = new ServiceInstance({id: "id3", version: "1.22.1"});
+            service.addServiceInstance(HOST_NAME, serviceInstance3);
+
+            expect(service.getRunningOrHighestVersionInstance(HOST_NAME)).toBe(serviceInstance3);
+        })
+    });
 });
