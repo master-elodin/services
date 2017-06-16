@@ -92,7 +92,7 @@ function Page() {
     instance.activeApp = ko.observable();
     instance.activeEnv = ko.observable();
     instance.activeHostGroup = ko.observable();
-    instance.activateItem = function(item, keepChildren) {
+    instance.activateItem = function(item, element, keepChildren) {
         var updateActiveItem = function(current, newVal, onChange) {
             if(current()) {
                 current().isActive(false);
@@ -111,7 +111,7 @@ function Page() {
             updateActiveItem(instance.activeApp, item, onChange);
         } else if(item.constructor === Environment) {
             var onChange = function() {
-                instance.activateItem(item.parent, true);
+                instance.activateItem(item.parent, null, true);
                 if(!keepChildren) {
                     instance.activeHostGroup(null);
                 }
@@ -119,11 +119,22 @@ function Page() {
             updateActiveItem(instance.activeEnv, item, onChange);
         } else if(item.constructor === HostGroup) {
             var onChange = function() {
-                instance.activateItem(item.parent, true);
+                instance.activateItem(item.parent, null, true);
                 instance.refresh();
             };
             updateActiveItem(instance.activeHostGroup, item, onChange);
         }
+    };
+    var clearActive = function(currentActive) {
+        if(currentActive()) {
+            currentActive().isActive(false);
+        }
+        currentActive(null);
+    }
+    instance.clearAllActive = function() {
+        clearActive(instance.activeApp);
+        clearActive(instance.activeEnv);
+        clearActive(instance.activeHostGroup);
     };
 
     instance.isRefreshing = ko.observable(false);

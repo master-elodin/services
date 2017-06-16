@@ -494,4 +494,36 @@ describe("A Page", function() {
             expect(page.isRefreshing()).toBe(false);
         });
     });
+
+    describe("clearAllActive", function() {
+
+        it("should remove activeApp, activeEnv, activeHostGroup", function() {
+            page.activeApp({isActive: ko.observable(true)});
+            page.activeEnv({isActive: ko.observable(true)});
+            page.activeHostGroup({isActive: ko.observable(true)});
+
+            page.clearAllActive();
+
+            expect(page.activeApp()).toBe(null);
+            expect(page.activeEnv()).toBe(null);
+            expect(page.activeHostGroup()).toBe(null);
+        });
+
+        it("should set isActive=false for any activeApp, activeEnv, activeHostGroup", function() {
+            var activeApp = {isActive: ko.observable(true)};
+            var activeEnv = {isActive: ko.observable(true)};
+            page.activeApp(activeApp);
+            page.activeEnv(activeEnv);
+            page.activeHostGroup(null);
+
+            page.clearAllActive();
+
+            expect(activeApp.isActive()).toBe(false);
+            expect(activeEnv.isActive()).toBe(false);
+
+            expect(page.activeApp()).toBe(null);
+            expect(page.activeEnv()).toBe(null);
+            expect(page.activeHostGroup()).toBe(null);
+        });
+    });
 });
