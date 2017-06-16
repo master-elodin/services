@@ -35,6 +35,7 @@ function HostGroup(loadingData) {
     instance.isActive = ko.observable(false);
     instance.select = function() {
         instance.isActive(!instance.isActive());
+        console.log("Select! isActive=" + instance.isActive());
         if(instance.isActive()) {
             instance.page.activateItem(instance);
         }

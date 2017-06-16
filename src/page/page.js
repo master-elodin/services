@@ -14,7 +14,7 @@ function Page() {
         return !!instance.activeHostGroup() && !instance.editMode();
     });
 
-    instance.save = function() {
+    instance.save = function(doNotActivate) {
         var SAVEABLE_TYPES = [String, Boolean];
         var addObservables = function(obj) {
             var objToSave = {};
@@ -37,7 +37,7 @@ function Page() {
         }
         var objToSave = addObservables(instance);
         localStorage.setItem(Page.DATA_NAME, JSON.stringify(ko.mapping.toJS(objToSave)));
-        if(instance.activeHostGroup()) {
+        if(instance.activeHostGroup() && !doNotActivate) {
             // re-activate in order to re-load
             instance.activateItem(instance.activeHostGroup());
         }
@@ -65,7 +65,7 @@ function Page() {
                     var hasActiveEnvironment = isActiveApp && existingPage.activeEnv && existingPage.activeEnv.name === env.name;
                     env.hostGroups.forEach(function(group) {
                         var hostGroup = environment.addHostGroup(group.name);
-                        hostGroup.isActive(!!group.isActive);
+                        hostGroup.isActive(false);
                         group.hosts.forEach(function(host) {
                             hostGroup.addHost(host.name);
                         });
@@ -92,20 +92,25 @@ function Page() {
     instance.activeApp = ko.observable();
     instance.activeEnv = ko.observable();
     instance.activeHostGroup = ko.observable();
+    var clearActive = function(currentActive) {
+        if(currentActive()) {
+            currentActive().isActive(false);
+        }
+        currentActive(null);
+    }
     instance.activateItem = function(item, element, keepChildren) {
         var updateActiveItem = function(current, newVal, onChange) {
-            if(current()) {
-                current().isActive(false);
-            }
+            clearActive(current);
             newVal.isActive(true);
             current(newVal);
             onChange();
+            instance.save(true);
         }
         if(item.constructor === Application) {
             var onChange = function() {
                 if(!keepChildren) {
-                    instance.activeEnv(null); 
-                    instance.activeHostGroup(null);
+                    clearActive(instance.activeEnv);
+                    clearActive(instance.activeHostGroup);
                 }
             };
             updateActiveItem(instance.activeApp, item, onChange);
@@ -113,7 +118,7 @@ function Page() {
             var onChange = function() {
                 instance.activateItem(item.parent, null, true);
                 if(!keepChildren) {
-                    instance.activeHostGroup(null);
+                    clearActive(instance.activeHostGroup);
                 }
             };
             updateActiveItem(instance.activeEnv, item, onChange);
@@ -125,12 +130,6 @@ function Page() {
             updateActiveItem(instance.activeHostGroup, item, onChange);
         }
     };
-    var clearActive = function(currentActive) {
-        if(currentActive()) {
-            currentActive().isActive(false);
-        }
-        currentActive(null);
-    }
     instance.clearAllActive = function() {
         clearActive(instance.activeApp);
         clearActive(instance.activeEnv);

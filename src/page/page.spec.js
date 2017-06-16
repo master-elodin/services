@@ -46,7 +46,7 @@ describe("A Page", function() {
             expect(env.hostGroups()[1].name()).toBe("group2");
         });
 
-        it("should read 'isActive' from local storage", function() {
+        it("should read 'isActive' from local storage for app and env but not hostGroup", function() {
             var savedData = {
                 applications: [
                     {name: "app", 
@@ -75,7 +75,7 @@ describe("A Page", function() {
             var hostGroup = env.hostGroups()[0];
             expect(app.isActive()).toBe(true);
             expect(env.isActive()).toBe(true);
-            expect(hostGroup.isActive()).toBe(true);
+            expect(hostGroup.isActive()).toBe(false);
         });
 
         it("should set activeApp from local storage", function() {
