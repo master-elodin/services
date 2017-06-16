@@ -59,30 +59,30 @@ function Page() {
                 var application = instance.addApplication(app.name);
                 application.isActive(!!app.isActive);
                 var isActiveApp = existingPage.activeApp && existingPage.activeApp.name === app.name;
-                if(isActiveApp) {
-                    instance.activateItem(application);
-                }
                 app.environments.forEach(function(env) {
                     var environment = application.addEnvironment(env.name);
                     environment.isActive(!!env.isActive);
-                    var isActiveEnv = isActiveApp && existingPage.activeEnv && existingPage.activeEnv.name === env.name;
-                    if(isActiveEnv) {
-                        instance.activateItem(environment);
-                    }
+                    var hasActiveEnvironment = isActiveApp && existingPage.activeEnv && existingPage.activeEnv.name === env.name;
                     env.hostGroups.forEach(function(group) {
                         var hostGroup = environment.addHostGroup(group.name);
                         hostGroup.isActive(!!group.isActive);
-                        if(isActiveEnv && existingPage.activeHostGroup && existingPage.activeHostGroup.name === group.name) {
-                            instance.activateItem(hostGroup);
-                        }
                         group.hosts.forEach(function(host) {
                             hostGroup.addHost(host.name);
                         });
                         group.services.forEach(function(service) {
                             hostGroup.addService(new Service(service));
                         });
+                        if(hasActiveEnvironment && existingPage.activeHostGroup && existingPage.activeHostGroup.name === group.name) {
+                            instance.activateItem(hostGroup, true);
+                        }
                     });
+                    if(hasActiveEnvironment && !instance.activeHostGroup()) {
+                        instance.activateItem(environment, true);
+                    }
                 });
+                if(isActiveApp && !instance.activeEnv()) {
+                    instance.activateItem(application, true);
+                }
             });
         } else {
             instance.editMode(true);
@@ -92,30 +92,34 @@ function Page() {
     instance.activeApp = ko.observable();
     instance.activeEnv = ko.observable();
     instance.activeHostGroup = ko.observable();
-    instance.activateItem = function(item) {
+    instance.activateItem = function(item, keepChildren) {
         var updateActiveItem = function(current, newVal, onChange) {
             if(current()) {
                 current().isActive(false);
             }
-            onChange();
             newVal.isActive(true);
             current(newVal);
+            onChange();
         }
         if(item.constructor === Application) {
             var onChange = function() {
-                instance.activeEnv(null); 
-                instance.activeHostGroup(null);
+                if(!keepChildren) {
+                    instance.activeEnv(null); 
+                    instance.activeHostGroup(null);
+                }
             };
             updateActiveItem(instance.activeApp, item, onChange);
         } else if(item.constructor === Environment) {
             var onChange = function() {
-                instance.activateItem(item.parent);
-                instance.activeHostGroup(null);
+                instance.activateItem(item.parent, true);
+                if(!keepChildren) {
+                    instance.activeHostGroup(null);
+                }
             };
             updateActiveItem(instance.activeEnv, item, onChange);
         } else if(item.constructor === HostGroup) {
             var onChange = function() {
-                instance.activateItem(item.parent);
+                instance.activateItem(item.parent, true);
                 instance.refresh();
             };
             updateActiveItem(instance.activeHostGroup, item, onChange);

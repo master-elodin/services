@@ -402,7 +402,7 @@ describe("A Page", function() {
             });
 
             it("should set previous activeHostGroup isActive=false if HostGroup and previous activeHostGroup", function() {
-                var previous = new HostGroup({name: "host-group-old", page: page});
+                var previous = new HostGroup({name: "host-group-old", page: page, parent: parentEnv});
                 previous.isActive(true);
                 page.activeHostGroup(previous);
 
@@ -486,7 +486,7 @@ describe("A Page", function() {
         });
 
         it("should not set isRefreshing=true if no activeHostGroup", function() {
-            expect(page.isRefreshing()).toBe(false);
+            page.isRefreshing(false);
             page.activeHostGroup(null);
 
             page.refresh();
