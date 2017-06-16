@@ -10,6 +10,27 @@ describe("A Service", function() {
         service = null;
     });
 
+    describe("creation", function() {
+
+        it("should have only 4 letters in displayName per name segment if split by capital letters and more than 20 characters", function() {
+            service = new Service({name: "SomethingWithAVeryLongNamingConvention"});
+
+            expect(service.displayName()).toBe("SomeWithAVeryLongNamiConv");
+        });
+
+        it("should not shorten if less than 21 characters", function() {
+            service = new Service({name: "SomethingWithAVeryLo"});
+
+            expect(service.displayName()).toBe("SomethingWithAVeryLo");
+        });
+
+        it("should have only 4 letters in displayName per name segment if split by non-letter characters and more than 20 characters", function() {
+            service = new Service({name: "something-with_a-Very-long_NamingConvention"});
+
+            expect(service.displayName()).toBe("SomeWithAVeryLongNamiConv");
+        });
+    });
+
     describe("addServiceInstance", function() {
 
         it("should add service instance to appropriate host", function() {
