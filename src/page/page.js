@@ -126,6 +126,7 @@ function Page() {
             var onChange = function() {
                 instance.activateItem(item.parent, null, true);
                 instance.refresh();
+                jQuery(".service-page__filter input").focus();
             };
             updateActiveItem(instance.activeHostGroup, item, onChange);
         }
@@ -145,6 +146,8 @@ function Page() {
             });
         }
     };
+
+    instance.filterValue = ko.observable("");
 }
 
 Page.DATA_NAME = "all-data";

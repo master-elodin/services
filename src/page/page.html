@@ -20,6 +20,11 @@
             </div>
             <!-- /ko -->
         </div>
+        <!-- ko if: showHostGroupHealth -->
+        <dv class="service-page__filter">
+            <input data-bind="textInput: filterValue" placeholder="filter services..." autofocus="autofocus">
+        </dv>
+        <!-- /ko -->
         <div data-bind="click: refresh" class="service-page__refresh">
             <!-- ko if: isRefreshing -->
             <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>

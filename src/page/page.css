@@ -103,3 +103,13 @@
     padding: 20px 50px;
     width: 100%;
 }
+
+.service-page__filter input {
+    background-color: $clouds;
+    border: none;
+    font-size: 18px;
+    height: 40px;
+    margin-top: 5px;
+    padding: 0 10px;
+    width: 150px;
+}

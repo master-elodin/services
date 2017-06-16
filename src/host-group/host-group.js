@@ -35,7 +35,6 @@ function HostGroup(loadingData) {
     instance.isActive = ko.observable(false);
     instance.select = function() {
         instance.isActive(!instance.isActive());
-        console.log("Select! isActive=" + instance.isActive());
         if(instance.isActive()) {
             instance.page.activateItem(instance);
         }
@@ -90,7 +89,7 @@ function HostGroup(loadingData) {
     instance.getServiceHealths = ko.pureComputed(function() {
         var serviceHealths = [];
         instance.services().forEach(function(service) {
-            var serviceHealth = new ServiceHealth({name: service.name()});
+            var serviceHealth = new ServiceHealth({name: service.name(), filterValue: instance.page.filterValue});
             instance.hosts().forEach(function(host) {
                 var serviceInstance = service.getRunningOrHighestVersionInstance(host.name());
                 serviceHealth.addHostHealth(new HostHealth({hostName: host.name(), 

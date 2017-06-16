@@ -10,4 +10,11 @@ function ServiceHealth(loadingData) {
     instance.addHostHealth = function(hostHealth) {
         instance.hostHealths.push(hostHealth);
     }
+
+    instance.matchesFilter = ko.pureComputed(function() {
+        var filterParts = loadingData.filterValue().split(" ");
+        return filterParts.every(function(filterPart) {
+            return instance.name().indexOf(filterPart) > -1;
+        });
+    });
 }
