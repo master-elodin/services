@@ -29,6 +29,7 @@
     font-size: 18px;
     height: calc(100% - 70px);
     min-height: calc(100% - 70px);
+    overflow-y: auto;
     padding: 10px;
 }
 
@@ -42,10 +43,9 @@
 .service-page__edit-toggle {
     color: $clouds;
     cursor: pointer;
+    float: right;
     font-size: 30px;
-    position: absolute;
-    right: 20px;
-    top: 10px;
+    margin: 10px 20px 0 0;
 }
 
 .service-page__edit-toggle label {
@@ -55,6 +55,13 @@
 
 .service-page a:visited {
     color: $lightBlue;
+}
+
+.service-page__refresh {
+    float: right;
+    font-size: 35px;
+    padding: 5px;
+    width: 45px;
 }
 
 .service-page__active-items {
@@ -89,8 +96,10 @@
 }
 
 .service-page__host-group-health {
+    align-content: center;
     display: flex;
     flex-direction: column;
     flex-flow: column wrap;
     padding: 20px 50px;
+    width: 100%;
 }

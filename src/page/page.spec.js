@@ -477,4 +477,46 @@ describe("A Page", function() {
             expect(page.showHostGroupHealth()).toBe(false);
         });
     });
+
+    describe("refresh", function() {
+
+        var activeHostGroup;
+
+        beforeEach(function() {
+            var parentApp = new Application({name: "app", page: page});
+            var parentEnv = new Environment({name: "env", page: page, parent: parentApp});
+            activeHostGroup = new HostGroup({name: "host-group", page: page, parent: parentEnv});
+            page.activateItem(activeHostGroup);
+        });
+
+        afterEach(function() {
+            activeHostGroup = null;
+        });
+
+        it("should call activeHostGroup.loadData if not refreshing when clicked", function() {
+            page.isRefreshing(false);
+            spyOn(activeHostGroup, "loadData").and.callFake(function(){ return jQuery.Deferred().resolve();});
+
+            page.refresh();
+
+            expect(activeHostGroup.loadData).toHaveBeenCalled();
+        });
+
+        it("should set isRefreshing=true if not refreshing and has activeHostGroup when clicked", function() {
+            page.isRefreshing(false);
+
+            page.refresh();
+
+            expect(page.isRefreshing()).toBe(true);
+        });
+
+        it("should not set isRefreshing=true if no activeHostGroup", function() {
+            expect(page.isRefreshing()).toBe(false);
+            page.activeHostGroup(null);
+
+            page.refresh();
+
+            expect(page.isRefreshing()).toBe(false);
+        });
+    });
 });

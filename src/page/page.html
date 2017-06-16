@@ -20,6 +20,14 @@
             </div>
             <!-- /ko -->
         </div>
+        <div data-bind="click: refresh" class="service-page__refresh">
+            <!-- ko if: isRefreshing -->
+            <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+            <!-- /ko -->
+            <!-- ko ifnot: isRefreshing -->
+            <i class="fa fa-refresh" aria-hidden="true"></i>
+            <!-- /ko -->
+        </div>
         <div data-bind="click: toggleEdit" class="service-page__edit-toggle">
             <!-- ko ifnot: editMode -->
             <label>EDIT</label>

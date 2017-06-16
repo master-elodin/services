@@ -120,7 +120,17 @@ function Page() {
             };
             updateActiveItem(instance.activeHostGroup, item, onChange);
         }
-    }
+    };
+
+    instance.isRefreshing = ko.observable(false);
+    instance.refresh = function() {
+        if(instance.activeHostGroup() && !instance.isRefreshing()) {
+            instance.isRefreshing(true);
+            instance.activeHostGroup().loadData().then(function() {
+                instance.isRefreshing(false);
+            });
+        }
+    };
 }
 
 Page.DATA_NAME = "all-data";

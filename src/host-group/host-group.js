@@ -18,7 +18,9 @@ function HostGroup(loadingData) {
 
     instance.addService = function(newService) {
         var existingService = instance.getService(newService.name());
+        console.log(newService);
         if(existingService) {
+            console.log("merging service!" + newService.name());
             existingService.merge(newService);
         } else {
             instance.services.push(newService);
