@@ -3,9 +3,8 @@ function Page() {
 
     instance.applications = ko.observableArray();
     instance.editMode = ko.observable(false);
-    instance.toggleEdit = function() {
-        instance.editMode(!instance.editMode());
-        if(!instance.editMode()) {
+    instance.editMode.subscribe(function(newVal) {
+        if(!newVal) {
             var setEditingFalse = function(item) {
                 item.dataRow.editing(false);
             }
@@ -21,6 +20,14 @@ function Page() {
             });
             instance.save();
         }
+    });
+    instance.toggleEdit = function() {
+        instance.editMode(!instance.editMode());
+    };
+    instance.cancelEdit = function() {
+        // TODO: this currently duplicates everything :(
+        instance.load();
+        instance.editMode(false);
     }
 
     instance.showHostGroupHealth = ko.pureComputed(function() {

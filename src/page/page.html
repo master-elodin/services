@@ -1,6 +1,6 @@
 <div class="service-page">
     <div class="service-page__header">
-        <div data-bind="click: clearAllActive" class="service-page__header-icon">
+        <div data-bind="click: clearAllActive" class="service-page__home-icon">
             <i class="fa fa-home" aria-hidden="true"></i>
         </div>
         <div class="service-page__active-items">
@@ -24,7 +24,6 @@
         <dv class="service-page__filter">
             <input data-bind="textInput: filterValue" placeholder="filter services..." autofocus="autofocus">
         </dv>
-        <!-- /ko -->
         <div data-bind="click: refresh" class="service-page__refresh">
             <!-- ko if: isRefreshing -->
             <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
@@ -33,16 +32,19 @@
             <i class="fa fa-refresh" aria-hidden="true"></i>
             <!-- /ko -->
         </div>
-        <div data-bind="click: toggleEdit" class="service-page__edit-toggle">
-            <!-- ko ifnot: editMode -->
-            <label>EDIT</label>
-            <i class="fa fa-toggle-off" aria-hidden="true"></i>
-            <!-- /ko -->
+        <!-- /ko -->
+        <div class="service-page__edit-options">
             <!-- ko if: editMode -->
-            <label>SAVE</label>
-            <a href="#">cancel</a>
-            <i class="fa fa-toggle-on" aria-hidden="true"></i>
+            <div data-bind="click: toggleEdit" class="service-page__edit-element service-page__edit-save" title="Save changes">
+                <i class="fa fa-floppy-o" aria-hidden="true"></i>
+            </div>
+            <div data-bind="click: cancelEdit" class="service-page__edit-element service-page__edit-cancel" title="Cancel changes">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </div>
             <!-- /ko -->
+            <div data-bind="click: toggleEdit, css: {\'service-page__edit-toggle--toggled\': editMode}" class="service-page__edit-element service-page__edit-toggle" title="Toggle editing groups">
+                <i class="fa fa-gear" aria-hidden="true"></i>
+            </div>
         </div>
     </div>
     <div class="service-page__body">

@@ -304,6 +304,19 @@ describe("A Page", function() {
         });
     });
 
+    describe("cancelEdit", function() {
+        
+        it("should load then turn off edit mode", function() {
+            page.editMode(true);
+            spyOn(page, "load").and.stub();
+
+            page.cancelEdit();
+
+            expect(page.load).toHaveBeenCalled();
+            expect(page.editMode()).toBe(false);
+        });
+    });
+
     describe("activateItem", function() {
 
         describe("for Application", function() {

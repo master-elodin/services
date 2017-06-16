@@ -7,21 +7,24 @@
 .service-page__header {
     background-color: $midnight;
     color: $clouds;
+    display: flex;
     height: $pageHeaderHeight;
+    justify-content: flex-start;
     width: 100%;
 }
 
-.service-page__header-icon {
+/* all header icons */
+.service-page__header .fa {
+    cursor: pointer;
+    font-size: 35px;
+    line-height: 50px;
+}
+
+.service-page__home-icon {
     background-color: #152739;
     float: left;
     height: 100%;
     padding: 0 10px;
-}
-
-.service-page__header-icon .fa {
-    cursor: pointer;
-    font-size: 40px;
-    padding: 5px;
 }
 
 .service-page__body {
@@ -40,17 +43,20 @@
     margin-top: 30px;
 }
 
-.service-page__edit-toggle {
-    color: $clouds;
-    cursor: pointer;
-    float: right;
-    font-size: 30px;
-    margin: 10px 20px 0 0;
+.service-page__edit-options {
+    display: flex;
+    justify-content: flex-end;
+    margin-left: auto;
 }
 
-.service-page__edit-toggle label {
+.service-page__edit-element {
     cursor: pointer;
-    padding-right: 10px;
+    padding: 0 15px;
+}
+
+/* TODO: add more midnight colors as properties */
+.service-page__edit-toggle.service-page__edit-toggle--toggled {
+    background-color: #1D2F41;
 }
 
 .service-page a:visited {
@@ -58,10 +64,9 @@
 }
 
 .service-page__refresh {
-    float: right;
+    cursor: pointer;
     font-size: 35px;
-    padding: 5px;
-    width: 45px;
+    margin: 0 15px;
 }
 
 .service-page__active-items {
