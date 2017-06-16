@@ -21,6 +21,8 @@ function HostGroup(loadingData) {
             var existingService = instance.getService(newService.name());
             if(existingService) {
                 existingService.merge(newService);
+                // manually trigger knockout since it doesn't see the array changing
+                instance.services.valueHasMutated();
             } else {
                 instance.services.push(newService);
                 instance.services.sort(function(a, b) {
@@ -48,6 +50,7 @@ function HostGroup(loadingData) {
         });
     };
 
+    instance.serviceHealths = ko.observableArray();
     instance.loadData = function() {
         var loadCompleted = jQuery.Deferred();
         var numHosts = instance.hosts().length;
@@ -55,13 +58,13 @@ function HostGroup(loadingData) {
         var hostNames = instance.hosts().map(function(host) {
             return host.name();
         });
-        console.log(instance.hosts());
         console.log("Starting to load data for " + instance.parent.name() + "-" + instance.name() + " with hosts " + hostNames);
         if(instance.hosts().length === 0) {
             loadCompleted.resolve();
         } else {
-            instance.hosts().forEach(function(host) {
-                console.log("Will request for host " + host.name());
+            // TODO: make this so it can load multiple at once
+            var loadForHost = function(hostIndex) {
+                var host = instance.hosts()[hostIndex];
                 host.getData().then(function(servicesDataForHost) {
                     // clear all existing service statuses first
                     instance.services().forEach(function(service) {
@@ -73,9 +76,12 @@ function HostGroup(loadingData) {
                     if(++numCompleted === numHosts) {
                         console.log("Finished loading data for " + instance.parent.name() + "-" + instance.name());
                         loadCompleted.resolve();
+                    } else {
+                        loadForHost(numCompleted);
                     }
                 });
-            });
+            }
+            loadForHost(0);
         }
         return loadCompleted;
     };
@@ -87,7 +93,7 @@ function HostGroup(loadingData) {
             instance.hosts().forEach(function(host) {
                 var serviceInstance = service.getRunningOrHighestVersionInstance(host.name());
                 serviceHealth.addHostHealth(new HostHealth({hostName: host.name(), 
-                    status: serviceInstance.status(), 
+                    status: serviceInstance.status(),
                     id: serviceInstance.id()
                 }));
             });

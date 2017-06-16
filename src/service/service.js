@@ -63,4 +63,4 @@ function Service(loadingData) {
         return instance.getInstancesForHost(hostName)[0] || Service.UNKNOWN_INSTANCE;
     }
 }
-Service.UNKNOWN_INSTANCE = new ServiceInstance({id: "UNKNOWN", version: "0.0.0"});
+Service.UNKNOWN_INSTANCE = new ServiceInstance({id: "service-not-found", version: "0.0.0"});
