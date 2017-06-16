@@ -315,6 +315,34 @@ describe("A Page", function() {
             expect(page.load).toHaveBeenCalled();
             expect(page.editMode()).toBe(false);
         });
+        
+        it("should not duplicate anything", function() {
+            var savedData = {
+                applications: [
+                    {name: "app", 
+                    isActive: true, 
+                    environments: [
+                        {name:"env", 
+                        isActive: true, 
+                        hostGroups:[
+                            {name: "group1",
+                            isActive: true,
+                            hosts: [
+                                {name: "host1"},
+                                {name: "host2"}
+                            ],
+                            services: []}
+                        ]}
+                    ]}
+                ]
+            };
+            localStorage.setItem(Page.DATA_NAME, JSON.stringify(savedData));
+            page.load();
+
+            page.cancelEdit();
+
+            expect(page.applications().length).toBe(1);
+        });
     });
 
     describe("activateItem", function() {

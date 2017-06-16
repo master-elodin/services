@@ -25,7 +25,7 @@ function Page() {
         instance.editMode(!instance.editMode());
     };
     instance.cancelEdit = function() {
-        // TODO: this currently duplicates everything :(
+        instance.applications([]);
         instance.load();
         instance.editMode(false);
     }
