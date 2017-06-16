@@ -11,7 +11,7 @@ function Page() {
     }
 
     instance.showHostGroupHealth = ko.pureComputed(function() {
-        return !!instance.activeHostGroup();
+        return !!instance.activeHostGroup() && !instance.editMode();
     });
 
     instance.save = function() {
@@ -37,6 +37,10 @@ function Page() {
         }
         var objToSave = addObservables(instance);
         localStorage.setItem(Page.DATA_NAME, JSON.stringify(ko.mapping.toJS(objToSave)));
+        if(instance.activeHostGroup()) {
+            // re-activate in order to re-load
+            instance.activateItem(instance.activeHostGroup());
+        }
     }
 
     instance.addApplication = function(name) {
@@ -112,7 +116,7 @@ function Page() {
         } else if(item.constructor === HostGroup) {
             var onChange = function() {
                 instance.activateItem(item.parent);
-                instance.activeHostGroup(null);
+                item.loadData();
             };
             updateActiveItem(instance.activeHostGroup, item, onChange);
         }

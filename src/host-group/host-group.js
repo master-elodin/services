@@ -33,7 +33,6 @@ function HostGroup(loadingData) {
         instance.isActive(!instance.isActive());
         if(instance.isActive()) {
             instance.page.activateItem(instance);
-            instance.loadData();
         }
         instance.page.save();
     };

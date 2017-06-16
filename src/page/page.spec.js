@@ -262,6 +262,27 @@ describe("A Page", function() {
 
             expect(page.save).not.toHaveBeenCalled();
         });
+
+        it("should re-activate host-group if existing activeHostGroup and no longer editing", function() {
+            var hostGroup = jasmine.createSpy();
+            page.activeHostGroup(hostGroup);
+            page.editMode(true);
+            spyOn(page, "activateItem").and.stub();
+
+            page.toggleEdit();
+
+            expect(page.activateItem).toHaveBeenCalledWith(hostGroup);
+        });
+
+        it("should re-activate host-group if no existing activeHostGroup", function() {
+            page.activeHostGroup(null);
+            page.editMode(true);
+            spyOn(page, "activateItem").and.stub();
+
+            page.toggleEdit();
+
+            expect(page.activateItem).not.toHaveBeenCalled();
+        });
     });
 
     describe("activateItem", function() {
@@ -441,6 +462,17 @@ describe("A Page", function() {
 
         it("should return false if no host-group is selected", function() {
             page.activeHostGroup(null);
+
+            expect(page.showHostGroupHealth()).toBe(false);
+        });
+
+        it("should return false if editMode=true", function() {
+            var parentApp = new Application({name: "app", page: page});
+            var parentEnv = new Environment({name: "env", page: page, parent: parentApp});
+
+            page.activateItem(new HostGroup({name: "host-group", page: page, parent: parentEnv}));
+
+            page.editMode(true);
 
             expect(page.showHostGroupHealth()).toBe(false);
         });

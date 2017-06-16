@@ -71,19 +71,6 @@
     padding: 0 30px;
     width: 150px;
 }
-/*
-.service-page__active-item--application {
-    background: linear-gradient(to right, #152739, #1D2F41);
-}
-
-.service-page__active-item--environment {
-    background: linear-gradient(to right, #1D2F41, #243648);
-}
-
-.service-page__active-item--host-group {
-    background: linear-gradient(to right, #243648, $midnight);
-}
-*/
 
 .service-page__active-item--application {
     background: linear-gradient(to left, #152739, #1D2F41);
@@ -99,4 +86,11 @@
 
 .service-page__active-item-divider {
     float: left;
+}
+
+.service-page__host-group-health {
+    display: flex;
+    flex-direction: column;
+    flex-flow: column wrap;
+    padding: 20px 50px;
 }

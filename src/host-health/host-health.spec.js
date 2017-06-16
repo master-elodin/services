@@ -39,4 +39,13 @@ describe("HostHealth", function() {
             expect(hostHealth.getHealthIcon()).toBe("fa-question-circle-o");
         });
     });
+
+    describe("getHealthColorClass", function() {
+
+        it("should return Unknown color if UNKNOWN", function() {
+            hostHealth.status(ServiceInstance.Status.UNKNOWN);
+
+            expect(hostHealth.getHealthColorClass()).toBe("host-health__icon--unknown");
+        });
+    });
 });

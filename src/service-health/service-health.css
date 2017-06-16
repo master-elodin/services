@@ -1,11 +1,15 @@
 .service-health {
-
+    height: 30px;
+    padding: 5px 0;
+    width: 300px;
 }
 
 .service-health__name {
-    
+    float: left;
+    line-height: 40px;
+    height: 100%;
 }
 
 .service-health__host-healths {
-
+    float: right;
 }

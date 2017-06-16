@@ -4,7 +4,7 @@ function ServiceInstance(loadingData) {
     instance.id = ko.observable(loadingData.id);
     instance.version = ko.observable(loadingData.version);
     
-    instance.status = ko.observable(ServiceInstance.Status.UNKNOWN);
+    instance.status = ko.observable(loadingData.status || ServiceInstance.Status.UNKNOWN);
 
     instance.isRunning = function() {
         return instance.status() === ServiceInstance.Status.RUNNING;
@@ -24,6 +24,7 @@ function ServiceInstance(loadingData) {
 }
 ServiceInstance.Status = {
     // TODO: find real statuses
+    // TODO: add ForceStopping, Not Responding
     RUNNING: "Up",
     STOPPED: "Stopped",
     STOPPING: "Stopping",

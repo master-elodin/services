@@ -1,6 +1,33 @@
 .host-health {
-
+    display: inline-block;
+    padding: 2px;
+    color: $clouds;
 }
+
 .host-health__icon {
-    
+    border-radius: 10px;
+    font-size: 25px;
+    line-height: 25px;
+    padding: 2px 5px;
+}
+
+/* TODO: get good colors for health icons */
+.host-health__icon.host-health__icon--running {
+    background-color: green;
+}
+
+.host-health__icon.host-health__icon--stopped {
+    background-color: red;
+}
+
+.host-health__icon.host-health__icon--starting {
+    background-color: rgba(0, 255, 0, .5);
+}
+
+.host-health__icon.host-health__icon--stopping {
+    background-color: rgba(255, 0, 0, .5);
+}
+
+.host-health__icon.host-health__icon--unknown {
+    background-color: grey;
 }
