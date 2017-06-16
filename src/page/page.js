@@ -116,7 +116,7 @@ function Page() {
         } else if(item.constructor === HostGroup) {
             var onChange = function() {
                 instance.activateItem(item.parent);
-                item.loadData();
+                instance.refresh();
             };
             updateActiveItem(instance.activeHostGroup, item, onChange);
         }

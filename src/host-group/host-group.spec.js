@@ -1,15 +1,18 @@
 describe("A Host Group", function() {
 
-    var hostGroup;
+    var parent;
     var page;
+    var hostGroup;
 
     beforeEach(function() {
+        parent = {name: ko.observable("environment")};
         page = {activateItem: function(){}, save: function(){}};
         spyOn(page, "activateItem").and.stub();
-        hostGroup = new HostGroup({name: "", page: page});
+        hostGroup = new HostGroup({name: "", page: page, parent: parent});
     });
 
     afterEach(function() {
+        parent = null;
         page = null;
         hostGroup = null;
     });
@@ -176,6 +179,14 @@ describe("A Host Group", function() {
                 expect(service1.getRunningOrHighestVersionInstance(hostName).status()).toBe(ServiceInstance.Status.STARTING);
                 // no data returned for service2
                 expect(service2.getRunningOrHighestVersionInstance(hostName).status()).toBe(ServiceInstance.Status.UNKNOWN);
+                done();
+            });
+        });
+
+        it("should resolve if no hosts", function(done) {
+            hostGroup.loadData().then(function() {
+                // just needs to resolve
+                expect(true).toBe(true);
                 done();
             });
         });

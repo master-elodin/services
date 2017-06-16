@@ -52,20 +52,31 @@ function HostGroup(loadingData) {
         var loadCompleted = jQuery.Deferred();
         var numHosts = instance.hosts().length;
         var numCompleted = 0;
-        instance.hosts().forEach(function(host) {
-            host.getData().then(function(servicesDataForHost) {
-                // clear all existing service statuses first
-                instance.services().forEach(function(service) {
-                    service.getInstancesForHost(host.name()).forEach(function(serviceInstance) {
-                        serviceInstance.status(ServiceInstance.Status.UNKNOWN);
-                    });
-                });
-                servicesDataForHost.forEach(instance.addService);
-                if(++numCompleted === numHosts) {
-                    loadCompleted.resolve();
-                }
-            });
+        var hostNames = instance.hosts().map(function(host) {
+            return host.name();
         });
+        console.log(instance.hosts());
+        console.log("Starting to load data for " + instance.parent.name() + "-" + instance.name() + " with hosts " + hostNames);
+        if(instance.hosts().length === 0) {
+            loadCompleted.resolve();
+        } else {
+            instance.hosts().forEach(function(host) {
+                console.log("Will request for host " + host.name());
+                host.getData().then(function(servicesDataForHost) {
+                    // clear all existing service statuses first
+                    instance.services().forEach(function(service) {
+                        service.getInstancesForHost(host.name()).forEach(function(serviceInstance) {
+                            serviceInstance.status(ServiceInstance.Status.UNKNOWN);
+                        });
+                    });
+                    servicesDataForHost.forEach(instance.addService);
+                    if(++numCompleted === numHosts) {
+                        console.log("Finished loading data for " + instance.parent.name() + "-" + instance.name());
+                        loadCompleted.resolve();
+                    }
+                });
+            });
+        }
         return loadCompleted;
     };
 
