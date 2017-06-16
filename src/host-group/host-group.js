@@ -18,9 +18,7 @@ function HostGroup(loadingData) {
 
     instance.addService = function(newService) {
         var existingService = instance.getService(newService.name());
-        console.log(newService);
         if(existingService) {
-            console.log("merging service!" + newService.name());
             existingService.merge(newService);
         } else {
             instance.services.push(newService);
@@ -54,6 +52,12 @@ function HostGroup(loadingData) {
         var numCompleted = 0;
         instance.hosts().forEach(function(host) {
             host.getData().then(function(servicesDataForHost) {
+                // clear all existing service statuses first
+                instance.services().forEach(function(service) {
+                    service.getInstancesForHost(host.name()).forEach(function(serviceInstance) {
+                        serviceInstance.status(ServiceInstance.Status.UNKNOWN);
+                    });
+                });
                 servicesDataForHost.forEach(instance.addService);
                 if(++numCompleted === numHosts) {
                     loadCompleted.resolve();

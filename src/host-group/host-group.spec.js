@@ -114,24 +114,29 @@ describe("A Host Group", function() {
 
     describe("loadData", function() {
 
-        it("should load data for each host and add it to the appropriate services", function() {
-            var returningService1 = {name: "service1", instancesByHost: {host1: {id: "service1-host1"}}};
-            var returningService2 = {name: "service2", instancesByHost: {host1: {id: "service2-host1"}}};
-            var returningService3 = {name: "service1", instancesByHost: {host1: {id: "service1-host2"}}};
-            var returningService4 = {name: "service2", instancesByHost: {host1: {id: "service2-host2"}}};
-            var returningService5 = {name: "service3", instancesByHost: {host1: {id: "service3-host2"}}};
+        it("should load data for each host and add it to the appropriate services", function(done) {
+            var returningService1 = new Service({name: "service1"});
+            returningService1.addServiceInstance("host1", new ServiceInstance({id: ""}));
+            var returningService2 = new Service({name: "service2"});
+            returningService1.addServiceInstance("host1", new ServiceInstance({id: ""}));
+            var returningService3 = new Service({name: "service1"});
+            returningService3.addServiceInstance("host2", new ServiceInstance({id: ""}));
+            var returningService4 = new Service({name: "service2"});
+            returningService4.addServiceInstance("host2", new ServiceInstance({id: ""}));
+            var returningService5 = new Service({name: "service3"});
+            returningService5.addServiceInstance("host2", new ServiceInstance({id: ""}));
             var host1 = hostGroup.addHost("host1");
             spyOn(host1, "getData").and.returnValue(jQuery.Deferred().resolve([returningService1, returningService2]));
             var host2 = hostGroup.addHost("host2");
             spyOn(host2, "getData").and.returnValue(jQuery.Deferred().resolve([returningService3, returningService4, returningService5]));
 
-            var service1 = new Service("service1");
+            var service1 = new Service({name: "service1"});
             spyOn(service1, "merge").and.stub();
             hostGroup.addService(service1);
-            var service2 = new Service("service2");
+            var service2 = new Service({name: "service2"});
             spyOn(service2, "merge").and.stub();
             hostGroup.addService(service2);
-            var service3 = new Service("service3");
+            var service3 = new Service({name: "service3"});
             spyOn(service3, "merge").and.stub();
             hostGroup.addService(service3);
 
@@ -141,6 +146,31 @@ describe("A Host Group", function() {
                 expect(service2.merge).toHaveBeenCalledWith(returningService2);
                 expect(service2.merge).toHaveBeenCalledWith(returningService4);
                 expect(service3.merge).toHaveBeenCalledWith(returningService5);
+                done();
+            });
+        });
+
+        it("should mark all existing service instances as unknown if no data returned for them", function(done) {
+            var hostName = "host1";
+
+            var service1 = new Service({name: "service1"});
+            service1.addServiceInstance(hostName, new ServiceInstance({id: "", status: ServiceInstance.Status.STOPPED}));
+            hostGroup.addService(service1);
+            var service2 = new Service({name: "service2"});
+            service2.addServiceInstance(hostName, new ServiceInstance({id: "", status: ServiceInstance.Status.RUNNING}));
+            hostGroup.addService(service2);
+
+            var returningService1 = new Service({name: "service1"});
+            returningService1.addServiceInstance(hostName, new ServiceInstance({id: "", status: ServiceInstance.Status.STARTING}));
+            var host1 = hostGroup.addHost(hostName);
+            spyOn(host1, "getData").and.returnValue(jQuery.Deferred().resolve([returningService1]));
+
+            hostGroup.loadData().then(function() {
+                // status changed for service1
+                expect(service1.getRunningOrHighestVersionInstance(hostName).status()).toBe(ServiceInstance.Status.STARTING);
+                // no data returned for service2
+                expect(service2.getRunningOrHighestVersionInstance(hostName).status()).toBe(ServiceInstance.Status.UNKNOWN);
+                done();
             });
         });
     });

@@ -28,9 +28,9 @@ describe("A Service", function() {
             expect(service.instancesByHost()["host1"][0].version()).toBe("1.22.0");
 
             // re-add the old version
-            service.addServiceInstance("host1", new ServiceInstance({id: "id1", version: "1.21.0"}));
+            service.addServiceInstance("host1", new ServiceInstance({id: "id1", version: "1.23.0"}));
 
-            expect(service.instancesByHost()["host1"][0].version()).toBe("1.21.0");
+            expect(service.instancesByHost()["host1"][0].version()).toBe("1.23.0");
         });
 
         it("should sort service instances on the same host based on descending version", function() {
