@@ -12,22 +12,22 @@ describe("ServiceHealth", function() {
 
     describe("creation", function() {
 
-        it("should have only 4 letters in displayName per name segment if split by capital letters and more than 20 characters", function() {
+        it("should have only NAME_PART_LENGTH letters in displayName per name segment if split by capital letters and more than 20 characters", function() {
             serviceHealth = new ServiceHealth({name: "SomethingWithAVeryLongNamingConvention"});
 
-            expect(serviceHealth.name()).toBe("SomeWithAVeryLongNamiConv");
+            expect(serviceHealth.name()).toBe("SometWithAVeryLongNaminConve");
         });
 
-        it("should not shorten if less than 21 characters", function() {
-            serviceHealth = new ServiceHealth({name: "SomethingWithAVeryLo"});
+        it("should not shorten if less than MAX_NAME_LENGTH characters", function() {
+            serviceHealth = new ServiceHealth({name: "SomethingWithAVeryLongNam"});
 
-            expect(serviceHealth.name()).toBe("SomethingWithAVeryLo");
+            expect(serviceHealth.name()).toBe("SomethingWithAVeryLongNam");
         });
 
-        it("should have only 4 letters in displayName per name segment if split by non-letter characters and more than 20 characters", function() {
+        it("should have only NAME_PART_LENGTH letters in displayName per name segment if split by non-letter characters and more than 20 characters", function() {
             serviceHealth = new ServiceHealth({name: "something-with_a-Very-long_NamingConvention"});
 
-            expect(serviceHealth.name()).toBe("SomeWithAVeryLongNamiConv");
+            expect(serviceHealth.name()).toBe("SometWithAVeryLongNaminConve");
         });
     });
 
