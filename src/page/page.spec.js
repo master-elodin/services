@@ -283,6 +283,25 @@ describe("A Page", function() {
 
             expect(page.activateItem).not.toHaveBeenCalled();
         });
+
+        it("should set editing=false for all apps, envs, hostGroups, hosts if no longer editing", function() {
+            var app = page.addApplication("app");
+            app.dataRow.editing(true);
+            var env = app.addEnvironment("env");
+            env.dataRow.editing(true);
+            var hostGroup = env.addHostGroup("hostGroup");
+            hostGroup.dataRow.editing(true);
+            var host = hostGroup.addHost("host");
+            host.dataRow.editing(true);
+            page.editMode(true);
+
+            page.toggleEdit();
+
+            expect(app.dataRow.editing()).toBe(false);
+            expect(env.dataRow.editing()).toBe(false);
+            expect(hostGroup.dataRow.editing()).toBe(false);
+            expect(host.dataRow.editing()).toBe(false);
+        });
     });
 
     describe("activateItem", function() {

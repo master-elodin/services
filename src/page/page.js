@@ -6,6 +6,19 @@ function Page() {
     instance.toggleEdit = function() {
         instance.editMode(!instance.editMode());
         if(!instance.editMode()) {
+            var setEditingFalse = function(item) {
+                item.dataRow.editing(false);
+            }
+            instance.applications().forEach(function(app) {
+                setEditingFalse(app);
+                app.environments().forEach(function(env) {
+                    setEditingFalse(env);
+                    env.hostGroups().forEach(function(hostGroup) {
+                        setEditingFalse(hostGroup);
+                        hostGroup.hosts().forEach(setEditingFalse);
+                    });
+                });
+            });
             instance.save();
         }
     }
