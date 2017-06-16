@@ -117,7 +117,15 @@ document.getElementsByTagName('head')[0].appendChild(external);
     function ServiceHealth(loadingData) {
         var instance = this;
     
-        instance.name = ko.observable(loadingData.name);
+        var displayName = loadingData.name;
+        if(loadingData.name.length > 20) {
+            var nameParts = loadingData.name.split(/(?=[A-Z])|(?=\W)|(?=_)/);
+            displayName = nameParts.map(function(namePart) {
+                namePart = namePart.replace(/(\W)|(_)/, "").substring(0, 4);
+                return namePart.charAt(0).toUpperCase() + namePart.slice(1);
+            }).join("");
+        }
+        instance.name = ko.observable(displayName);
         instance.hostHealths = ko.observableArray();
         instance.addHostHealth = function(hostHealth) {
             instance.hostHealths.push(hostHealth);
@@ -152,6 +160,15 @@ document.getElementsByTagName('head')[0].appendChild(external);
         var instance = this;
     
         instance.name = ko.observable(loadingData.name);
+        var displayName = loadingData.name;
+        if(loadingData.name.length > 20) {
+            var nameParts = loadingData.name.split(/(?=[A-Z])|(?=\W)|(?=_)/);
+            displayName = nameParts.map(function(namePart) {
+                namePart = namePart.replace(/(\W)|(_)/, "").substring(0, 4);
+                return namePart.charAt(0).toUpperCase() + namePart.slice(1);
+            }).join("");
+        }
+        instance.displayName = ko.observable(displayName);
         instance.instancesByHost = ko.observable({});
     
         instance.getInstancesForHost = function(hostName) {
