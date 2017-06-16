@@ -65,6 +65,12 @@ describe("A Host Group", function() {
             expect( service1.merge ).toHaveBeenCalledWith( service2 );
             expect( hostGroup.services().length ).toBe( 2 );
         });
+
+        it("should not add service if no name", function() {
+            hostGroup.addService(new Service({name: ""}));
+
+            expect(hostGroup.services().length).toBe(0);
+        });
     });
 
     describe("select", function() {

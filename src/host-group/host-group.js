@@ -17,14 +17,16 @@ function HostGroup(loadingData) {
     };
 
     instance.addService = function(newService) {
-        var existingService = instance.getService(newService.name());
-        if(existingService) {
-            existingService.merge(newService);
-        } else {
-            instance.services.push(newService);
-            instance.services.sort(function(a, b) {
-                return a.name().localeCompare(b.name());
-            });
+        if(newService.name()) {
+            var existingService = instance.getService(newService.name());
+            if(existingService) {
+                existingService.merge(newService);
+            } else {
+                instance.services.push(newService);
+                instance.services.sort(function(a, b) {
+                    return a.name().localeCompare(b.name());
+                });
+            }
         }
     };
 
@@ -73,7 +75,10 @@ function HostGroup(loadingData) {
             var serviceHealth = new ServiceHealth({name: service.name()});
             instance.hosts().forEach(function(host) {
                 var serviceInstance = service.getRunningOrHighestVersionInstance(host.name());
-                serviceHealth.addHostHealth(new HostHealth({hostName: host.name(), status: serviceInstance.status()}));
+                serviceHealth.addHostHealth(new HostHealth({hostName: host.name(), 
+                    status: serviceInstance.status(), 
+                    id: serviceInstance.id()
+                }));
             });
             serviceHealths.push(serviceHealth);
         });

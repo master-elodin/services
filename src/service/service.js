@@ -38,6 +38,10 @@ function Service(loadingData) {
             return 0;
         });
     };
+    // if given hostName and serviceInstance in loadingData, go ahead and add that
+    if(loadingData.hostName && loadingData.serviceInstance) {
+        instance.addServiceInstance(loadingData.hostName, loadingData.serviceInstance)
+    }
 
     instance.merge = function(otherService) {
         // add each service from each host on otherService

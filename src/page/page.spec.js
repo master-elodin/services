@@ -315,20 +315,6 @@ describe("A Page", function() {
                 expect(page.activeHostGroup()).toBe(null);
             });
 
-            xit("should not remove activeEnv and activeHostGroup if app does not change", function() {
-                page.activateItem(app);
-
-                var env = new Environment({name: "env", page: page});
-                var hostGroup = new HostGroup({name: "host-group", page: page});
-                page.activeEnv(env);
-                page.activeHostGroup(hostGroup);
-
-                page.activateItem(app);
-
-                expect(page.activeEnv()).toBe(env);
-                expect(page.activeHostGroup()).toBe(hostGroup);
-            });
-
             it("should set previous activeApp isActive=false previous activeApp", function() {
                 var previous = new Application({name: "old", page: page});
                 previous.isActive(true);
@@ -376,17 +362,6 @@ describe("A Page", function() {
                 page.activateItem(env);
 
                 expect(page.activeHostGroup()).toBe(null);
-            });
-
-            xit("should not remove activeHostGroup if env does not change", function() {
-                page.activateItem(env);
-
-                var hostGroup = new HostGroup({name: "host-group", page: page});
-                page.activeHostGroup(hostGroup);
-
-                page.activateItem(env);
-
-                expect(page.activeHostGroup()).toBe(hostGroup);
             });
 
             it("should set previous activeEnv isActive=false and previous activeEnv", function() {

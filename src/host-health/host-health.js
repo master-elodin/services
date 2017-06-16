@@ -2,7 +2,8 @@
 function HostHealth(loadingData) {
     var instance = this;
 
-    // TODO: do these really need to be observables and computeds? Will this data just be overwritten?
+    // keep track of ID for debugging purposes
+    instance.id = ko.observable(loadingData.id);
     instance.hostName = ko.observable(loadingData.hostName);
     instance.status = ko.observable(loadingData.status || ServiceInstance.Status.UNKNOWN);
 
