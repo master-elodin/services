@@ -22,6 +22,8 @@ function DataRow(loadingData) {
         instance.invalid(false);
     });
 
+    instance.owner = loadingData.owner;
+
     instance.onSave = function() {
         if(instance.name()) {
             instance.invalid(false);

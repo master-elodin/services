@@ -2,7 +2,7 @@
     <div class="data-row__data">
         <!-- ko if: editing -->
         <div data-bind="css: {\'data-row__name--new-data\': isNewDataRow}" class="data-row__name data-row__name--editing">
-            <input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, valueUpdate: \'afterkeydown\', enterkey: onSave">
+            <input data-bind="value: name, css: {\'data-row--invalid\' : invalid }, attr: {placeholder: dataType}, valueUpdate: \'afterkeydown\', enterkey: onSave">
             <div class="data-row__actions">
                 <i data-bind="click: onSave" class="fa fa-check data-row__action" aria-hidden=true></i>
                 <i data-bind="click: onCancel" class="fa fa-times data-row__action" aria-hidden=true></i>

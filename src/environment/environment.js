@@ -24,6 +24,6 @@ function Environment(loadingData) {
         instance.page.save();
     };
 
-    instance.dataRow = new DataRow({dataType: "environment", name: instance.name, onSelect: instance.select, onDelete: loadingData.onDelete});
+    instance.dataRow = new DataRow({dataType: "environment", name: instance.name, onSelect: instance.select, onDelete: loadingData.onDelete, owner: instance});
     instance.addDataRow = new DataRow({onSave: instance.addHostGroup, dataType: "host-group"});
 }

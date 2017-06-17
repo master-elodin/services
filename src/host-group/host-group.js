@@ -41,7 +41,7 @@ function HostGroup(loadingData) {
         instance.page.save();
     };
 
-    instance.dataRow = new DataRow({dataType: "host-group", name: instance.name, onSelect: instance.select, onDelete: loadingData.onDelete, separator: ",", editModeSeparator: ", {"});
+    instance.dataRow = new DataRow({dataType: "host-group", name: instance.name, onSelect: instance.select, onDelete: loadingData.onDelete, owner: instance, separator: ",", editModeSeparator: ", {"});
     instance.addDataRow = new DataRow({onSave: instance.addHost, dataType: "host"});
 
     instance.getService = function(serviceName) {

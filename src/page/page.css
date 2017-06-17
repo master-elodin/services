@@ -105,7 +105,12 @@
     width: 100%;
 }
 
-.service-page__filter input {
+.service-page__service-name {
+    padding: 0 30px;
+    width: 250px;
+}
+
+.service-page__service-name input {
     background-color: $clouds;
     border: none;
     font-size: 18px;

@@ -3,7 +3,7 @@ function Host(loadingData) {
 
     instance.name = ko.observable(loadingData.name);
 
-    instance.dataRow = new DataRow({dataType: "host", name: instance.name, separator: ",", onDelete: loadingData.onDelete});
+    instance.dataRow = new DataRow({dataType: "host", name: instance.name, separator: ",", onDelete: loadingData.onDelete, owner: instance});
 
     instance.getData = function() {
         var getRandomNumber = function(upperBound) {
