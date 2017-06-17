@@ -42,6 +42,7 @@
 }
 
 .data-row__actions {
+    margin-left: auto;
     padding-left: 20px;
 }
 
