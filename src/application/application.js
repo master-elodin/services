@@ -6,7 +6,7 @@ function Application(loadingData) {
 
     instance.environments = ko.observableArray();
     instance.addEnvironment = function(name) {
-        var environment = new Environment({name: name, page: instance.page, parent: instance});
+        var environment = new Environment({name: name, page: instance.page, parent: instance, onDelete: createOnDelete(instance.environments)});
         instance.environments.push(environment);
         return environment;
     };
@@ -20,6 +20,6 @@ function Application(loadingData) {
         instance.page.save();
     };
 
-    instance.dataRow = new DataRow(null, "application", instance.name, instance.select);
-    instance.addDataRow = new DataRow(instance.addEnvironment, "environment");
+    instance.dataRow = new DataRow({dataType: "application", name: instance.name, onSelect: instance.select, onDelete: loadingData.onDelete});
+    instance.addDataRow = new DataRow({onSave: instance.addEnvironment, dataType: "environment"});
 }

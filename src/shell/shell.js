@@ -15,6 +15,7 @@ external.href = 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awe
 external.rel = "stylesheet";
 document.getElementsByTagName('head')[0].appendChild(external);
 
+${src/utils/utils.js}
 ${src/data-row/data-row.js}
 ${src/service-instance/service-instance.js}
 ${src/service-health/service-health.js}

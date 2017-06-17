@@ -5,19 +5,22 @@ describe("A Data Row", function() {
     var onSave;
     var onSelect;
     var name;
+    var loadingData;
 
     beforeEach(function() {
         onSave = jasmine.createSpy( "onSave" );
         onSelect = jasmine.createSpy( "onSelect" );
         name = ko.observable();
+        loadingData = {onSave: onSave, dataType: "data-type", name: name, onSelect: onSelect};
 
-        dataRow = new DataRow(onSave, "data-type", name, onSelect);
+        dataRow = new DataRow(loadingData);
     });
 
     afterEach(function() {
         onSave = null;
         onSelect = null;
         name = null;
+        loadingData = null;
 
         dataRow = null;
     });
@@ -25,13 +28,14 @@ describe("A Data Row", function() {
     describe("creation", function() {
 
         it("should set editing=true if name not given", function() {
-            dataRow = new DataRow(onSave, "data-type");
+            dataRow = new DataRow(loadingData);
 
             expect(dataRow.editing()).toBe(true);
         });
 
         it("should set editing=true if given name is blank", function() {
-            dataRow = new DataRow(onSave, "data-type", name);
+            loadingData.name("");
+            dataRow = new DataRow(loadingData);
 
             expect(dataRow.editing()).toBe(true);
         });
@@ -39,7 +43,7 @@ describe("A Data Row", function() {
         it("should set editing=false if name given", function() {
             name("something");
 
-            dataRow = new DataRow(onSave, "data-type", name);
+            dataRow = new DataRow(loadingData);
 
             expect(dataRow.editing()).toBe(false);
         });

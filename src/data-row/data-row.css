@@ -1,9 +1,9 @@
 .data-row {
     font-size: 18px;
     line-height: 25px;
+    min-width: 350px;
     padding: 5px 0;
     text-align: left;
-    width: 400px;
 }
 
 .data-row--invalid {
@@ -14,8 +14,12 @@
     
 }
 
-.data-row__name.data-row__name--editing{
+.data-row__name {
     display: flex;
+    justify-content: flex-start;
+}
+
+.data-row__name.data-row__name--editing{
     justify-content: space-between;
 }
 

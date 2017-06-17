@@ -7,7 +7,7 @@ function Environment(loadingData) {
 
     instance.hostGroups = ko.observableArray();
     instance.addHostGroup = function(hostGroupName) {
-        var hostGroup = new HostGroup({name: hostGroupName, page: instance.page, parent: instance});
+        var hostGroup = new HostGroup({name: hostGroupName, page: instance.page, parent: instance, onDelete: createOnDelete(instance.hostGroups)});
         instance.hostGroups.push(hostGroup);
         instance.hostGroups.sort(function(a, b) {
             return a.name().localeCompare(b.name());
@@ -24,6 +24,6 @@ function Environment(loadingData) {
         instance.page.save();
     };
 
-    instance.dataRow = new DataRow(null, "environment", instance.name, instance.select);
-    instance.addDataRow = new DataRow(instance.addHostGroup, "host-group");
+    instance.dataRow = new DataRow({dataType: "environment", name: instance.name, onSelect: instance.select, onDelete: loadingData.onDelete});
+    instance.addDataRow = new DataRow({onSave: instance.addHostGroup, dataType: "host-group"});
 }

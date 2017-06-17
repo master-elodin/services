@@ -1,9 +1,9 @@
-function Host(name) {
+function Host(loadingData) {
     var instance = this;
 
-    instance.name = ko.observable(name);
+    instance.name = ko.observable(loadingData.name);
 
-    instance.dataRow = new DataRow(null, "host", instance.name, null, ",");
+    instance.dataRow = new DataRow({dataType: "host", name: instance.name, separator: ",", onDelete: loadingData.onDelete});
 
     instance.getData = function() {
         var getRandomNumber = function(upperBound) {

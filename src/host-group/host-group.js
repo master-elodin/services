@@ -8,7 +8,7 @@ function HostGroup(loadingData) {
     instance.services = ko.observableArray();
 
     instance.addHost = function(hostName) {
-        var host = new Host(hostName);
+        var host = new Host({name: hostName, onDelete: createOnDelete(instance.hosts)});
         instance.hosts.push(host);
         instance.hosts.sort(function(a, b) {
             return a.name().localeCompare(b.name());
@@ -41,8 +41,8 @@ function HostGroup(loadingData) {
         instance.page.save();
     };
 
-    instance.dataRow = new DataRow(null, "host-group", instance.name, instance.select, ",", ", {");
-    instance.addDataRow = new DataRow(instance.addHost, "host");
+    instance.dataRow = new DataRow({dataType: "host-group", name: instance.name, onSelect: instance.select, onDelete: loadingData.onDelete, separator: ",", editModeSeparator: ", {"});
+    instance.addDataRow = new DataRow({onSave: instance.addHost, dataType: "host"});
 
     instance.getService = function(serviceName) {
         return instance.services().find(function(service) {

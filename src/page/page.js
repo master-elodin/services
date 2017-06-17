@@ -64,11 +64,11 @@ function Page() {
     }
 
     instance.addApplication = function(name) {
-        var application = new Application({name: name, page: instance});
+        var application = new Application({name: name, page: instance, onDelete: createOnDelete(instance.applications)});
         instance.applications.push(application);
         return application;
     };
-    instance.addDataRow = new DataRow(instance.addApplication, "application");
+    instance.addDataRow = new DataRow({onSave: instance.addApplication, dataType: "application"});
 
     instance.load = function() {
         var existingPageJson = localStorage.getItem(Page.DATA_NAME);

@@ -1,11 +1,12 @@
-function DataRow(onSave, dataType, name, onSelect, separator, editModeSeparator) {
+function DataRow(loadingData) {
+    //onSave, dataType, name, onSelect, separator, editModeSeparator
     var instance = this;
 
     instance.invalid = ko.observable(false);
     // if data row is for adding new data as opposed to changing existing data
-    instance.isNewDataRow = !name || !name();
-    instance.separator = separator || ": {";
-    instance.editModeSeparator = editModeSeparator || instance.separator;
+    instance.isNewDataRow = !loadingData.name || !loadingData.name();
+    instance.separator = loadingData.separator || ": {";
+    instance.editModeSeparator = loadingData.editModeSeparator || instance.separator;
     instance.editing = ko.observable(instance.isNewDataRow);
     instance.toggleEdit = function(dataRow, target) {
         instance.editing(!instance.editing());
@@ -14,9 +15,9 @@ function DataRow(onSave, dataType, name, onSelect, separator, editModeSeparator)
         }
     };
 
-    instance.dataType = dataType;
+    instance.dataType = loadingData.dataType;
 
-    instance.name = name || ko.observable();
+    instance.name = loadingData.name || ko.observable();
     instance.name.subscribe(function(newValue) {
         instance.invalid(false);
     });
@@ -25,7 +26,7 @@ function DataRow(onSave, dataType, name, onSelect, separator, editModeSeparator)
         if(instance.name()) {
             instance.invalid(false);
             if(instance.isNewDataRow) {
-                onSave(instance.name());
+                loadingData.onSave(instance.name());
                 instance.name("");
             } else {
                 instance.editing(false);
@@ -35,7 +36,7 @@ function DataRow(onSave, dataType, name, onSelect, separator, editModeSeparator)
         }
     };
 
-    instance.onSelect = onSelect || function() { console.log("select!") };
+    instance.onSelect = loadingData.onSelect || function() { console.log("onSelect clicked!") };
 
     instance.previousName = instance.name();
     instance.onCancel = function() {
@@ -43,5 +44,7 @@ function DataRow(onSave, dataType, name, onSelect, separator, editModeSeparator)
         if(!instance.isNewDataRow) {
             instance.editing(false);
         }
-    }
+    };
+
+    instance.onDelete = loadingData.onDelete;
 }
