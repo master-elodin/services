@@ -30,6 +30,14 @@ function Page() {
     }
 
     instance.showHostGroupHealth = ko.pureComputed(function() {
+        return instance.showRefreshIcon() && !instance.activeService();
+    });
+
+    instance.showServiceActions = ko.pureComputed(function() {
+        return instance.showRefreshIcon() && instance.activeService();
+    });
+
+    instance.showRefreshIcon = ko.pureComputed(function() {
         return !!instance.activeHostGroup() && !instance.editMode();
     });
 
@@ -115,6 +123,7 @@ function Page() {
     instance.activeApp = ko.observable();
     instance.activeEnv = ko.observable();
     instance.activeHostGroup = ko.observable();
+    instance.activeService = ko.observable();
     var clearActive = function(currentActive) {
         if(currentActive()) {
             currentActive().isActive(false);
@@ -134,6 +143,7 @@ function Page() {
                 if(!keepChildren) {
                     clearActive(instance.activeEnv);
                     clearActive(instance.activeHostGroup);
+                    clearActive(instance.activeService);
                 }
             };
             updateActiveItem(instance.activeApp, item, onChange);
@@ -142,6 +152,7 @@ function Page() {
                 instance.activateItem(item.parent, null, true);
                 if(!keepChildren) {
                     clearActive(instance.activeHostGroup);
+                    clearActive(instance.activeService);
                 }
             };
             updateActiveItem(instance.activeEnv, item, onChange);
@@ -149,15 +160,20 @@ function Page() {
             var onChange = function() {
                 instance.activateItem(item.parent, null, true);
                 instance.refresh();
+                clearActive(instance.activeService);
                 jQuery(".service-page__filter input").focus();
             };
             updateActiveItem(instance.activeHostGroup, item, onChange);
         }
     };
+    instance.selectService = function(serviceHealth) {
+        instance.activeService(instance.activeHostGroup().getService(serviceHealth.name()));
+    };
     instance.clearAllActive = function() {
         clearActive(instance.activeApp);
         clearActive(instance.activeEnv);
         clearActive(instance.activeHostGroup);
+        clearActive(instance.activeService);
     };
 
     instance.isRefreshing = ko.observable(false);
@@ -202,7 +218,7 @@ function Page() {
             reader.readAsText(this.files[0]);
         });
         jQuery("#upload-configuration-input").click();
-    }
+    };
 }
 
 Page.DATA_NAME = "all-data";

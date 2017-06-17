@@ -5,6 +5,7 @@
 }
 
 .service-health__name {
+    cursor: pointer;
     float: left;
     line-height: 40px;
     height: 100%;

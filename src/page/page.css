@@ -92,8 +92,9 @@
     background: linear-gradient(to left, #243648, $midnight);
 }
 
-.service-page__active-item-divider {
-    float: left;
+.service-page__active-item--service {
+    background: $midnight;
+    width: 250px;
 }
 
 .service-page__host-group-health {

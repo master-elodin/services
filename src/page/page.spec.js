@@ -486,19 +486,36 @@ describe("A Page", function() {
 
     describe("showHostGroupHealth", function() {
 
+        it("should return true if showRefreshIcon and no activeService", function() {
+            spyOn(page, "showRefreshIcon").and.returnValue(true);
+            page.activeService(null);
+
+            expect(page.showHostGroupHealth()).toBe(true);
+        });
+
+        it("should return false if activeService", function() {
+            spyOn(page, "showRefreshIcon").and.returnValue(true);
+            page.activeService({});
+
+            expect(page.showHostGroupHealth()).toBe(false);
+        });
+    });
+
+    describe("showRefreshIcon", function() {
+
         it("should return true if host-group is selected", function() {
             var parentApp = new Application({name: "app", page: page});
             var parentEnv = new Environment({name: "env", page: page, parent: parentApp});
 
             page.activateItem(new HostGroup({name: "host-group", page: page, parent: parentEnv}));
 
-            expect(page.showHostGroupHealth()).toBe(true);
+            expect(page.showRefreshIcon()).toBe(true);
         });
 
         it("should return false if no host-group is selected", function() {
             page.activeHostGroup(null);
 
-            expect(page.showHostGroupHealth()).toBe(false);
+            expect(page.showRefreshIcon()).toBe(false);
         });
 
         it("should return false if editMode=true", function() {
@@ -509,7 +526,7 @@ describe("A Page", function() {
 
             page.editMode(true);
 
-            expect(page.showHostGroupHealth()).toBe(false);
+            expect(page.showRefreshIcon()).toBe(false);
         });
     });
 

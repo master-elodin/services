@@ -15,15 +15,22 @@
             </div>
             <!-- /ko -->
             <!-- ko with: activeHostGroup -->
-            <div class="service-page__active-item service-page__active-item--host-group">
+            <div data-bind="click: $root.activateItem"  class="service-page__active-item service-page__active-item--host-group">
+                <span data-bind="text: name"></span>
+            </div>
+            <!-- /ko -->
+            <!-- ko with: activeService -->
+            <div class="service-page__active-item service-page__active-item--service">
                 <span data-bind="text: name"></span>
             </div>
             <!-- /ko -->
         </div>
+        <!-- ko if: showRefreshIcon -->
         <!-- ko if: showHostGroupHealth -->
         <dv class="service-page__service-name">
             <input data-bind="textInput: filterValue" placeholder="filter services..." autofocus="autofocus">
         </dv>
+        <!-- /ko -->
         <div data-bind="click: refresh" class="service-page__refresh">
             <!-- ko if: isRefreshing -->
             <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
@@ -56,37 +63,15 @@
     </div>
     <div class="service-page__body">
         <!-- ko if: showHostGroupHealth -->
-            <!-- ko with: activeHostGroup -->
-                <div class="service-page__host-group-health">
-                    <!-- ko if: hosts().length === 0 -->
-                    <span>No hosts selected for given host-group!</span><br/>
-                    <span>Edit settings to add hosts.</span>
-                    <!-- /ko -->
-                    <!-- ko foreach: getServiceHealths -->
-                        ${src/service-health/service-health.html}
-                    <!-- /ko -->
-                </div>
-            <!-- /ko -->
+            ${src/page/page-body/page-host-group-health.html}
         <!-- /ko -->
-        <!-- ko ifnot: showHostGroupHealth -->
-        <div class="service-page__data-rows">
-            <div class="data-block">
-                <div class="data-row__braces">
-                    <span>{</span>
-                </div>
-                <!-- ko foreach: applications -->
-                    ${src/application/application.html}
-                <!-- /ko -->
-                <!-- ko if: editMode -->
-                    <!-- ko with: addDataRow -->
-                    ${src/data-row/data-row.html}
-                    <!-- /ko -->
-                <!-- /ko -->
-                <div class="data-row__braces">
-                    <span>}</span>
-                </div>
-            </div>
-        </div>
+        <!-- ko if: showServiceActions -->
+        <!-- ko with: activeService -->
+            ${src/page/page-body/page-service-actions.html}
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- ko ifnot: showRefreshIcon -->
+            ${src/page/page-body/page-select-active.html}
         <!-- /ko -->
     </div>
 </div>

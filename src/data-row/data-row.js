@@ -38,7 +38,7 @@ function DataRow(loadingData) {
         }
     };
 
-    instance.onSelect = loadingData.onSelect || function() { console.log("onSelect clicked!") };
+    instance.onSelect = loadingData.onSelect;
 
     instance.previousName = instance.name();
     instance.onCancel = function() {

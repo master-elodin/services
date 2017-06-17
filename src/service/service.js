@@ -3,6 +3,7 @@ function Service(loadingData) {
 
     instance.name = ko.observable(loadingData.name);
     instance.instancesByHost = ko.observable({});
+    instance.isActive = ko.observable(false);
 
     instance.getInstancesForHost = function(hostName) {
         if(!instance.instancesByHost()[hostName]) {
@@ -62,5 +63,9 @@ function Service(loadingData) {
         // versions are already sorted, so just grab the first one
         return instance.getInstancesForHost(hostName)[0] || Service.UNKNOWN_INSTANCE;
     }
+
+    instance.hosts = ko.pureComputed(function() {
+        return Object.keys(instance.instancesByHost());
+    });
 }
 Service.UNKNOWN_INSTANCE = new ServiceInstance({id: "service-not-found", version: "0.0.0"});
