@@ -35,10 +35,13 @@
         <!-- /ko -->
         <div class="service-page__edit-options">
             <!-- ko if: editMode -->
-            <div data-bind="click: toggleEdit" class="service-page__edit-element service-page__edit-save" title="Save changes">
+            <div data-bind="click: downloadConfig" class="service-page__edit-element" title="Download configuration">
+                <i class="fa fa-download" aria-hidden="true"></i>
+            </div>
+            <div data-bind="click: toggleEdit" class="service-page__edit-element" title="Save changes">
                 <i class="fa fa-floppy-o" aria-hidden="true"></i>
             </div>
-            <div data-bind="click: cancelEdit" class="service-page__edit-element service-page__edit-cancel" title="Cancel changes">
+            <div data-bind="click: cancelEdit" class="service-page__edit-element" title="Cancel changes">
                 <i class="fa fa-times" aria-hidden="true"></i>
             </div>
             <!-- /ko -->

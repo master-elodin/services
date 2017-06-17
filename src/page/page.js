@@ -34,12 +34,12 @@ function Page() {
         return !!instance.activeHostGroup() && !instance.editMode();
     });
 
-    instance.save = function(doNotActivate) {
+    var getSettingsAsJsonText = function() {
         var SAVEABLE_TYPES = [String, Boolean];
         var addObservables = function(obj) {
             var objToSave = {};
             Object.keys(obj).forEach(function(key) {
-                if(ko.isObservable(obj[key])) {
+                if(ko.isObservable(obj[key]) && !ko.isComputed(obj[key])) {
                     var value = obj[key]();
                     if(!value || SAVEABLE_TYPES.indexOf(value.constructor) > -1) {
                         objToSave[key] = value;
@@ -55,8 +55,10 @@ function Page() {
             });
             return objToSave;
         }
-        var objToSave = addObservables(instance);
-        localStorage.setItem(Page.DATA_NAME, JSON.stringify(ko.mapping.toJS(objToSave)));
+        return JSON.stringify(ko.mapping.toJS(addObservables(instance)));
+    }
+    instance.save = function(doNotActivate) {
+        localStorage.setItem(Page.DATA_NAME, getSettingsAsJsonText());
         if(instance.activeHostGroup() && !doNotActivate) {
             // re-activate in order to re-load
             instance.activateItem(instance.activeHostGroup());
@@ -168,6 +170,18 @@ function Page() {
     };
 
     instance.filterValue = ko.observable("");
+
+    instance.downloadConfig = function() {
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(getSettingsAsJsonText()));
+        element.setAttribute('download', "service-config.json");
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+    }
 }
 
 Page.DATA_NAME = "all-data";
