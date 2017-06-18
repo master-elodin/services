@@ -60,12 +60,26 @@ function Service(loadingData) {
     });
 
     instance.getRunningOrHighestVersionInstance = function(hostName) {
+        var serviceInstances = instance.getInstancesForHost(hostName);
+        var runningVersion = serviceInstances.find(function(serviceInstance) {
+            return serviceInstance.isRunning();
+        });
         // versions are already sorted, so just grab the first one
-        return instance.getInstancesForHost(hostName)[0] || Service.UNKNOWN_INSTANCE;
+        return runningVersion || serviceInstances[0] || Service.UNKNOWN_INSTANCE;
     }
 
-    instance.hosts = ko.pureComputed(function() {
-        return Object.keys(instance.instancesByHost());
+    instance.getInstancesPerHost = ko.pureComputed(function() {
+        return Object.keys(instance.instancesByHost()).map(function(hostName) {
+            var serviceInstances = instance.instancesByHost()[hostName];
+            var runningOrHighestVersion = instance.getRunningOrHighestVersionInstance(hostName);
+            // move running version to the front of the list
+            serviceInstances.splice(serviceInstances.indexOf(runningOrHighestVersion), 1);
+            serviceInstances.unshift(runningOrHighestVersion)
+            var allStopped = serviceInstances.every(function(serviceInstance) {
+                return serviceInstance.isStopped() || serviceInstance.hasNoStatus();
+            });
+            return { hostName: hostName, serviceInstances: serviceInstances, allStopped: allStopped};
+        });
     });
 }
-Service.UNKNOWN_INSTANCE = new ServiceInstance({id: "service-not-found", version: "0.0.0"});
+Service.UNKNOWN_INSTANCE = new ServiceInstance({id: "service-not-found", version: "0.0.0", status: ServiceInstance.Status.NONE});

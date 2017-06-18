@@ -83,5 +83,61 @@ describe("A Service", function() {
 
             expect(service.getRunningOrHighestVersionInstance(HOST_NAME)).toBe(serviceInstance3);
         })
+
+        it("should return running version instance", function() {
+            var serviceInstance1 = new ServiceInstance({id: "id1", version: "1.21.0", status: ServiceInstance.Status.RUNNING});
+            service.addServiceInstance(HOST_NAME, serviceInstance1);
+            var serviceInstance2 = new ServiceInstance({id: "id2", version: "1.22.0"});
+            service.addServiceInstance(HOST_NAME, serviceInstance2);
+            var serviceInstance3 = new ServiceInstance({id: "id3", version: "1.22.1"});
+            service.addServiceInstance(HOST_NAME, serviceInstance3);
+
+            expect(service.getRunningOrHighestVersionInstance(HOST_NAME)).toBe(serviceInstance1);
+        })
+    });
+
+    describe("getInstancesPerHost", function() {
+
+        var HOST_NAME = "host1";
+        var serviceInstance1;
+        var serviceInstance2;
+        var serviceInstance3;
+
+        beforeEach(function() {
+            serviceInstance1 = new ServiceInstance({id: "id1", version: "1.21.0"});
+            service.addServiceInstance(HOST_NAME, serviceInstance1);
+            serviceInstance2 = new ServiceInstance({id: "id2", version: "1.22.0", status: ServiceInstance.Status.RUNNING});
+            service.addServiceInstance(HOST_NAME, serviceInstance2);
+            serviceInstance3 = new ServiceInstance({id: "id3", version: "1.22.1"});
+            service.addServiceInstance(HOST_NAME, serviceInstance3);
+        });
+
+        afterEach(function() {
+            serviceInstance1 = null;
+            serviceInstance2 = null;
+            serviceInstance3 = null;
+        });
+
+        it("should sort instances based on version (descending) with running version first", function() {
+            expect(service.getInstancesPerHost()[0].serviceInstances[0]).toBe(serviceInstance2);
+            expect(service.getInstancesPerHost()[0].serviceInstances[1]).toBe(serviceInstance3);
+            expect(service.getInstancesPerHost()[0].serviceInstances[2]).toBe(serviceInstance1);
+        });
+
+        it("should set allStopped=false if any running", function() {
+            expect(service.getInstancesPerHost()[0].allStopped).toBe(false);
+        });
+
+        it("should set allStopped=false if any stopping", function() {
+            serviceInstance2.status(ServiceInstance.Status.STOPPING);
+
+            expect(service.getInstancesPerHost()[0].allStopped).toBe(false);
+        });
+
+        it("should set allStopped=true if all stopped or unknown", function() {
+            serviceInstance2.status(ServiceInstance.Status.STOPPED);
+
+            expect(service.getInstancesPerHost()[0].allStopped).toBe(true);
+        });
     });
 });

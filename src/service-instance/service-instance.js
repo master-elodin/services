@@ -6,9 +6,21 @@ function ServiceInstance(loadingData) {
     
     instance.status = ko.observable(loadingData.status || ServiceInstance.Status.UNKNOWN);
 
-    instance.isRunning = function() {
+    instance.isRunning = ko.pureComputed(function() {
         return instance.status() === ServiceInstance.Status.RUNNING;
-    }
+    });
+
+    instance.isStopped = ko.pureComputed(function() {
+        return instance.status() === ServiceInstance.Status.STOPPED;
+    });
+
+    instance.hasNoStatus = ko.pureComputed(function() {
+        return instance.status() === ServiceInstance.Status.UNKNOWN || instance.status() === ServiceInstance.Status.NONE;
+    });
+
+    instance.isReal = ko.pureComputed(function() {
+        return instance.status() !== ServiceInstance.Status.NONE;
+    });
 
     instance.start = function() {
         console.log( "Start!" );
@@ -29,5 +41,6 @@ ServiceInstance.Status = {
     STOPPED: "Stopped",
     STOPPING: "Stopping",
     STARTING: "Starting",
-    UNKNOWN: "Unknown"
+    UNKNOWN: "Unknown",
+    NONE: "None"
 };

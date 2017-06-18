@@ -1,0 +1,43 @@
+.service-actions {
+    width: 100%;
+}
+
+.service-actions__host {
+    text-align: center;
+    width: 160px;
+}
+
+.service-actions__service-instances {
+    height: 40px;
+}
+
+.service-actions__service-action {
+    background-color: #132537;
+    border-radius: 10px;
+    color: $clouds;
+    cursor: pointer;
+    display: flex;
+    float: left;
+    height: 25px;
+    justify-content: space-between;
+    line-height: 25px;
+    margin-right: 5px;
+    padding: 5px 10px;
+    width: 85px;
+}
+
+.service-actions__service-action--disabled {
+    cursor: default;
+}
+
+.service-actions__service-action i {
+    font-size: 25px;
+}
+
+.service-actions__service-action .fa-stop {
+    color: red;
+}
+
+.service-actions__service-action .fa-play {
+    color: green;
+}

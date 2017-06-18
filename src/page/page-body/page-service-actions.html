@@ -1,5 +1,49 @@
 <div class="service-actions">
-    <!-- ko foreach: hosts -->
-    <span data-bind="text: $data"></span>
-    <!-- /ko -->
+    <table>
+        <thead>
+            <tr>
+                <th class="service-actions__host">Host</th>
+                <th class="service-actions__service-instances">Service Instances</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- ko foreach: getInstancesPerHost -->
+            <tr>
+                <td class="service-actions__host">
+                    <span data-bind="text: hostName"></span>
+                </td>
+                <td class="service-actions__service-instances">
+                    <!-- ko foreach: serviceInstances -->
+                        <!-- ko if: isReal -->
+                            <!-- ko if: isRunning -->
+                            <div data-bind="click: stop" class="service-actions__service-action">
+                                <span data-bind="text: version"></span>
+                                <i class="fa fa-stop" aria-hidden="true"></i>
+                            </div>
+                            <div data-bind="click: restart" class="service-actions__service-action">
+                                <span data-bind="text: version"></span>
+                                <i class="fa fa-refresh" aria-hidden="true"></i>
+                            </div>
+                            <!-- /ko -->
+                            <!-- ko ifnot: isRunning -->
+                            <!-- ko if: $parent.allStopped -->
+                            <div data-bind="click: start" class="service-actions__service-action">
+                                <span data-bind="text: version"></span>
+                                <i class="fa fa-play" aria-hidden="true"></i>
+                            </div>
+                            <!-- /ko -->
+                            <!-- ko ifnot: $parent.allStopped -->
+                            <div class="service-actions__service-action service-actions__service-action--disabled">
+                                <span data-bind="text: version"></span>
+                                <i class="fa fa-minus-circle" aria-hidden="true"></i>
+                            </div>
+                            <!-- /ko -->
+                            <!-- /ko -->
+                        <!-- /ko -->
+                    <!-- /ko -->
+                </td>
+            </tr>
+        <!-- /ko -->
+        </tbody>
+    </table>
 </div>
