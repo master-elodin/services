@@ -95,7 +95,9 @@ function HostGroup(loadingData) {
                 serviceHealth.addHostHealth(new HostHealth({hostName: host.name(), 
                     status: serviceInstance.status(),
                     id: serviceInstance.id(),
-                    version: serviceInstance.version()
+                    version: serviceInstance.version(),
+                    start: serviceInstance.start,
+                    stop: serviceInstance.stop
                 }));
             });
             serviceHealths.push(serviceHealth);

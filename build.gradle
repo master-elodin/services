@@ -15,6 +15,7 @@ def cssProperties = [
     // colors
     '$clouds': '#ecf0f1',
     '$midnight': '#2c3e50',
+    '$darkerMidnight': '#1F3143'
     '$lightBlue': '#2683f0',
     // other
     '$pageHeaderHeight': '50px'
@@ -99,6 +100,7 @@ task combineCss {
                 }
                 cssPart += "${line.trim()} "
             }
+            // TODO: check for comments
             if(!cssPart.isEmpty()) {
                 if(cssPart.contains("'")) {
                     throw new GradleScriptException("Cannot have single quotes in CSS.\nLine: ${cssPart}", null)

@@ -9,7 +9,16 @@
     border-radius: 10px;
     cursor: pointer;
     display: inline-block;
+    margin: 0 5px;
     padding: 5px 15px;
+}
+
+.service-controller__cancel {
+    display: inline-block;
+}
+
+.service-controller__cancel a:visited {
+    color: $lightBlue;
 }
 
 .service-controller__service-name {

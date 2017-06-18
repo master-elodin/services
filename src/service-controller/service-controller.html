@@ -3,9 +3,26 @@
         <div data-bind="click: addSelected" class="service-controller__button">
             <span>Add</span>
         </div>
+        <div data-bind="click: clear" class="service-controller__button">
+            <span>Clear</span>
+        </div>
+        <div data-bind="click: confirmRunStart" class="service-controller__button">
+            <span>Start</span>
+        </div>
+        <div data-bind="click: confirmRunStop" class="service-controller__button">
+            <span>Stop</span>
+        </div>
+        <!-- ko if: needsConfirmation -->
+        <div data-bind="click: confirm" class="service-controller__button">
+            <span>Confirm </span><span data-bind="text: confirmationType"></span>
+        </div>
+        <div class="service-controller__cancel">
+            <a href="#" data-bind="click: cancel">cancel</a>
+        </div>
+        <!-- /ko -->
     </div>
     <div class="service-controller__body">
-        <!-- ko foreach: serviceInstancesPerHost -->
+        <!-- ko foreach: serviceInstances -->
         <div class="service-controller__service-instances-per-host">
             <span data-bind="text: name" class="service-controller__service-name"></span>
             <!-- ko foreach: data -->

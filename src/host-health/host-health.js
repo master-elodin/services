@@ -7,8 +7,11 @@ function HostHealth(loadingData) {
     instance.hostName = ko.observable(loadingData.hostName);
     instance.status = ko.observable(loadingData.status || ServiceInstance.Status.UNKNOWN);
     instance.isReal = ko.pureComputed(function() {
-        return instance.status() === ServiceInstance.Status.NONE;
+        return instance.status() !== ServiceInstance.Status.NONE;
     });
+    instance.start = loadingData.start;
+    instance.stop = loadingData.stop;
+
     instance.selected = ko.observable(false);
     instance.toggleSelected = createToggle(instance.selected);
 

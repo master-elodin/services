@@ -167,7 +167,11 @@ function Page() {
         }
     };
     instance.selectService = function(serviceHealth) {
-        instance.activeService(instance.activeHostGroup().getService(serviceHealth.name()));
+        if(instance.startStopUnlocked()) {
+            // TODO: select or deselect all
+        } else {
+            instance.activeService(instance.activeHostGroup().getService(serviceHealth.name()));
+        }
     };
     instance.clearAllActive = function() {
         clearActive(instance.activeApp);
