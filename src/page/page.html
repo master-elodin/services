@@ -61,9 +61,11 @@
             ${src/service-controller/service-controller-header.html}
             <!-- /ko -->
             <!-- /ko -->
+            <!-- ko ifnot: activeService -->
             <div data-bind="click: toggleEdit, css: {\'service-page__edit-element--toggled\': editMode}" class="service-page__edit-element" title="Toggle editing groups">
                 <i class="fa fa-cogs" aria-hidden="true"></i>
             </div>
+            <!-- /ko -->
         </div>
     </div>
     <div class="service-page__body">

@@ -168,7 +168,13 @@ function Page() {
     };
     instance.selectService = function(serviceHealth) {
         if(instance.startStopUnlocked()) {
-            // TODO: select or deselect all
+            // If any unchecked, check all. If all checked, uncheck all
+            var anyUnchecked = serviceHealth.hostHealths().some(function(hostHealth) {
+                return !hostHealth.selected();
+            });
+            serviceHealth.hostHealths().forEach(function(hostHealth) {
+                hostHealth.selected(anyUnchecked);
+            });
         } else {
             instance.activeService(instance.activeHostGroup().getService(serviceHealth.name()));
         }

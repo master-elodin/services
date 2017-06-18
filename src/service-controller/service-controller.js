@@ -9,17 +9,12 @@ function ServiceController(loadingData) {
     instance.delayForNext = ko.observable(0);
     instance.serviceInstances = ko.observableArray();
     
-    var sortServiceInstance = function(serviceInstance) {
-        serviceInstance.data.sort(function(a, b) {
-            return a.hostName.localeCompare(b.hostName);
-        });
-    }
     instance.addSelected = function() {
         instance.serviceInstances.push.apply(instance.serviceInstances, instance.activeHostGroup().getServiceHealths().map(function(serviceHealth) {
             var selected = {name: serviceHealth.name(), delay: ko.observable(instance.delayForNext())};
             // reset delay for next
             instance.delayForNext(0);
-            selected.data = serviceHealth.hostHealths().filter(function(hostHealth) {
+            selected.data = ko.observableArray(serviceHealth.hostHealths().filter(function(hostHealth) {
                 return hostHealth.selected() && hostHealth.isReal();
             }).map(function(selectedHostHealth) {
                 return {
@@ -31,10 +26,10 @@ function ServiceController(loadingData) {
                 };
             }).sort(function(a, b) {
                 return a.hostName.localeCompare(b.hostName);
-            });
+            }));
             return selected;
         }).filter(function(serviceInstance) {
-            return serviceInstance.data.length > 0;
+            return serviceInstance.data().length > 0;
         }));
         instance.activeHostGroup().getServiceHealths().forEach(function(serviceHealth) {
             serviceHealth.hostHealths().forEach(function(hostHealth) {
@@ -54,8 +49,6 @@ function ServiceController(loadingData) {
     var runningAction = null;
     instance.isRunning = ko.observable(false);
     var run = function(serviceInstance) {
-        console.log("Run " + instance.confirmationType());
-        console.log(serviceInstance);
         if(serviceInstance) {
             var deferred = jQuery.Deferred();
             var countdown = setInterval(function() {
@@ -63,12 +56,12 @@ function ServiceController(loadingData) {
             }, 1000);
             runningAction = setTimeout(function() {
                 clearInterval(countdown);
-                var dataList = serviceInstance.data.shift();
+                var dataList = serviceInstance.data().shift();
                 while(dataList) {
                     dataList[instance.confirmationType()]();
                     dataList = serviceInstance.data.shift();
                 }
-                deferred.resolve(instance.serviceInstances().shift());
+                deferred.resolve(instance.serviceInstances.shift());
             }, serviceInstance.delay());
             deferred.then(run);
         } else {
