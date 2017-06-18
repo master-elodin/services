@@ -94,7 +94,8 @@ function HostGroup(loadingData) {
                 var serviceInstance = service.getRunningOrHighestVersionInstance(host.name());
                 serviceHealth.addHostHealth(new HostHealth({hostName: host.name(), 
                     status: serviceInstance.status(),
-                    id: serviceInstance.id()
+                    id: serviceInstance.id(),
+                    version: serviceInstance.version()
                 }));
             });
             serviceHealths.push(serviceHealth);

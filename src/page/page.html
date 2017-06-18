@@ -69,8 +69,10 @@
     <div class="service-page__body">
         <!-- ko if: showHostGroupHealth -->
             ${src/page/page-body/page-host-group-health.html}
+            <!-- ko if: startStopUnlocked -->
             <!-- ko with: serviceController -->
             ${src/service-controller/service-controller.html}
+            <!-- /ko -->
             <!-- /ko -->
         <!-- /ko -->
         <!-- ko if: showServiceActions -->

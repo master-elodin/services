@@ -220,7 +220,7 @@ function Page() {
         jQuery("#upload-configuration-input").click();
     };
 
-    instance.serviceController = new ServiceController({page: instance});
+    instance.serviceController = new ServiceController({activeHostGroup: instance.activeHostGroup});
     instance.startStopUnlocked = instance.serviceController.startStopUnlocked;
 }
 

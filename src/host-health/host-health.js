@@ -2,10 +2,13 @@
 function HostHealth(loadingData) {
     var instance = this;
 
-    // keep track of ID for debugging purposes
     instance.id = ko.observable(loadingData.id);
+    instance.version = ko.observable(loadingData.version);
     instance.hostName = ko.observable(loadingData.hostName);
     instance.status = ko.observable(loadingData.status || ServiceInstance.Status.UNKNOWN);
+    instance.isReal = ko.pureComputed(function() {
+        return instance.status() === ServiceInstance.Status.NONE;
+    });
     instance.selected = ko.observable(false);
     instance.toggleSelected = createToggle(instance.selected);
 

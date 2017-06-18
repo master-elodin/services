@@ -109,6 +109,8 @@
 }
 
 .service-page__service-controller {
+    background-color: grey;
+    padding: 15px;
     width: 500px;
 }
 
