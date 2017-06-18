@@ -1,6 +1,15 @@
 .service-controller__header {
-    height: 50px;
+    display: flex;
+    height: 35px;
+    justify-content: flex-start;
+    line-height: 35px;
     padding: 5px;
+}
+
+.service-controller__body {
+    height: calc(100% - 60px);
+    overflow-y: auto;
+    margin-top: 10px;
 }
 
 .service-controller__button {
@@ -10,7 +19,12 @@
     cursor: pointer;
     display: inline-block;
     margin: 0 5px;
-    padding: 5px 15px;
+    padding: 0 15px;
+}
+
+.service-controller__button--disabled {
+    background-color: $disabled;
+    cursor: default;
 }
 
 .service-controller__cancel {
@@ -25,4 +39,24 @@
     font-weight: bold;
     margin-bottom: 5px;
     padding: 5px 0;
+}
+
+.service-controller__delay {
+    display: inline-block;
+    width: 35%;
+}
+
+.service-controller__delay-input {
+    display: inline-block;
+    margin-left: auto;
+}
+
+.service-controller__delay-input span {
+    padding: 0 15px;
+}
+
+.service-controller__delay-input input {
+    font-size: 18px;
+    padding: 5px;
+    width: 50px;
 }

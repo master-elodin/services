@@ -47,15 +47,15 @@ describe("ServiceController", function() {
 
             serviceController.addSelected();
 
-            expect(serviceController.serviceInstances().length).toBe(2);
-            expect(serviceController.serviceInstances()[0].name).toBe("serviceHealth1");
-            expect(serviceController.serviceInstances()[0].data()[0].id).toBe("id1");
-            expect(serviceController.serviceInstances()[0].data()[0].version).toBe("1.21.0");
-            expect(serviceController.serviceInstances()[0].data()[1].id).toBe("id2");
-            expect(serviceController.serviceInstances()[0].data()[1].version).toBe("1.21.1");
-            expect(serviceController.serviceInstances()[1].name).toBe("serviceHealth3");
-            expect(serviceController.serviceInstances()[1].data()[0].id).toBe("id5");
-            expect(serviceController.serviceInstances()[1].data()[0].version).toBe("1.23.0");
+            expect(serviceController.selectionGroup()[0].services().length).toBe(2);
+            expect(serviceController.selectionGroup()[0].services()[0].name).toBe("serviceHealth1");
+            expect(serviceController.selectionGroup()[0].services()[0].data()[0].id).toBe("id1");
+            expect(serviceController.selectionGroup()[0].services()[0].data()[0].version).toBe("1.21.0");
+            expect(serviceController.selectionGroup()[0].services()[0].data()[1].id).toBe("id2");
+            expect(serviceController.selectionGroup()[0].services()[0].data()[1].version).toBe("1.21.1");
+            expect(serviceController.selectionGroup()[0].services()[1].name).toBe("serviceHealth3");
+            expect(serviceController.selectionGroup()[0].services()[1].data()[0].id).toBe("id5");
+            expect(serviceController.selectionGroup()[0].services()[1].data()[0].version).toBe("1.23.0");
         });
 
         it("should set selected to be false for all hostHealths", function() {
@@ -103,9 +103,9 @@ describe("ServiceController", function() {
 
             serviceController.addSelected();
 
-            expect(serviceController.serviceInstances()[0].data()[0].id).toBe("id2");
-            expect(serviceController.serviceInstances()[0].data()[1].id).toBe("id1");
-            expect(serviceController.serviceInstances()[1].data()[0].id).toBe("id3");
+            expect(serviceController.selectionGroup()[0].services()[0].data()[0].id).toBe("id2");
+            expect(serviceController.selectionGroup()[0].services()[0].data()[1].id).toBe("id1");
+            expect(serviceController.selectionGroup()[0].services()[1].data()[0].id).toBe("id3");
         });
 
         it("should not include non-real host healths", function() {
@@ -123,7 +123,7 @@ describe("ServiceController", function() {
 
             serviceController.addSelected();
 
-            expect(serviceController.serviceInstances()[0].data().length).toBe(1);
+            expect(serviceController.selectionGroup()[0].services()[0].data().length).toBe(1);
         });
     });
 });

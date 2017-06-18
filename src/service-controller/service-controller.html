@@ -1,17 +1,37 @@
 <div class="service-page__service-controller">
     <div class="service-controller__header">
-        <div data-bind="click: addSelected" class="service-controller__button">
+        <div data-bind="click: addSelected, css: {\'service-controller__button--disabled\': disableAddClearButtons}" class="service-controller__button">
             <span>Add</span>
         </div>
-        <div data-bind="click: clear" class="service-controller__button">
+        <div data-bind="click: addAll, css: {\'service-controller__button--disabled\': disableAddClearButtons}" class="service-controller__button">
+            <span>Add all</span>
+        </div>
+        <div data-bind="click: clear, css: {\'service-controller__button--disabled\': disableAddClearButtons}" class="service-controller__button">
             <span>Clear</span>
         </div>
-        <div data-bind="click: confirmRunStart" class="service-controller__button">
-            <span>Start</span>
+        <!-- ko if: isRunning -->
+        <div data-bind="click: abort" class="service-controller__button">
+            <span>Abort</span>
         </div>
-        <div data-bind="click: confirmRunStop" class="service-controller__button">
-            <span>Stop</span>
-        </div>
+        <!-- /ko -->
+        <!-- ko ifnot: isRunning -->
+            <!-- ko if: isAborted -->
+            <div data-bind="click: resume" class="service-controller__button">
+                <span>Resume</span>
+            </div>
+            <div data-bind="click: cancelRun" class="service-controller__button">
+                <span>Cancel</span>
+            </div>
+            <!-- /ko -->
+            <!-- ko ifnot: isAborted -->
+            <div data-bind="click: confirmRunStart" class="service-controller__button">
+                <span>Start</span>
+            </div>
+            <div data-bind="click: confirmRunStop" class="service-controller__button">
+                <span>Stop</span>
+            </div>
+            <!-- /ko -->
+        <!-- /ko -->
         <!-- ko if: needsConfirmation -->
         <div data-bind="click: confirm" class="service-controller__button">
             <span>Confirm </span><span data-bind="text: confirmationType"></span>
@@ -20,9 +40,21 @@
             <a href="#" data-bind="click: cancel">cancel</a>
         </div>
         <!-- /ko -->
+        <!-- ko ifnot: needsConfirmation -->
+        <div class="service-controller__delay-input">
+            <span>Delay</span>
+            <input data-bind="textInput: delayForNext">
+        </div>
+        <!-- /ko -->
     </div>
     <div class="service-controller__body">
-        <!-- ko foreach: serviceInstances -->
+        <!-- ko foreach: selectionGroup -->
+        <!-- ko with: delay -->
+            <!-- ko if: $data > 0 -->
+            ${src/service-controller/service-controller-delay.html}
+            <!-- /ko -->
+        <!-- /ko -->
+        <!-- ko foreach: services -->
         <div class="service-controller__service-instances-per-host">
             <span data-bind="text: name" class="service-controller__service-name"></span>
             <!-- ko foreach: data -->
@@ -33,6 +65,12 @@
             </div>
             <!-- /ko -->
         </div>
+        <!-- /ko -->
+        <!-- /ko -->
+        <!-- ko with: delayForNext -->
+            <!-- ko if: $data > 0 -->
+            ${src/service-controller/service-controller-delay.html}
+            <!-- /ko -->
         <!-- /ko -->
     </div>
 </div>

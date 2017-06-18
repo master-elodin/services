@@ -138,6 +138,7 @@ function Page() {
             onChange();
             instance.save(true);
         }
+        instance.startStopUnlocked(false);
         if(item.constructor === Application) {
             var onChange = function() {
                 if(!keepChildren) {

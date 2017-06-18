@@ -14,6 +14,8 @@ def scriptProperties = [
 def cssProperties = [
     // colors
     '$clouds': '#ecf0f1',
+    // TODO: better color for disabled
+    '$disabled': 'grey',
     '$midnight': '#2c3e50',
     '$darkerMidnight': '#1F3143',
     '$lightBlue': '#2683f0',

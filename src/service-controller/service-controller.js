@@ -7,89 +7,156 @@ function ServiceController(loadingData) {
     instance.activeHostGroup = loadingData.activeHostGroup;
 
     instance.delayForNext = ko.observable(0);
-    instance.serviceInstances = ko.observableArray();
-    
-    instance.addSelected = function() {
-        instance.serviceInstances.push.apply(instance.serviceInstances, instance.activeHostGroup().getServiceHealths().map(function(serviceHealth) {
-            var selected = {name: serviceHealth.name(), delay: ko.observable(instance.delayForNext())};
-            // reset delay for next
-            instance.delayForNext(0);
-            selected.data = ko.observableArray(serviceHealth.hostHealths().filter(function(hostHealth) {
-                return hostHealth.selected() && hostHealth.isReal();
-            }).map(function(selectedHostHealth) {
-                return {
-                    id: selectedHostHealth.id(), 
-                    version: selectedHostHealth.version(), 
-                    hostName: selectedHostHealth.hostName(),
-                    start: selectedHostHealth.start,
-                    stop: selectedHostHealth.stop
-                };
-            }).sort(function(a, b) {
-                return a.hostName.localeCompare(b.hostName);
-            }));
-            return selected;
-        }).filter(function(serviceInstance) {
-            return serviceInstance.data().length > 0;
-        }));
-        instance.activeHostGroup().getServiceHealths().forEach(function(serviceHealth) {
-            serviceHealth.hostHealths().forEach(function(hostHealth) {
-                hostHealth.selected(false);
+    instance.selectionGroup = ko.observableArray();
+
+    var scrollToBottom = function() {
+        var bodyEl = jQuery(".service-controller__body")[0];
+        if(bodyEl) {
+            bodyEl.scrollTop = bodyEl.scrollHeight;
+        }
+    };
+    var scrollToTop = function() {
+        var bodyEl = jQuery(".service-controller__body")[0];
+        if(bodyEl) {
+            bodyEl.scrollTop = 0;
+        }
+    }
+
+    var addSelectionGroup = function(filter) {
+        if(!instance.disableAddClearButtons()) {
+            // selection group is a list of service instances with a delay
+            instance.selectionGroup.push({delay: ko.observable(parseInt(instance.delayForNext())),
+                services: ko.observableArray(instance.activeHostGroup().getServiceHealths().map(function(serviceHealth) {
+                    var selected = {name: serviceHealth.name()};
+                    // reset delay for next
+                    instance.delayForNext(0);
+                    selected.data = ko.observableArray(serviceHealth.hostHealths().filter(filter).map(function(selectedHostHealth) {
+                        return {
+                            id: selectedHostHealth.id(), 
+                            version: selectedHostHealth.version(), 
+                            hostName: selectedHostHealth.hostName(),
+                            start: selectedHostHealth.start,
+                            stop: selectedHostHealth.stop
+                        };
+                    }).sort(function(a, b) {
+                        return a.hostName.localeCompare(b.hostName);
+                    }));
+                    return selected;
+                }).filter(function(serviceInstance) {
+                    return serviceInstance.data().length > 0;
+                }))
             });
+            // scroll to bottom to be able to see newly-added items
+            scrollToBottom();
+
+            instance.activeHostGroup().getServiceHealths().forEach(function(serviceHealth) {
+                serviceHealth.hostHealths().forEach(function(hostHealth) {
+                    hostHealth.selected(false);
+                });
+            });
+        }
+    }
+    instance.addAll = function() {
+        addSelectionGroup(function(hostHealth) {
+            return hostHealth.isReal();
+        });
+    };
+    instance.addSelected = function() {
+        addSelectionGroup(function(hostHealth) {
+            return hostHealth.selected() && hostHealth.isReal();
         });
     };
 
     instance.clear = function() {
-        instance.serviceInstances([]);
+        if(!instance.disableAddClearButtons()) {
+            instance.selectionGroup([]);
+        }
     };
+
+    instance.disableAddClearButtons = ko.pureComputed(function() {
+        return instance.isRunning() || instance.needsConfirmation() || instance.isAborted();
+    });
 
     instance.needsConfirmation = ko.observable(false);
     instance.confirmationType = ko.observable();
     var CONFIRMATION_TYPES = { START: "start", STOP: "stop"}
 
+    var countdown = null;
     var runningAction = null;
     instance.isRunning = ko.observable(false);
-    var run = function(serviceInstance) {
-        if(serviceInstance) {
+    var run = function(serviceGroup) {
+        if(serviceGroup) {
             var deferred = jQuery.Deferred();
-            var countdown = setInterval(function() {
-                serviceInstance.delay(serviceInstance.delay() - 1);
+            clearInterval(countdown);
+            countdown = setInterval(function() {
+                serviceGroup.delay(serviceGroup.delay() - 1);
             }, 1000);
+            clearInterval(runningAction);
             runningAction = setTimeout(function() {
                 clearInterval(countdown);
-                var dataList = serviceInstance.data().shift();
-                while(dataList) {
-                    dataList[instance.confirmationType()]();
-                    dataList = serviceInstance.data.shift();
+                var service = serviceGroup.services.shift();
+                while(service) {
+                    var dataList = service.data().shift();
+                    while(dataList) {
+                        dataList[instance.confirmationType()]();
+                        dataList = service.data.shift();
+                    }
+                    service = serviceGroup.services.shift();
                 }
-                deferred.resolve(instance.serviceInstances.shift());
-            }, serviceInstance.delay());
+                instance.selectionGroup.shift();
+                deferred.resolve(instance.selectionGroup()[0]);
+            }, serviceGroup.delay() * 1000);
             deferred.then(run);
         } else {
-            instance.abort();
+            end();
         }
     };
 
-    instance.abort = function() {
+    var end = function() {
+        clearInterval(countdown);
         clearTimeout(runningAction);
         instance.isRunning(false);
-        instance.needsConfirmation(false);
+    };
+    instance.isAborted = ko.observable(false);
+    instance.abort = function() {
+        end();
+        instance.isAborted(true);
     };
 
     instance.confirm = function() {
-        run(instance.serviceInstances().shift());
+        instance.isRunning(true);
+        instance.needsConfirmation(false);
+        run(instance.selectionGroup()[0]);
     };
 
     instance.cancel = function() {
         instance.needsConfirmation(false);
-    }
+        instance.isAborted(false);
+    };
+
+    instance.resume = function() {
+        instance.confirm();
+    };
+
+    instance.cancelRun = function() {
+        instance.cancel();
+        instance.clear();
+    };
+
+    var confirmRun = function(confirmationType) {
+        if(!instance.isRunning()) {
+            scrollToTop();
+            instance.confirmationType(confirmationType);
+            instance.needsConfirmation(true);
+            instance.isAborted(false);
+        }
+    };
 
     instance.confirmRunStart = function() {
-        instance.confirmationType(CONFIRMATION_TYPES.START);
-        instance.needsConfirmation(true);
+        confirmRun(CONFIRMATION_TYPES.START);
     };
 
     instance.confirmRunStop = function() {
-        instance.confirmationType(CONFIRMATION_TYPES.STOP);
-        instance.needsConfirmation(true);
+        confirmRun(CONFIRMATION_TYPES.STOP);
     };
 }
