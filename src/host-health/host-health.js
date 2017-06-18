@@ -7,7 +7,7 @@ function HostHealth(loadingData) {
     instance.hostName = ko.observable(loadingData.hostName);
     instance.status = ko.observable(loadingData.status || ServiceInstance.Status.UNKNOWN);
     instance.isReal = ko.pureComputed(function() {
-        return instance.status() !== ServiceInstance.Status.NONE;
+        return instance.id() !== Service.UNKNOWN_INSTANCE.id();
     });
     instance.start = loadingData.start;
     instance.stop = loadingData.stop;

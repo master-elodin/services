@@ -1,6 +1,6 @@
 def scriptProperties = [
     name: "Services",
-    version: "0.1.0",
+    version: "1.0.0",
     author: "Tim VanDoren",
     description: "Make the Service Console look nicer!",
     // target is what Tampermonkey uses to decide which pages to run on
