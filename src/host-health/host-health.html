@@ -1,5 +1,12 @@
 <div class="host-health">
+    <!-- ko if: $root.startStopUnlocked -->
+    <div data-bind="click: toggleSelected, css: {\'host-health__icon__start-stop--selected\': selected}" class="host-health__icon host-health__icon__start-stop">
+        <i class="fa fa-check" aria-hidden="true"></i>
+    </div>
+    <!-- /ko -->
+    <!-- ko ifnot: $root.startStopUnlocked -->
     <div data-bind="css: getHealthColorClass" class="host-health__icon">
         <i data-bind="css: getHealthIcon" class="fa" aria-hidden="true"></i>
     </div>
+    <!-- /ko -->
 </div>

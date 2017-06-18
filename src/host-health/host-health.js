@@ -6,6 +6,8 @@ function HostHealth(loadingData) {
     instance.id = ko.observable(loadingData.id);
     instance.hostName = ko.observable(loadingData.hostName);
     instance.status = ko.observable(loadingData.status || ServiceInstance.Status.UNKNOWN);
+    instance.selected = ko.observable(false);
+    instance.toggleSelected = createToggle(instance.selected);
 
     var iconMappings = {};
     iconMappings[ServiceInstance.Status.RUNNING] = { icon: "fa-check-circle-o", colorClass: "host-health__icon--running" };

@@ -56,14 +56,22 @@
                 <i class="fa fa-times" aria-hidden="true"></i>
             </div>
             <!-- /ko -->
-            <div data-bind="click: toggleEdit, css: {\'service-page__edit-toggle--toggled\': editMode}" class="service-page__edit-element service-page__edit-toggle" title="Toggle editing groups">
-                <i class="fa fa-gear" aria-hidden="true"></i>
+            <!-- ko ifnot: editMode -->
+            <!-- ko with: serviceController -->
+            ${src/service-controller/service-controller-header.html}
+            <!-- /ko -->
+            <!-- /ko -->
+            <div data-bind="click: toggleEdit, css: {\'service-page__edit-element--toggled\': editMode}" class="service-page__edit-element" title="Toggle editing groups">
+                <i class="fa fa-cogs" aria-hidden="true"></i>
             </div>
         </div>
     </div>
     <div class="service-page__body">
         <!-- ko if: showHostGroupHealth -->
             ${src/page/page-body/page-host-group-health.html}
+            <!-- ko with: serviceController -->
+            ${src/service-controller/service-controller.html}
+            <!-- /ko -->
         <!-- /ko -->
         <!-- ko if: showServiceActions -->
         <!-- ko with: activeService -->

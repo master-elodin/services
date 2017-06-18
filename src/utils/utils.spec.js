@@ -15,4 +15,21 @@ describe("utils", function () {
             expect(observableArray()[1]).toBe(item3);
         });
     });
+
+    describe("createToggle", function() {
+
+        it("should toggle observable", function() {
+            var item = ko.observable(false);
+
+            var toggle = createToggle(item);
+
+            toggle(item);
+
+            expect(item()).toBe(true);
+
+            toggle(item);
+
+            expect(item()).toBe(false);
+        });
+    });
 });

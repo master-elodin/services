@@ -25,6 +25,7 @@ ${src/host/host.js}
 ${src/host-group/host-group.js}
 ${src/environment/environment.js}
 ${src/application/application.js}
+${src/service-controller/service-controller.js}
 ${src/page/page.js}
 
 ${bin/combined.html}

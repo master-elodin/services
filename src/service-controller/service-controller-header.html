@@ -1,0 +1,8 @@
+<div data-bind="click: toggleStartStop, css: {\'service-page__edit-element--toggled\': startStopUnlocked}" class="service-page__edit-element" title="Start/stop services">
+    <!-- ko if: startStopUnlocked -->
+    <i class="fa fa-unlock-alt" aria-hidden="true"></i>
+    <!-- /ko -->
+    <!-- ko ifnot: startStopUnlocked -->
+    <i class="fa fa-lock" aria-hidden="true"></i>
+    <!-- /ko -->
+</div>

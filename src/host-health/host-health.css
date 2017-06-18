@@ -9,6 +9,7 @@
     font-size: 25px;
     line-height: 25px;
     padding: 2px 5px;
+    width: 22px;
 }
 
 /* TODO: get good colors for health icons */
@@ -30,4 +31,28 @@
 
 .host-health__icon.host-health__icon--unknown {
     background-color: grey;
+}
+
+.host-health__icon__start-stop {
+    background-color: $midnight;
+    cursor: pointer;
+    padding: 2px 6px 2px 4px;
+    opacity: .2;
+}
+
+.host-health__icon__start-stop .fa {
+    opacity: 0;
+}
+
+.host-health__icon__start-stop:hover {
+    opacity: .5;
+}
+
+.host-health__icon__start-stop:hover .fa {
+    opacity: 1;
+}
+
+.host-health__icon__start-stop--selected .fa,
+.host-health__icon__start-stop--selected {
+    opacity: 1;
 }

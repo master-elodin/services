@@ -219,6 +219,9 @@ function Page() {
         });
         jQuery("#upload-configuration-input").click();
     };
+
+    instance.serviceController = new ServiceController({page: instance});
+    instance.startStopUnlocked = instance.serviceController.startStopUnlocked;
 }
 
 Page.DATA_NAME = "all-data";

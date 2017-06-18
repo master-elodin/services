@@ -31,6 +31,7 @@
     display: flex;
     font-size: 18px;
     height: calc(100% - 70px);
+    justify-content: space-between;
     min-height: calc(100% - 70px);
     overflow-y: auto;
     padding: 10px;
@@ -55,7 +56,7 @@
 }
 
 /* TODO: add more midnight colors as properties */
-.service-page__edit-toggle.service-page__edit-toggle--toggled {
+.service-page__edit-element--toggled {
     background-color: #1D2F41;
 }
 
@@ -102,8 +103,13 @@
     display: flex;
     flex-direction: column;
     flex-flow: column wrap;
+    overflow: auto;
     padding: 20px 50px;
-    width: 100%;
+    width: 1000px;
+}
+
+.service-page__service-controller {
+    width: 500px;
 }
 
 .service-page__service-name {
