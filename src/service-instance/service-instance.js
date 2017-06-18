@@ -19,7 +19,7 @@ function ServiceInstance(loadingData) {
     });
 
     instance.isReal = ko.pureComputed(function() {
-        return instance.status() !== ServiceInstance.Status.NONE;
+        return instance.status() !== ServiceInstance.Status.NONE && instance !== Service.UNKNOWN_INSTANCE;
     });
 
     instance.start = function() {

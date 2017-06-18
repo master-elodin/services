@@ -223,7 +223,7 @@ describe("A Host Group", function() {
             expect(serviceHealths[1].hostHealths()[1].hostName()).toBe("host2");
         });
 
-        it("should set HostHealth as unknown if no ServiceInstance for host", function() {
+        it("should set HostHealth as NONE if no ServiceInstance for host", function() {
             var service1 = new Service({name: "alpha-service"});
             service1.addServiceInstance("host1", new ServiceInstance({id: "service1-host1", version: "1.0.0"}));
             hostGroup.addService(service1);
@@ -232,7 +232,7 @@ describe("A Host Group", function() {
 
             expect(serviceHealths[0].name()).toBe("alpha-service");
             expect(serviceHealths[0].hostHealths()[1].hostName()).toBe("host2");
-            expect(serviceHealths[0].hostHealths()[1].status()).toBe(ServiceInstance.Status.UNKNOWN);
+            expect(serviceHealths[0].hostHealths()[1].status()).toBe(ServiceInstance.Status.NONE);
         });
     });
 });
