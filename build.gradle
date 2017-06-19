@@ -15,6 +15,7 @@ def cssProperties = [
     // colors
     '$clouds': '#ecf0f1',
     '$darkerClouds': '#DFE3E4',
+    '$slightlyDarkerClouds': '#A0A4A5',
     // TODO: better color for disabled
     '$disabled': 'grey',
     '$midnight': '#2c3e50',

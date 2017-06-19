@@ -60,3 +60,42 @@
     padding: 5px;
     width: 50px;
 }
+
+.service-controller__show-load-save {
+    background-color: $slightlyDarkerClouds;
+    border-radius: 5px;
+    color: $midnight;
+    cursor: pointer;
+    font-size: 25px;
+    margin-left: 10px;
+    text-align: center;
+    width: 25px;
+}
+
+.service-controller__load-save-actions {
+    display: flex;
+    font-size: 25px;
+    height: 35px;
+    padding: 0 10px;
+}
+
+.service-controller__load-save-actions .fa {
+    cursor: pointer;
+    font-size: 30px;
+    padding: 0 8px;
+}
+
+.service-controller__load-save-actions input {
+    font-size: 18px;
+    padding: 2px 5px;
+}
+
+.service-controller__saved-config {
+    margin-top: 10px;
+    padding: 10px;
+}
+
+.service-controller__saved-config-name {
+    cursor: pointer;
+    padding: 5px 0;
+}

@@ -1,0 +1,24 @@
+<!-- ko foreach: selectionGroup -->
+<!-- ko with: delay -->
+    <!-- ko if: $data > 0 -->
+    ${src/service-controller/service-controller-delay.html}
+    <!-- /ko -->
+<!-- /ko -->
+<!-- ko foreach: services -->
+<div class="service-controller__service-instances-per-host">
+    <span data-bind="text: name" class="service-controller__service-name"></span>
+    <!-- ko foreach: data -->
+    <div class="service-controller__service-instance">
+        <span data-bind="text: hostName"></span>
+        <span> : </span>
+        <span data-bind="text: version"></span>
+    </div>
+    <!-- /ko -->
+</div>
+<!-- /ko -->
+<!-- /ko -->
+<!-- ko with: delayForNext -->
+    <!-- ko if: $data > 0 -->
+    ${src/service-controller/service-controller-delay.html}
+    <!-- /ko -->
+<!-- /ko -->

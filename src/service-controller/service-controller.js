@@ -55,7 +55,49 @@ function ServiceController(loadingData) {
                 });
             });
         }
+    };
+
+    instance.configurationName = ko.observable("default-configuration");
+    instance.showLoadSave = ko.observable(false);
+    instance.toggleShowLoadSave = createToggle(instance.showLoadSave);
+    var getSavedData = function() {
+        var savedJson = localStorage.getItem(ServiceController.DATA_NAME);
+        return savedJson ? JSON.parse(savedJson) : { configurations: [] };
     }
+    instance.savedConfigNames = ko.observableArray(getSavedData().configurations.map(function(config) {
+        return config.configurationName;
+    }));
+
+    instance.save = function() {
+        var saveData = { configurationName: instance.configurationName() };
+        saveData.selectionGroup = ko.mapping.toJS(instance.selectionGroup);
+        var savedData = getSavedData();
+
+        for(var i = 0; i < savedData.configurations.length; i++) {
+            if(savedData.configurations[i].configurationName === saveData.configurationName) {
+                savedData.configurations[i] = saveData;
+                break;
+            }
+        }
+        savedData.configurations.push(saveData);
+        localStorage.setItem(ServiceController.DATA_NAME, JSON.stringify(savedData));
+
+        instance.savedConfigNames.push(instance.configurationName());
+        instance.savedConfigNames.sort(function(a, b) {
+            return a.localeCompare(b);
+        });
+    };
+
+    instance.load = function(configName) {
+        var savedData = getSavedData();
+        var configurationToLoad = savedData.configurations.find(function(config) {
+            return config.configurationName === configName;
+        });
+        instance.configurationName(configurationToLoad.name);
+        instance.selectionGroup(ko.mapping.fromJS(configurationToLoad.selectionGroup)());
+        instance.showLoadSave(false);
+    };
+
     instance.addAll = function() {
         addSelectionGroup(function(hostHealth) {
             return hostHealth.isReal();
@@ -74,7 +116,7 @@ function ServiceController(loadingData) {
     };
 
     instance.disableAddClearButtons = ko.pureComputed(function() {
-        return instance.isRunning() || instance.needsConfirmation() || instance.isAborted();
+        return instance.isRunning() || instance.needsConfirmation() || instance.isAborted() || instance.showLoadSave();
     });
 
     instance.needsConfirmation = ko.observable(false);
@@ -160,3 +202,4 @@ function ServiceController(loadingData) {
         confirmRun(CONFIRMATION_TYPES.STOP);
     };
 }
+ServiceController.DATA_NAME = "saved-configurations";
