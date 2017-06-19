@@ -29,7 +29,7 @@
 
 .service-page__body {
     display: flex;
-    font-size: 18px;
+    font-size: 14px;
     height: calc(100% - 70px);
     justify-content: space-between;
     min-height: calc(100% - 70px);
@@ -104,7 +104,7 @@
     flex-direction: column;
     flex-flow: column wrap;
     overflow: auto;
-    padding: 20px 50px;
+    padding: 20px 10px;
     width: 65%;
 }
 

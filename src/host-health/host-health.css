@@ -33,6 +33,10 @@
     background-color: grey;
 }
 
+.host-health__icon.host-health__icon--failed {
+    background-color: #ff6d00;
+}
+
 .host-health__icon__start-stop {
     background-color: $midnight;
     cursor: pointer;

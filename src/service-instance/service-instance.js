@@ -23,15 +23,15 @@ function ServiceInstance(loadingData) {
     });
 
     instance.start = function() {
-        console.log( "Start!" );
+        ServiceInstance.start(instance.id());
     }
 
     instance.stop = function() {
-        console.log( "Stop!" );
+        ServiceInstance.stop(instance.id());
     }
 
     instance.restart = function() {
-        console.log( "Restart!" );
+        ServiceInstance.restart(instance.id());
     }
 }
 ServiceInstance.Status = {
@@ -42,5 +42,17 @@ ServiceInstance.Status = {
     STOPPING: "Stopping",
     STARTING: "Starting",
     UNKNOWN: "Unknown",
+    START_FAILED: "Start Failed",
     NONE: "None"
 };
+ServiceInstance.start = function(id) {
+    console.log("Start with ID: " + id);
+}
+
+ServiceInstance.stop = function(id) {
+    console.log("Stop with ID: " + id);
+}
+
+ServiceInstance.restart = function(id) {
+    console.log("Restart with ID: " + id);
+}

@@ -34,9 +34,7 @@ function ServiceController(loadingData) {
                         return {
                             id: selectedHostHealth.id(), 
                             version: selectedHostHealth.version(), 
-                            hostName: selectedHostHealth.hostName(),
-                            start: selectedHostHealth.start,
-                            stop: selectedHostHealth.stop
+                            hostName: selectedHostHealth.hostName()
                         };
                     }).sort(function(a, b) {
                         return a.hostName.localeCompare(b.hostName);
@@ -165,7 +163,7 @@ function ServiceController(loadingData) {
                 while(service) {
                     var dataList = service.data().shift();
                     while(dataList) {
-                        dataList[instance.confirmationType()]();
+                        ServiceInstance[instance.confirmationType()](dataList.id);
                         dataList = service.data.shift();
                     }
                     service = serviceGroup.services.shift();
