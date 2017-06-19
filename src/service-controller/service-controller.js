@@ -58,6 +58,11 @@ function ServiceController(loadingData) {
     };
 
     instance.configurationName = ko.observable("default-configuration");
+    instance.configurationName.subscribe(function(newVal) {
+        if(newVal) {
+            instance.configurationName(newVal.replace(" ", "-"));
+        }
+    });
     instance.showLoadSave = ko.observable(false);
     instance.toggleShowLoadSave = createToggle(instance.showLoadSave);
     var getSavedData = function() {
@@ -68,24 +73,34 @@ function ServiceController(loadingData) {
         return config.configurationName;
     }));
 
-    instance.save = function() {
-        var saveData = { configurationName: instance.configurationName() };
-        saveData.selectionGroup = ko.mapping.toJS(instance.selectionGroup);
-        var savedData = getSavedData();
+    var getConfigForSaving = function() {
+        var configForSaving = { configurationName: instance.configurationName() };
+        configForSaving.selectionGroup = ko.mapping.toJS(instance.selectionGroup);
+        return configForSaving;
+    };
 
+    var addConfigToSavedData = function(newConfig, savedData) {
+        var existingConfig = false;
         for(var i = 0; i < savedData.configurations.length; i++) {
-            if(savedData.configurations[i].configurationName === saveData.configurationName) {
-                savedData.configurations[i] = saveData;
+            if(savedData.configurations[i].configurationName === newConfig.configurationName) {
+                savedData.configurations[i] = newConfig;
+                existingConfig = true;
                 break;
             }
         }
-        savedData.configurations.push(saveData);
+        if(!existingConfig) {
+            savedData.configurations.push(newConfig);
+            instance.savedConfigNames.push(newConfig.configurationName);
+            instance.savedConfigNames.sort(function(a, b) {
+                return a.localeCompare(b);
+            });
+        }
         localStorage.setItem(ServiceController.DATA_NAME, JSON.stringify(savedData));
+    };
 
-        instance.savedConfigNames.push(instance.configurationName());
-        instance.savedConfigNames.sort(function(a, b) {
-            return a.localeCompare(b);
-        });
+    instance.save = function() {
+        var savedData = getSavedData();
+        addConfigToSavedData(getConfigForSaving(), savedData);
     };
 
     instance.load = function(configName) {
@@ -96,6 +111,16 @@ function ServiceController(loadingData) {
         instance.configurationName(configurationToLoad.name);
         instance.selectionGroup(ko.mapping.fromJS(configurationToLoad.selectionGroup)());
         instance.showLoadSave(false);
+    };
+
+    instance.downloadConfig = function() {
+        downloadAsFile(JSON.stringify(getConfigForSaving()), instance.configurationName().replace(" ", "-") + ".json");
+    };
+
+    instance.uploadConfig = function() {
+        uploadFile("#upload-configuration-input", function(configText) {
+            addConfigToSavedData(JSON.parse(configText), getSavedData());
+        });
     };
 
     instance.addAll = function() {

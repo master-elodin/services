@@ -200,35 +200,14 @@ function Page() {
     instance.filterValue = ko.observable("");
 
     instance.downloadConfig = function() {
-        var element = document.createElement("a");
-        element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(getSettingsAsJsonText()));
-        element.setAttribute("download", "service-config.json");
-        element.style.display = "none";
-        document.body.appendChild(element);
-
-        element.click();
-
-        document.body.removeChild(element);
+        downloadAsFile(getSettingsAsJsonText(), "service-config.json");
     };
 
     instance.uploadConfig = function() {
-        jQuery("#upload-configuration-input").on("change", function() {
-            var reader = new FileReader();
-            reader.onload = function(){
-                var configText = reader.result;
-                try {
-                    // parse just to make sure this is valid input
-                    JSON.parse(configText);
-                    localStorage.setItem(Page.DATA_NAME, configText);
-                    instance.load();
-                } catch(e) {
-                    // TODO: in-page error messages
-                    alert("Failed to load configuration! Make sure it is valid JSON");
-                }
-            };
-            reader.readAsText(this.files[0]);
+        uploadFile("#upload-configuration-input", function(configText) {
+            localStorage.setItem(Page.DATA_NAME, configText);
+            instance.load();
         });
-        jQuery("#upload-configuration-input").click();
     };
 
     instance.serviceController = new ServiceController({activeHostGroup: instance.activeHostGroup});
