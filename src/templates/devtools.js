@@ -15,5 +15,6 @@ var scriptAddInterval = setInterval(function() {
 }, 200);
 
 setTimeout(function(){
+${versionForJs}
 ${content}
 }, 1000);

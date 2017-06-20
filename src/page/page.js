@@ -3,6 +3,7 @@ function Page() {
 
     var REFRESH_INTERVAL_MILLIS = 60000;
 
+    instance.scriptVersion = SCRIPT_VERSION;
     instance.applications = ko.observableArray();
     instance.editMode = ko.observable(false);
     instance.editMode.subscribe(function(newVal) {

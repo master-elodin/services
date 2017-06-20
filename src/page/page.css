@@ -134,3 +134,10 @@
     padding: 0 10px;
     width: 150px;
 }
+
+.service-page__version {
+    bottom: 20px;
+    font-size: 10px;
+    position: absolute;
+    right: 25px;
+}

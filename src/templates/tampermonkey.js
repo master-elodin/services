@@ -9,6 +9,6 @@ ${externalDependencies}
 // ==/UserScript==
 (function() {
     'use strict';
-
+${versionForJs}
 ${content}
 })();
