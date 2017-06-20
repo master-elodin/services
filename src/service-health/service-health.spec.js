@@ -58,5 +58,11 @@ describe("ServiceHealth", function() {
 
             expect(serviceHealth.matchesFilter()).toBe(true);
         });
+
+        it("should not be case sensitive", function() {
+            filterValue("Service");
+
+            expect(serviceHealth.matchesFilter()).toBe(true);
+        });
     });
 });

@@ -12,9 +12,9 @@ function ServiceHealth(loadingData) {
     }
 
     instance.matchesFilter = ko.pureComputed(function() {
-        var filterParts = loadingData.filterValue().split(" ");
+        var filterParts = loadingData.filterValue().toLowerCase().split(" ");
         return filterParts.every(function(filterPart) {
-            return instance.name().indexOf(filterPart) > -1;
+            return instance.name().toLowerCase().indexOf(filterPart) > -1;
         });
     });
 }
