@@ -63,6 +63,7 @@ function Page() {
                     }
                 }
             });
+            objToSave.scriptVersion = instance.scriptVersion;
             return objToSave;
         }
         return JSON.stringify(ko.mapping.toJS(addObservables(instance)));

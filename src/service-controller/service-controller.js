@@ -74,6 +74,7 @@ function ServiceController(loadingData) {
     var getConfigForSaving = function() {
         var configForSaving = { configurationName: instance.configurationName() };
         configForSaving.selectionGroup = ko.mapping.toJS(instance.selectionGroup);
+        configForSaving.scriptVersion = SCRIPT_VERSION;
         return configForSaving;
     };
 
