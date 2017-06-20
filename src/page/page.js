@@ -1,6 +1,8 @@
 function Page() {
     var instance = this;
 
+    var REFRESH_INTERVAL_MILLIS = 60000;
+
     instance.applications = ko.observableArray();
     instance.editMode = ko.observable(false);
     instance.editMode.subscribe(function(newVal) {
@@ -187,6 +189,10 @@ function Page() {
         clearActive(instance.activeService);
     };
 
+    setInterval(function() {
+        // refresh every minute
+        instance.refresh();
+    }, REFRESH_INTERVAL_MILLIS);
     instance.isRefreshing = ko.observable(false);
     instance.refresh = function() {
         if(instance.activeHostGroup() && !instance.isRefreshing()) {
