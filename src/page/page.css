@@ -66,6 +66,10 @@
     margin: 0 15px;
 }
 
+.service-page__refresh.service-page__refresh--refreshing {
+    cursor: default;
+}
+
 .service-page__active-items {
     float: left;
     font-size: 25px;
