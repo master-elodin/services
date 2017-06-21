@@ -89,7 +89,15 @@ task combineHtml {
             placeholders = getPlaceholderMatches(html)
         }
         html = html.replaceAll(/>\s*</, '><').replaceAll(/\n/, '')
-        new File(getBinFolder(), "combined.html").write("jQuery('body').removeClass().removeAttr('style').html('${html}');");
+        def index = 0
+        def lineLength = 300
+        def htmlLines = []
+        while(index < html.length()) {
+            htmlLines.add(html.substring(index, Math.min(index + lineLength, html.length())))
+            index += lineLength
+        }
+        html = "'${htmlLines.join("'\n+ '")}'"
+        new File(getBinFolder(), "combined.html").write("var html = ${html}\njQuery('body').removeClass().removeAttr('style').html(html);");
     }
 }
 

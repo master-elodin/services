@@ -1,0 +1,28 @@
+.selections {
+}
+
+.selections__list {
+    list-style: none;
+    padding: 0;
+}
+
+.selections__name {
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px 10px;
+}
+
+.selections__name span {
+    display: inline-block;
+    padding: 5px 20px;
+}
+
+.selections__name span:hover {
+    background-color: $midnight;
+    border-radius: 10px;
+    color: $clouds;
+}
+
+.selections__children {
+    padding: 0 30px;
+}

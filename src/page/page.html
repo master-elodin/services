@@ -68,7 +68,6 @@
             <!-- /ko -->
         </div>
     </div>
-    ${src/page/page-header/page-sub-header.html}
     <div class="service-page__body">
         <!-- ko if: showHostGroupHealth -->
             ${src/page/page-body/page-host-group-health.html}
@@ -84,7 +83,9 @@
         <!-- /ko -->
         <!-- /ko -->
         <!-- ko ifnot: showRefreshIcon -->
-            ${src/page/page-body/page-select-active.html}
+            <!-- ko with: selections -->
+            ${src/selections/selections.html}
+            <!-- /ko -->
         <!-- /ko -->
         <div class="service-page__version">
             <span>Script version: </span>

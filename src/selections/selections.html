@@ -1,0 +1,37 @@
+<div class="selections">
+    <ul class="selections__list">
+    <!-- ko foreach: availableApps -->
+        <li>
+            <div data-bind="click: $root.activateItem" class="selections__name">
+                <span data-bind="text: name"></span>
+            </div>
+            <div class="selections__children">
+                <ul class="selections__list">
+                <!-- ko foreach: environments -->
+                    <li>
+                        <div data-bind="click: $root.activateItem" class="selections__name">
+                            <span data-bind="text: name"></span>
+                        </div>
+                        <div class="selections__children">
+                            <ul class="selections__list">
+                                <!-- ko foreach: hostGroups -->
+                                    <li>
+                                        <div data-bind="click: $root.activateItem" class="selections__name">
+                                            <span data-bind="text: name"></span>
+                                        </div>
+                                        <!-- ko if: $root.editMode -->
+                                        <div class="selections__children">
+                                        </div>
+                                        <!-- /ko -->
+                                    </li>  
+                                <!-- /ko -->
+                            </ul>
+                        </div>
+                    </li>
+                <!-- /ko -->
+                </ul>
+            </div>
+        </li>
+    <!-- /ko -->
+    </ul>
+</div>

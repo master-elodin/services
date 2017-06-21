@@ -1,6 +1,8 @@
 function Selections(loadingData) {
     var instance = this;
 
+    instance.availableApps = loadingData.applications;
+
     instance.currentOptionType = ko.pureComputed(function() {
         if(!loadingData.activeApp()) {
             return Selections.OPTION_TYPES.APPLICATION;
