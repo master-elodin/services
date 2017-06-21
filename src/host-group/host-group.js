@@ -46,9 +46,6 @@ function HostGroup(loadingData) {
     instance.isExpanded = ko.observable(instance.isActive());
     instance.toggleExpanded = createToggle(instance.isExpanded);
 
-    instance.dataRow = new DataRow({dataType: "host-group", name: instance.name, onSelect: instance.select, onDelete: loadingData.onDelete, owner: instance, separator: ",", editModeSeparator: ", {"});
-    instance.addDataRow = new DataRow({onSave: instance.addHost, dataType: "host"});
-
     instance.getService = function(serviceName) {
         return instance.services().find(function(service) {
             return service.name() === serviceName;

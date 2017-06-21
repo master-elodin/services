@@ -8,19 +8,6 @@ function Page() {
     instance.editMode = ko.observable(false);
     instance.editMode.subscribe(function(newVal) {
         if(!newVal) {
-            var setEditingFalse = function(item) {
-                item.dataRow.editing(false);
-            }
-            instance.applications().forEach(function(app) {
-                setEditingFalse(app);
-                app.environments().forEach(function(env) {
-                    setEditingFalse(env);
-                    env.hostGroups().forEach(function(hostGroup) {
-                        setEditingFalse(hostGroup);
-                        hostGroup.hosts().forEach(setEditingFalse);
-                    });
-                });
-            });
             instance.save();
         }
     });
@@ -80,7 +67,6 @@ function Page() {
         instance.applications.push(application);
         return application;
     };
-    instance.addDataRow = new DataRow({onSave: instance.addApplication, dataType: "application"});
 
     instance.load = function() {
         var existingPageJson = localStorage.getItem(Page.DATA_NAME);
