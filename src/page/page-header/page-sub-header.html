@@ -1,0 +1,9 @@
+<!-- ko with: selections -->
+<div data-bind="css: {\'service-page__sub-header--show\': showSubHeader}" class="service-page__sub-header">
+    <!-- ko foreach: currentOptionNames -->
+    <div class="sub-header__option">
+        <span data-bind="text: $data"></span>
+    </div>
+    <!-- /ko -->
+</div>
+<!-- /ko -->

@@ -1,18 +1,18 @@
+<!-- ko if: editMode -->
 <div class="service-page__data-rows">
     <div class="data-block">
         <div class="data-row__braces">
             <span>{</span>
         </div>
         <!-- ko foreach: applications -->
-            ${src/application/application.html}
+        ${src/application/application.html}
         <!-- /ko -->
-        <!-- ko if: editMode -->
-            <!-- ko with: addDataRow -->
-            ${src/data-row/data-row.html}
-            <!-- /ko -->
+        <!-- ko with: addDataRow -->
+        ${src/data-row/data-row.html}
         <!-- /ko -->
         <div class="data-row__braces">
             <span>}</span>
         </div>
     </div>
 </div>
+<!-- /ko -->

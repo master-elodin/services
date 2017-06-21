@@ -20,6 +20,7 @@ def cssProperties = [
     '$disabled': 'grey',
     '$midnight': '#2c3e50',
     '$darkerMidnight': '#1F3143',
+    '$darkestMidnight': '#152739',
     '$lightBlue': '#2683f0',
     // other
     '$pageHeaderHeight': '50px'

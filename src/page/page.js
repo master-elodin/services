@@ -127,6 +127,12 @@ function Page() {
     instance.activeEnv = ko.observable();
     instance.activeHostGroup = ko.observable();
     instance.activeService = ko.observable();
+    instance.selections = new Selections({
+        activeApp: instance.activeApp, 
+        activeEnv: instance.activeEnv, 
+        activeHostGroup: instance.activeHostGroup, 
+        applications: instance.applications
+    });
     var clearActive = function(currentActive) {
         if(currentActive()) {
             currentActive().isActive(false);

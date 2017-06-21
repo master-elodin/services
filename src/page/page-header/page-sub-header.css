@@ -1,0 +1,26 @@
+.service-page__sub-header {
+    background-color: $darkestMidnight;
+    display: none;
+    height: 40px;
+    padding-left: 50px;
+    position: absolute;
+    width: calc(100% - 50px);
+}
+
+.service-page__sub-header.service-page__sub-header--show {
+    display: block;
+}
+
+.sub-header__option {
+    color: $clouds;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 25px;
+    line-height: 40px;
+    padding: 0 10px;
+    width: 100px;
+}
+
+.sub-header__option:hover {
+    background-color: $midnight;
+}
