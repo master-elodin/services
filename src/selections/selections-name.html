@@ -1,3 +1,8 @@
 <div data-bind="click: $root.activateItem, css: {\'selections__name--selectable\': !$root.editMode()}" class="selections__name">
+    <!-- ko if: editingName -->
+    <input data-bind="textInput: name, valueUpdate: \'afterkeydown\', enterkey: $root.activateItem">
+    <!-- /ko -->
+    <!-- ko ifnot: editingName -->
     <span data-bind="text: name"></span>
+    <!-- /ko -->
 </div>

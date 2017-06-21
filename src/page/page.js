@@ -133,8 +133,25 @@ function Page() {
         return isActiveApp || isActiveEnv || isActiveHostGroup;
     };
 
+    instance.clearEditingNames = function() {
+        console.log("clearEditingNames");
+        instance.applications().forEach(function(app) {
+            app.editingName(false);
+            app.environments().forEach(function(env) {
+                env.editingName(false);
+                env.hostGroups().forEach(function(hostGroup) {
+                    hostGroup.editingName(false);
+                    hostGroup.hosts().forEach(function(host) {
+                        host.editingName(false);
+                    });
+                });
+            });
+        });
+    };
+
     instance.activateItem = function(item, element, keepChildren) {
         if(instance.editMode()) {
+            item.editingName(true);
             return;
         }
         var updateActiveItem = function(current, newVal, onChange) {

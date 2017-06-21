@@ -28,6 +28,11 @@
     padding: 2px 20px;
 }
 
+.selections__name input {
+    font-size: 16px;
+    padding: 2px 5px;
+}
+
 .selections__name.selections__name--selectable span:hover {
     background-color: $midnight;
     border-radius: 10px;
