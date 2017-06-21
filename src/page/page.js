@@ -148,6 +148,9 @@ function Page() {
     };
 
     instance.activateItem = function(item, element, keepChildren) {
+        if(instance.editMode()) {
+            return;
+        }
         var updateActiveItem = function(current, newVal, onChange) {
             clearActive(current);
             newVal.isActive(true);

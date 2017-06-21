@@ -28,7 +28,7 @@
     padding: 2px 20px;
 }
 
-.selections__name span:hover {
+.selections__name.selections__name--selectable span:hover {
     background-color: $midnight;
     border-radius: 10px;
     color: $clouds;
