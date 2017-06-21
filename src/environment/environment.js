@@ -4,6 +4,8 @@ function Environment(loadingData) {
     instance.page = loadingData.page;
     instance.parent = loadingData.parent;
     instance.name = ko.observable(loadingData.name);
+    instance.editingName = ko.observable(false);
+    instance.toggleEditingName = createToggle(instance.editingName);
 
     instance.hostGroups = ko.observableArray();
     instance.addHostGroup = function(hostGroupName) {

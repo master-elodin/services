@@ -2,6 +2,8 @@ function Host(loadingData) {
     var instance = this;
 
     instance.name = ko.observable(loadingData.name);
+    instance.editingName = ko.observable(false);
+    instance.toggleEditingName = createToggle(instance.editingName);
 
     instance.dataRow = new DataRow({dataType: "host", name: instance.name, separator: ",", onDelete: loadingData.onDelete, owner: instance});
 

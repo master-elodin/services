@@ -4,6 +4,8 @@ function HostGroup(loadingData) {
     instance.parent = loadingData.parent;
     instance.page = loadingData.page;
     instance.name = ko.observable(loadingData.name);
+    instance.editingName = ko.observable(false);
+    instance.toggleEditingName = createToggle(instance.editingName);
     instance.hosts = ko.observableArray();
     instance.services = ko.observableArray();
 

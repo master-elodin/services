@@ -3,6 +3,8 @@ function Application(loadingData) {
 
     instance.page = loadingData.page;
     instance.name = ko.observable(loadingData.name);
+    instance.editingName = ko.observable(false);
+    instance.toggleEditingName = createToggle(instance.editingName);
 
     instance.environments = ko.observableArray();
     instance.addEnvironment = function(name) {
