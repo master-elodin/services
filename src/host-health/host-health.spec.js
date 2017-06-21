@@ -18,16 +18,28 @@ describe("HostHealth", function() {
             expect(hostHealth.hostName()).toBe("host1");
         });
 
-        it("should set status as unknown if not given", function() {
+        it("should set status as unknown if not given and isReal=true", function() {
             hostHealth = new HostHealth({});
 
             expect(hostHealth.status()).toBe(ServiceInstance.Status.UNKNOWN);
         });
 
-        it("should set status if given", function() {
+        it("should set status if given and isReal=true", function() {
             hostHealth = new HostHealth({status: ServiceInstance.Status.STARTING});
 
             expect(hostHealth.status()).toBe(ServiceInstance.Status.STARTING);
+        });
+
+        it("should set status as NONE if isReal=false", function() {
+            hostHealth = new HostHealth({status: ServiceInstance.Status.STARTING, id: Service.UNKNOWN_INSTANCE.id()});
+
+            expect(hostHealth.status()).toBe(ServiceInstance.Status.NONE);
+        });
+
+        it("should set version as NONE if isReal=false", function() {
+            hostHealth = new HostHealth({status: ServiceInstance.Status.STARTING, id: Service.UNKNOWN_INSTANCE.id()});
+
+            expect(hostHealth.version()).toBe(ServiceInstance.Status.NONE);
         });
     });
 

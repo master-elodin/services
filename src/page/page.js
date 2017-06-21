@@ -1,9 +1,9 @@
 function Page() {
     var instance = this;
 
-    var REFRESH_INTERVAL_MILLIS = 60000;
+    var REFRESH_INTERVAL_MILLIS = 600000;
 
-    instance.scriptVersion = SCRIPT_VERSION;
+    instance.scriptVersion = ko.observable(SCRIPT_VERSION);
     instance.applications = ko.observableArray();
     instance.editMode = ko.observable(false);
     instance.editMode.subscribe(function(newVal) {
@@ -63,7 +63,6 @@ function Page() {
                     }
                 }
             });
-            objToSave.scriptVersion = instance.scriptVersion;
             return objToSave;
         }
         return JSON.stringify(ko.mapping.toJS(addObservables(instance)));

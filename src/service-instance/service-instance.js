@@ -43,7 +43,7 @@ ServiceInstance.Status = {
     STARTING: "Starting",
     UNKNOWN: "Unknown",
     START_FAILED: "Start Failed",
-    NONE: "None"
+    NONE: "N/A"
 };
 ServiceInstance.start = function(id) {
     console.log("Start with ID: " + id);

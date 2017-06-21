@@ -9,6 +9,7 @@
     font-size: 25px;
     line-height: 25px;
     padding: 2px 5px;
+    position: relative;
     width: 22px;
 }
 
@@ -59,4 +60,35 @@
 .host-health__icon__start-stop--selected .fa,
 .host-health__icon__start-stop--selected {
     opacity: 1;
+}
+
+.host-health__icon:hover .host-health__detail {
+    display: block;
+}
+
+.host-health__detail {
+    background-color: $darkerMidnight;
+    border-radius: 10px;
+    color: $clouds;
+    display: none;
+    font-size: 12px;
+    left: 50%;
+    padding: 5px 10px;
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+}
+
+.host-health__detail-row {
+    width: 120px;
+}
+
+.host-health__detail-title {
+    display: inline-block;
+    font-weight: bold;
+    width: 55px;
+}
+
+.host-health__detail-content {
+
 }

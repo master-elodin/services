@@ -3,14 +3,19 @@ function HostHealth(loadingData) {
     var instance = this;
 
     instance.id = ko.observable(loadingData.id);
-    instance.version = ko.observable(loadingData.version);
     instance.hostName = ko.observable(loadingData.hostName);
-    instance.status = ko.observable(loadingData.status || ServiceInstance.Status.UNKNOWN);
     instance.isReal = ko.pureComputed(function() {
         return instance.id() !== Service.UNKNOWN_INSTANCE.id();
     });
-    instance.start = loadingData.start;
-    instance.stop = loadingData.stop;
+    instance.version = ko.observable();
+    instance.status = ko.observable();
+    if(instance.isReal()) {
+        instance.version(loadingData.version);
+        instance.status(loadingData.status || ServiceInstance.Status.UNKNOWN);
+    } else {
+        instance.version(ServiceInstance.Status.NONE);
+        instance.status(ServiceInstance.Status.NONE);
+    }
 
     instance.selected = ko.observable(false);
     instance.toggleSelected = createToggle(instance.selected);

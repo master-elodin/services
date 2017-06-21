@@ -7,6 +7,17 @@
     <!-- ko ifnot: $root.startStopUnlocked -->
     <div data-bind="css: getHealthColorClass" class="host-health__icon">
         <i data-bind="css: getHealthIcon" class="fa" aria-hidden="true"></i>
+        <div class="host-health__detail">
+            <div class="host-health__detail-row">
+                <span class="host-health__detail-title">Host: </span><span data-bind="text: hostName" class="host-health__detail-content"></span>
+            </div>
+            <div class="host-health__detail-row">
+                <span class="host-health__detail-title">Version: </span><span data-bind="text: version" class="host-health__detail-content"></span>
+            </div>
+            <div class="host-health__detail-row">
+                <span class="host-health__detail-title">Status: </span><span data-bind="text: status" class="host-health__detail-content"></span>
+            </div>
+        </div>
     </div>
     <!-- /ko -->
 </div>

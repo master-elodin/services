@@ -54,6 +54,7 @@ function Service(loadingData) {
     };
 
     Object.keys(loadingData.instancesByHost || {}).forEach(function(host) {
+        if(host)
         loadingData.instancesByHost[host].forEach(function(serviceInstanceData) {
             instance.addServiceInstance(host, new ServiceInstance(serviceInstanceData));
         });
