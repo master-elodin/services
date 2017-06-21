@@ -606,4 +606,59 @@ describe("A Page", function() {
             expect(page.activeHostGroup()).toBe(null);
         });
     });
+
+    describe("isItemActive", function() {
+
+        it("should return true if app and app is activeApp", function() {
+            var app1 = page.addApplication("app1");
+            page.addApplication("app2");
+            page.activeApp(app1);
+
+            expect(page.isItemActive(app1)).toBe(true);
+        });
+
+        it("should return false if app and app is not activeApp", function() {
+            var app1 = page.addApplication("app1");
+            var app2 = page.addApplication("app2");
+            page.activeApp(app1);
+
+            expect(page.isItemActive(app2)).toBe(false);
+        });
+
+        it("should return true if env and env is activeEnv", function() {
+            var app1 = page.addApplication("app1");
+            var env1 = app1.addEnvironment("env1");
+            var env2 = app1.addEnvironment("env2");
+            page.activeEnv(env1);
+
+            expect(page.isItemActive(env1)).toBe(true);
+        });
+
+        it("should return false if env and env is not activeEnv", function() {
+            var app1 = page.addApplication("app1");
+            var env1 = app1.addEnvironment("env1");
+            var env2 = app1.addEnvironment("env2");
+            page.activeEnv(env1);
+
+            expect(page.isItemActive(env2)).toBe(false);
+        });
+
+        it("should return true if hostGroup and hostGroup is activeHostGroup", function() {
+            var env1 = page.addApplication("app1").addEnvironment("env1");
+            var hostGroup1 = env1.addHostGroup("host-group1");
+            var hostGroup2 = env1.addHostGroup("host-group2");
+            page.activeHostGroup(hostGroup1);
+
+            expect(page.isItemActive(hostGroup1)).toBe(true);
+        });
+
+        it("should return false if hostGroup and hostGroup is not activeHostGroup", function() {
+            var env1 = page.addApplication("app1").addEnvironment("env1");
+            var hostGroup1 = env1.addHostGroup("host-group1");
+            var hostGroup2 = env1.addHostGroup("host-group2");
+            page.activeHostGroup(hostGroup1);
+
+            expect(page.isItemActive(hostGroup2)).toBe(false);
+        });
+    });
 });

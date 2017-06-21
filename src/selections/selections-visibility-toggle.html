@@ -1,0 +1,8 @@
+<div data-bind="click: toggleExpanded" class="selections__visibility-toggle">
+    <!-- ko ifnot: isExpanded -->
+    <i class="fa fa-plus-square-o" aria-hidden="true"></i>
+    <!-- /ko -->
+    <!-- ko if: isExpanded -->
+    <i class="fa fa-minus-square-o" aria-hidden="true"></i>
+    <!-- /ko -->
+</div>

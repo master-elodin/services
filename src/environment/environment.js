@@ -24,6 +24,9 @@ function Environment(loadingData) {
         instance.page.save();
     };
 
+    instance.isExpanded = ko.observable(instance.isActive());
+    instance.toggleExpanded = createToggle(instance.isExpanded);
+
     instance.dataRow = new DataRow({dataType: "environment", name: instance.name, onSelect: instance.select, onDelete: loadingData.onDelete, owner: instance});
     instance.addDataRow = new DataRow({onSave: instance.addHostGroup, dataType: "host-group"});
 }

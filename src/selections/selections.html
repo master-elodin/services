@@ -1,37 +1,47 @@
 <div class="selections">
-    <ul class="selections__list">
+    <div class="selections__list">
     <!-- ko foreach: availableApps -->
-        <li>
-            <div data-bind="click: $root.activateItem" class="selections__name">
-                <span data-bind="text: name"></span>
-            </div>
+        <div class="selections__child">
+            ${src/selections/selections-name.html}
+            ${src/selections/selections-visibility-toggle.html}
+            <!-- ko if: isExpanded -->
             <div class="selections__children">
-                <ul class="selections__list">
+                <div class="selections__list">
                 <!-- ko foreach: environments -->
-                    <li>
-                        <div data-bind="click: $root.activateItem" class="selections__name">
-                            <span data-bind="text: name"></span>
-                        </div>
+                    <div class="selections__child">
+                        ${src/selections/selections-name.html}
+                        ${src/selections/selections-visibility-toggle.html}
+                        <!-- ko if: isExpanded -->
                         <div class="selections__children">
-                            <ul class="selections__list">
+                            <div class="selections__list">
                                 <!-- ko foreach: hostGroups -->
-                                    <li>
-                                        <div data-bind="click: $root.activateItem" class="selections__name">
-                                            <span data-bind="text: name"></span>
-                                        </div>
+                                    <div class="selections__child">
+                                        ${src/selections/selections-name.html}
                                         <!-- ko if: $root.editMode -->
+                                        ${src/selections/selections-visibility-toggle.html}
+                                        <!-- ko if: isExpanded -->
                                         <div class="selections__children">
+                                            <div class="selections__list">
+                                            <!-- ko foreach: hosts -->
+                                                <div class="selections__child">
+                                                    ${src/selections/selections-name.html}
+                                                </div>
+                                            <!-- /ko -->
+                                            </div>
                                         </div>
                                         <!-- /ko -->
-                                    </li>  
+                                        <!-- /ko -->
+                                    </div>  
                                 <!-- /ko -->
-                            </ul>
+                            </div>
                         </div>
-                    </li>
+                        <!-- /ko -->
+                    </div>
                 <!-- /ko -->
-                </ul>
+                </div>
             </div>
-        </li>
+            <!-- /ko -->
+        </div>
     <!-- /ko -->
-    </ul>
+    </div>
 </div>

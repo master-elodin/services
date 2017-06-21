@@ -1,20 +1,31 @@
 .selections {
+    margin-top: 30px;
+}
+
+.selections__visibility-toggle {
+    cursor: pointer;
+    left: 10px;
+    position: absolute;
+    top: 6px;
 }
 
 .selections__list {
-    list-style: none;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
     padding: 0;
 }
 
 .selections__name {
     cursor: pointer;
     font-size: 16px;
-    padding: 5px 10px;
+    margin-left: 15px;
+    padding: 2px 10px;
 }
 
 .selections__name span {
     display: inline-block;
-    padding: 5px 20px;
+    padding: 2px 20px;
 }
 
 .selections__name span:hover {
@@ -25,4 +36,8 @@
 
 .selections__children {
     padding: 0 30px;
+}
+
+.selections__child {
+    position: relative;
 }

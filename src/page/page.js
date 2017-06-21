@@ -139,6 +139,14 @@ function Page() {
         }
         currentActive(null);
     }
+
+    instance.isItemActive = function(item) {
+        var isActiveApp = item.constructor === Application && instance.activeApp() === item;
+        var isActiveEnv = item.constructor === Environment && instance.activeEnv() === item;
+        var isActiveHostGroup = item.constructor === HostGroup && instance.activeHostGroup() === item;
+        return isActiveApp || isActiveEnv || isActiveHostGroup;
+    };
+
     instance.activateItem = function(item, element, keepChildren) {
         var updateActiveItem = function(current, newVal, onChange) {
             clearActive(current);
