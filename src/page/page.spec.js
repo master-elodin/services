@@ -215,10 +215,11 @@ describe("A Page", function() {
             expect(savedData.addApplication).toBe(undefined);
             expect(savedData.toggleEdit).toBe(undefined);
             expect(savedData.activateItem).toBe(undefined);
+            // don't save activeApp/env/hostGroup because that's already being saved as isActive
+            expect(savedData.activeApp).toBe(undefined);
+            expect(savedData.activeEnv).toBe(undefined);
+            expect(savedData.activeHostGroup).toBe(undefined);
             // make sure variables do exist
-            expect(savedData.activeApp).not.toBe(undefined);
-            expect(savedData.activeEnv).not.toBe(undefined);
-            expect(savedData.activeHostGroup).not.toBe(undefined);
             expect(savedData.applications).not.toBe(undefined);
             expect(savedData.applications[0].name).toBe("app1");
         });

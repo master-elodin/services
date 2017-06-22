@@ -33,10 +33,11 @@ function Page() {
 
     var getSettingsAsJsonText = function() {
         var SAVEABLE_TYPES = [String, Boolean];
+        var IGNORED_FIELD_NAMES = ["activeApp", "activeEnv", "activeHostGroup", "editingName", "startStopUnlocked", "filterValue", "isRefreshing", "editMode"];
         var addObservables = function(obj) {
             var objToSave = {};
             Object.keys(obj).forEach(function(key) {
-                if(ko.isObservable(obj[key]) && !ko.isComputed(obj[key])) {
+                if(IGNORED_FIELD_NAMES.indexOf(key) === -1 && ko.isObservable(obj[key]) && !ko.isComputed(obj[key])) {
                     var value = obj[key]();
                     if(!value || SAVEABLE_TYPES.indexOf(value.constructor) > -1) {
                         objToSave[key] = value;
@@ -77,15 +78,12 @@ function Page() {
             // TODO: find better way to do this rather than lots of loops.
             existingPage.applications.forEach(function(app) {
                 var application = instance.addApplication(app.name);
-                application.isActive(!!app.isActive);
                 var isActiveApp = existingPage.activeApp && existingPage.activeApp.name === app.name;
                 app.environments.forEach(function(env) {
                     var environment = application.addEnvironment(env.name);
-                    environment.isActive(!!env.isActive);
                     var hasActiveEnvironment = isActiveApp && existingPage.activeEnv && existingPage.activeEnv.name === env.name;
                     env.hostGroups.forEach(function(group) {
                         var hostGroup = environment.addHostGroup(group.name);
-                        hostGroup.isActive(false);
                         group.hosts.forEach(function(host) {
                             hostGroup.addHost(host.name);
                         });
