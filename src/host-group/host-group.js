@@ -81,6 +81,8 @@ function HostGroup(loadingData) {
                     } else {
                         loadForHost(numCompleted);
                     }
+                }).fail(function(error) {
+                    loadCompleted.reject(error);
                 });
             }
             loadForHost(0);

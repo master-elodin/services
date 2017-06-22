@@ -213,10 +213,15 @@ function Page() {
         instance.refresh();
     }, REFRESH_INTERVAL_MILLIS);
     instance.isRefreshing = ko.observable(false);
+    instance.refreshError = ko.observable();
     instance.refresh = function() {
         if(instance.activeHostGroup() && !instance.isRefreshing()) {
             instance.isRefreshing(true);
             instance.activeHostGroup().loadData().then(function() {
+                instance.refreshError(null);
+            }).fail(function(error) {
+                instance.refreshError(error);
+            }).always(function() {
                 instance.isRefreshing(false);
             });
         }
