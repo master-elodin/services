@@ -5,8 +5,6 @@ function Host(loadingData) {
     instance.editingName = ko.observable(false);
     instance.toggleEditingName = createToggle(instance.editingName);
 
-    instance.dataRow = new DataRow({dataType: "host", name: instance.name, separator: ",", onDelete: loadingData.onDelete, owner: instance});
-
     instance.getData = function() {
         var getRandomNumber = function(upperBound) {
             return Math.floor(Math.random()*upperBound);

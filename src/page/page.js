@@ -132,7 +132,6 @@ function Page() {
     };
 
     instance.clearEditingNames = function() {
-        console.log("clearEditingNames");
         instance.applications().forEach(function(app) {
             app.editingName(false);
             app.environments().forEach(function(env) {
