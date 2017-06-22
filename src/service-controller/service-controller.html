@@ -1,19 +1,17 @@
 <div class="service-page__service-controller">
     <div class="service-controller__header">
-        <div data-bind="click: addSelected, css: {\'service-controller__button--disabled\': disableAddClearButtons}" class="service-controller__button">
-            <span>Add</span>
+        <div data-bind="click: addSelected, css: {\'service-controller__button--disabled\': disableAddClearButtons}" class="service-controller__button" title="Add">
+            <i class="fa fa-plus" aria-hidden="true"></i>
         </div>
-        <div data-bind="click: addAll, css: {\'service-controller__button--disabled\': disableAddClearButtons}" class="service-controller__button">
-            <span>Add all</span>
+        <div data-bind="click: addAll, css: {\'service-controller__button--disabled\': disableAddClearButtons}" class="service-controller__button" title="Add All">
+            <i class="fa fa-plus-circle" aria-hidden="true"></i>
         </div>
-        <div data-bind="click: clear, css: {\'service-controller__button--disabled\': disableAddClearButtons}" class="service-controller__button">
-            <span>Clear</span>
+        <div data-bind="click: clear, css: {\'service-controller__button--disabled\': disableAddClearButtons}" class="service-controller__button" title="Clear">
+            <i class="fa fa-eraser" aria-hidden="true"></i>
         </div>
-        <!-- ko if: isRunning -->
-        <div data-bind="click: abort" class="service-controller__button">
+        <div data-bind="click: abort, visible: isRunning" class="service-controller__button">
             <span>Abort</span>
         </div>
-        <!-- /ko -->
         <!-- ko ifnot: isRunning -->
             <!-- ko if: isAborted -->
             <div data-bind="click: resume" class="service-controller__button">
@@ -24,11 +22,11 @@
             </div>
             <!-- /ko -->
             <!-- ko ifnot: isAborted -->
-            <div data-bind="click: confirmRunStart, css: {\'service-controller__button--disabled\': showLoadSave}" class="service-controller__button">
-                <span>Start</span>
+            <div data-bind="click: confirmRunStart, css: {\'service-controller__button--disabled\': showLoadSave}" class="service-controller__button" title="Start">
+                <i class="fa fa-play" aria-hidden="true"></i>
             </div>
-            <div data-bind="click: confirmRunStop, css: {\'service-controller__button--disabled\': showLoadSave}" class="service-controller__button">
-                <span>Stop</span>
+            <div data-bind="click: confirmRunStop, css: {\'service-controller__button--disabled\': showLoadSave}" class="service-controller__button" title="Stop">
+                <i class="fa fa-stop" aria-hidden="true"></i>
             </div>
             <!-- /ko -->
         <!-- /ko -->
