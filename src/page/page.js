@@ -78,12 +78,15 @@ function Page() {
             // TODO: find better way to do this rather than lots of loops.
             existingPage.applications.forEach(function(app) {
                 var application = instance.addApplication(app.name);
+                application.isExpanded(!!app.isExpanded);
                 var isActiveApp = !!app.isActive;
                 app.environments.forEach(function(env) {
                     var environment = application.addEnvironment(env.name);
+                    environment.isExpanded(!!env.isExpanded);
                     var hasActiveEnvironment = !!env.isActive;
                     env.hostGroups.forEach(function(group) {
                         var hostGroup = environment.addHostGroup(group.name);
+                        hostGroup.isExpanded(!!group.isExpanded);
                         group.hosts.forEach(function(host) {
                             hostGroup.addHost(host.name);
                         });
