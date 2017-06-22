@@ -35,7 +35,6 @@ function ServiceInstance(loadingData) {
     }
 }
 ServiceInstance.Status = {
-    // TODO: find real statuses
     // TODO: add ForceStopping, Not Responding
     RUNNING: "Up",
     STOPPED: "Stopped",
@@ -43,6 +42,7 @@ ServiceInstance.Status = {
     STARTING: "Starting",
     UNKNOWN: "Unknown",
     START_FAILED: "Start Failed",
+    DOWN: "Down",
     NONE: "N/A"
 };
 ServiceInstance.start = function(id) {

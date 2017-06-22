@@ -78,10 +78,10 @@ function Page() {
             // TODO: find better way to do this rather than lots of loops.
             existingPage.applications.forEach(function(app) {
                 var application = instance.addApplication(app.name);
-                var isActiveApp = existingPage.activeApp && existingPage.activeApp.name === app.name;
+                var isActiveApp = !!app.isActive;
                 app.environments.forEach(function(env) {
                     var environment = application.addEnvironment(env.name);
-                    var hasActiveEnvironment = isActiveApp && existingPage.activeEnv && existingPage.activeEnv.name === env.name;
+                    var hasActiveEnvironment = !!env.isActive;
                     env.hostGroups.forEach(function(group) {
                         var hostGroup = environment.addHostGroup(group.name);
                         group.hosts.forEach(function(host) {
@@ -90,7 +90,7 @@ function Page() {
                         group.services.forEach(function(service) {
                             hostGroup.addService(new Service(service));
                         });
-                        if(hasActiveEnvironment && existingPage.activeHostGroup && existingPage.activeHostGroup.name === group.name) {
+                        if(!!group.isActive) {
                             instance.activateItem(hostGroup, true);
                         }
                     });

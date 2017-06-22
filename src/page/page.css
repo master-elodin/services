@@ -102,6 +102,10 @@
     flex-flow: column wrap;
     overflow: auto;
     padding: 20px 10px;
+    width: 100%;
+}
+
+.service-page__host-group-health--show-service-actions {
     width: 65%;
 }
 

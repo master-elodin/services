@@ -49,7 +49,7 @@ describe("A Page", function() {
             expect(env.hostGroups()[1].name()).toBe("group2");
         });
 
-        it("should read 'isActive' from local storage for app and env but not hostGroup", function() {
+        it("should read 'isActive' from local storage for app, env, and hostGroup", function() {
             var savedData = {
                 applications: [
                     {name: "app", 
@@ -78,7 +78,7 @@ describe("A Page", function() {
             var hostGroup = env.hostGroups()[0];
             expect(app.isActive()).toBe(true);
             expect(env.isActive()).toBe(true);
-            expect(hostGroup.isActive()).toBe(false);
+            expect(hostGroup.isActive()).toBe(true);
         });
 
         it("should set activeApp from local storage", function() {
@@ -107,69 +107,6 @@ describe("A Page", function() {
             page.load();
 
             expect(page.activeApp()).toBe(page.applications()[0]);
-        });
-
-        it("should set activeEnv based on name if it matches activeApp", function() {
-            var savedData = {
-                applications: [
-                    {name: "app1", 
-                    isActive: true, 
-                    environments: [
-                        {name:"env1", 
-                        isActive: true, 
-                        hostGroups:[]}
-                    ]},
-                    {name: "app2", 
-                    isActive: true, 
-                    environments: [
-                        {name:"env1", 
-                        isActive: true, 
-                        hostGroups:[]},
-                        {name:"env2", 
-                        isActive: true, 
-                        hostGroups:[]}
-                    ]}
-                ],
-                activeApp: {name: "app2"},
-                activeEnv: {name: "env1"}
-            };
-            localStorage.setItem(Page.DATA_NAME, JSON.stringify(savedData));
-
-            page.load();
-
-            expect(page.activeEnv()).toBe(page.applications()[1].environments()[0]);
-        });
-
-        it("should set activeEnv based on name if it matches activeApp and activeEnv", function() {
-            var savedData = {
-                applications: [
-                    {name: "app1", 
-                    isActive: true, 
-                    environments: [
-                        {name:"env1", 
-                        isActive: true, 
-                        hostGroups:[]}
-                    ]},
-                    {name: "app2", 
-                    isActive: true, 
-                    environments: [
-                        {name:"env2", 
-                        isActive: true, 
-                        hostGroups:[]},
-                        {name:"env2", 
-                        isActive: true, 
-                        hostGroups:[{name: "group1", hosts: [], services: []}]}
-                    ]}
-                ],
-                activeApp: {name: "app2"},
-                activeEnv: {name: "env2"},
-                activeHostGroup: {name: "group1"}
-            };
-            localStorage.setItem(Page.DATA_NAME, JSON.stringify(savedData));
-
-            page.load();
-
-            expect(page.activeHostGroup()).toBe(page.applications()[1].environments()[1].hostGroups()[0]);
         });
 
         it("should not read from local storage if local storage does not exist", function() {

@@ -28,6 +28,7 @@ function HostHealth(loadingData) {
     iconMappings[ServiceInstance.Status.STOPPING] = { icon: "fa-times-circle-o", colorClass: "host-health__icon--stopping" };
     iconMappings[ServiceInstance.Status.UNKNOWN] = { icon: "fa-question-circle-o", colorClass: "host-health__icon--unknown" };
     iconMappings[ServiceInstance.Status.START_FAILED] = { icon: "fa-exclamation-circle", colorClass: "host-health__icon--failed" };
+    iconMappings[ServiceInstance.Status.DOWN] = { icon: "fa-exclamation-circle", colorClass: "host-health__icon--down" };
     iconMappings[ServiceInstance.Status.NONE] = { icon: "fa-question-circle-o", colorClass: "host-health__icon--unknown" };
 
     instance.getHealthIcon = ko.pureComputed(function() {

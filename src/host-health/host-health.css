@@ -38,6 +38,10 @@
     background-color: #ff6d00;
 }
 
+.host-health__icon.host-health__icon--down {
+    background-color: #f0b832;
+}
+
 .host-health__icon__start-stop {
     background-color: $midnight;
     cursor: pointer;

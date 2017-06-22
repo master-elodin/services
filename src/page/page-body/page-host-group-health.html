@@ -1,5 +1,5 @@
 <!-- ko with: activeHostGroup -->
-    <div class="service-page__host-group-health">
+    <div data-bind="css: {\'service-page__host-group-health--show-service-actions\': $root.showServiceActions }" class="service-page__host-group-health">
         <!-- ko if: hosts().length === 0 -->
         <span>No hosts selected for given host-group!</span><br/>
         <span>Edit settings to add hosts.</span>
