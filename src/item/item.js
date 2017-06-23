@@ -66,6 +66,14 @@ Item.prototype.addChild = function() {
     this.newChildName(null);
 }
 
+Item.prototype.getId = function() {
+    if(!this.parent) {
+        return this.name();
+    } else {
+        return this.parent.getId() + "-" + this.name();
+    }
+}
+
 Item.ChildrenTypes = {
     APP: "applications",
     ENV: "environments",

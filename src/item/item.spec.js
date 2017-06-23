@@ -75,7 +75,7 @@ describe("Item", function() {
             expect(item.childrenType).toBe(undefined);
             expect(item.children().length).toBe(0);
         });
-        
+
         it("should set isExpanded from data", function() {
             data.isExpanded = true;
 
@@ -83,7 +83,7 @@ describe("Item", function() {
 
             expect(item.isExpanded()).toBe(true);
         });
-        
+
         it("should set isActive from data", function() {
             data.isActive = true;
 
@@ -194,8 +194,8 @@ describe("Item", function() {
 
         it("should not duplicate item", function() {
             item.import({
-                name: "item", 
-                childrenType: Item.ChildrenTypes.HOST_GROUP, 
+                name: "item",
+                childrenType: Item.ChildrenTypes.HOST_GROUP,
                 hostGroups: [{
                     name: "existingChild",
                     childrenType: Item.ChildrenTypes.HOST,
@@ -229,6 +229,28 @@ describe("Item", function() {
             item.children.push(child);
 
             expect(item.findChildByName("child")).toBe(child);
+        });
+    });
+
+    describe("getId", function() {
+
+        it("should return without parent name if no parent", function() {
+            item.name("app");
+
+            expect(item.getId()).toBe("app");
+        });
+
+        it("should return with parent names if parents", function() {
+            var app = new Item({name: "app"});
+            var env = new Item({name: "env"});
+            env.parent = app;
+
+            expect(env.getId()).toBe("app-env");
+
+            item.name("hostGroup");
+            item.parent = env;
+
+            expect(item.getId()).toBe("app-env-hostGroup");
         });
     });
 });
