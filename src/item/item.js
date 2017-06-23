@@ -22,8 +22,12 @@ Item.prototype.import = function(data) {
     if(data.childrenType) {
         this.childrenType = data.childrenType;
         this.children(data[data.childrenType].map(function(child) {
-            return new Item(child);
-        }));
+            var childItem = new Item(child);
+            // parent example:
+            // activating a host-group should also activate its parent environment and app
+            childItem.parent = this;
+            return childItem;
+        }, this));
     }
 
     this.isExpanded(!!data.isExpanded);

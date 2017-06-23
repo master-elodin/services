@@ -71,28 +71,37 @@ describe("A Page", function() {
 
     describe("activateItem", function() {
 
-        it("should set activeApp if childrenType is environments", function() {
+        it("should set activeApp if childrenType is ENV", function() {
             var item = new Item({name: "name", childrenType: Item.ChildrenTypes.ENV, environments: []});
             
             page.activateItem(item);
 
             expect(page.activeApp()).toBe(item);
         });
-
-        it("should set activeEnv if childrenType is hostGroups", function() {
-            var item = new Item({name: "name", childrenType: Item.ChildrenTypes.HOST_GROUP, hostGroups: []});
+        
+        it("should set activeApp if childrenType is HOST_GROUP", function() {
+            var app = new Item({name: "app"});
+            var env = new Item({name: "name", childrenType: Item.ChildrenTypes.HOST_GROUP, hostGroups: []});
+            env.parent = app;
             
-            page.activateItem(item);
+            page.activateItem(env);
 
-            expect(page.activeEnv()).toBe(item);
+            expect(page.activeApp()).toBe(app);
+            expect(page.activeEnv()).toBe(env);
         });
 
-        it("should set activeHostGroup if childrenType is hosts", function() {
-            var item = new Item({name: "name", childrenType: Item.ChildrenTypes.HOST, hosts: []});
+        it("should set activeEnv and activeApp if childrenType is HOST", function() {
+            var app = new Item({name: "app"});
+            var env = new Item({name: "env"});
+            env.parent = app;
+            var hostGroup = new Item({name: "name", childrenType: Item.ChildrenTypes.HOST, hosts: []});
+            hostGroup.parent = env;
             
-            page.activateItem(item);
+            page.activateItem(hostGroup);
 
-            expect(page.activeHostGroup()).toBe(item);
+            expect(page.activeApp()).toBe(app);
+            expect(page.activeEnv()).toBe(env);
+            expect(page.activeHostGroup()).toBe(hostGroup);
         });
     });
 

@@ -91,6 +91,24 @@ describe("Item", function() {
 
             expect(item.isActive()).toBe(true);
         });
+
+        it("should set parent on children", function() {
+            data.childrenType = "environments";
+            data.environments = [{
+                name: "child1",
+                isExpanded: false,
+                childrenType: "hostGroups",
+                hostGroups: [{
+                    name: "host-group",
+                    isExpanded: false
+                }]
+            }];
+
+            item.import(data);
+
+            expect(item.children()[0].parent).toBe(item);
+            expect(item.children()[0].children()[0].parent).toBe(item.children()[0]);
+        });
     });
 
     describe("export", function() {

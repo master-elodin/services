@@ -46,13 +46,16 @@ function Page() {
         if(item.childrenType === Item.ChildrenTypes.ENV) {
             instance.activeApp(item);
         } else if(item.childrenType === Item.ChildrenTypes.HOST_GROUP) {
+            instance.activeApp(item.parent);
             instance.activeEnv(item);
         } else if(item.childrenType === Item.ChildrenTypes.HOST) {
+            instance.activeApp(item.parent.parent);
+            instance.activeEnv(item.parent);
             instance.activeHostGroup(item);
         }
     }
 
-    instance.pageData = new Item({name: "configuration", childrenTypes: "applications", applications: []});
+    instance.pageData = new Item({name: "configuration", childrenType: "applications", applications: []});
     instance.pageData.scriptVersion = SCRIPT_VERSION;
     var getSettingsAsJsonText = function() {
         return JSON.stringify(instance.pageData.export());
@@ -61,27 +64,24 @@ function Page() {
     instance.save = function() {
         var settingsAsJsonText = getSettingsAsJsonText();
         localStorage.setItem(Page.DATA_NAME, settingsAsJsonText);
-        console.log("Saved page data as JSON", instance.pageData.export(), settingsAsJsonText);
+        console.log("Saved page data as JSON", instance.pageData.export());
     };
 
     instance.load = function() {
         var existingData = JSON.parse(localStorage.getItem(Page.DATA_NAME) || "{}");
-        if(existingData) {
-            // backward compatibility
-            if(existingData.scriptVersion === "1.0.1") {
-                console.log("Converting script version 1.0.1 to " + SCRIPT_VERSION);
-                existingData.childrenType = Item.ChildrenTypes.APP;
-                existingData.name = "configuration";
-                existingData.applications.forEach(function(app) {
-                    app.childrenType = Item.ChildrenTypes.ENV;
-                    app.environments.forEach(function(env) {
-                        env.childrenType = Item.ChildrenTypes.HOST_GROUP;
-                        env.hostGroups.forEach(function(hostGroup) {
-                            hostGroup.childrenType = Item.ChildrenTypes.HOST;
-                        });
+        if(existingData && existingData.applications) {
+            console.log("Adding children types...");
+            existingData.childrenType = Item.ChildrenTypes.APP;
+            existingData.name = "configuration";
+            existingData.applications.forEach(function(app) {
+                app.childrenType = Item.ChildrenTypes.ENV;
+                app.environments.forEach(function(env) {
+                    env.childrenType = Item.ChildrenTypes.HOST_GROUP;
+                    env.hostGroups.forEach(function(hostGroup) {
+                        hostGroup.childrenType = Item.ChildrenTypes.HOST;
                     });
                 });
-            }
+            });
             console.log("Loading data", existingData);
             instance.pageData.import(existingData);
             console.log("Page data after load", instance.pageData.export());
