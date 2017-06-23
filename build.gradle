@@ -96,7 +96,6 @@ task combineHtml {
             def endIndex = Math.min(index + lineLength, html.length())
             def nextLine = html.substring(index, endIndex)
             if(nextLine.endsWith('\\')) {
-                println "ends with \\"
                 // don't end with \' because it breaks the HTML part of the script
                 endIndex++
                 nextLine = html.substring(index, endIndex)
