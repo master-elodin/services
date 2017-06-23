@@ -1,0 +1,53 @@
+<!-- ko with: pageData -->
+<div class="selections">
+    <div class="selections__list">
+    <!-- ko foreach: children -->
+        <div class="selections__child">
+            ${src/selections/selections-name.html}
+            ${src/selections/selections-visibility-toggle.html}
+            <!-- ko if: isExpanded -->
+            <div class="selections__children">
+                <div class="selections__list">
+                <!-- ko foreach: children -->
+                    <div class="selections__child">
+                        ${src/selections/selections-name.html}
+                        ${src/selections/selections-visibility-toggle.html}
+                        <!-- ko if: isExpanded -->
+                        <div class="selections__children">
+                            <div class="selections__list">
+                                <!-- ko foreach: children -->
+                                    <div class="selections__child">
+                                        ${src/selections/selections-name.html}
+                                        <!-- ko if: $root.editMode -->
+                                        ${src/selections/selections-visibility-toggle.html}
+                                        <!-- ko if: isExpanded -->
+                                        <div class="selections__children">
+                                            <div class="selections__list">
+                                            <!-- ko foreach: children -->
+                                                <div class="selections__child">
+                                                    ${src/selections/selections-name.html}
+                                                </div>
+                                            <!-- /ko -->
+                                            ${src/page/page-body/page-new-item/page-new-item.html}
+                                            </div>
+                                        </div>
+                                        <!-- /ko -->
+                                        <!-- /ko -->
+                                    </div>  
+                                <!-- /ko -->
+                                ${src/page/page-body/page-new-item/page-new-item.html}
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                    </div>
+                <!-- /ko -->
+                ${src/page/page-body/page-new-item/page-new-item.html}
+                </div>
+            </div>
+            <!-- /ko -->
+        </div>
+    <!-- /ko -->
+    ${src/page/page-body/page-new-item/page-new-item.html}
+    </div>
+</div>
+<!-- /ko -->

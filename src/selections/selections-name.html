@@ -1,4 +1,4 @@
 <div data-bind="click: $root.activateItem, css: {\'selections__name--selectable\': !$root.editMode()}" class="selections__name">
-    <input data-bind="textInput: name, valueUpdate: \'afterkeydown\', enterkey: $root.activateItem, visible: editingName">
-    <span data-bind="text: name, visible: !editingName()"></span>
+    <input data-bind="textInput: name, valueUpdate: \'afterkeydown\', enterkey: $root.activateItem, visible: isEditingName">
+    <span data-bind="text: name, visible: !isEditingName()"></span>
 </div>

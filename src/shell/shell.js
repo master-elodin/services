@@ -20,10 +20,7 @@ ${src/service-instance/service-instance.js}
 ${src/service-health/service-health.js}
 ${src/host-health/host-health.js}
 ${src/service/service.js}
-${src/host/host.js}
-${src/host-group/host-group.js}
-${src/environment/environment.js}
-${src/application/application.js}
+${src/item/item.js}
 ${src/service-controller/service-controller.js}
 ${src/selections/selections.js}
 ${src/page/page.js}

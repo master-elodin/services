@@ -40,4 +40,8 @@ var uploadFile = function(inputId, callback) {
         reader.readAsText(this.files[0]);
     });
     inputEl.click();
+};
+
+var sortStrings = function(a, b) {
+    return a.localeCompare(b);
 }
