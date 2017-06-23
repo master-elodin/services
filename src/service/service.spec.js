@@ -1,4 +1,4 @@
-describe("A Service", function() {
+describe("Service", function() {
 
     var service;
 
@@ -10,134 +10,73 @@ describe("A Service", function() {
         service = null;
     });
 
-    describe("addServiceInstance", function() {
+    describe("creation", function() {
 
-        it("should add service instance to appropriate host", function() {
-            service.addServiceInstance("host1", new ServiceInstance({id: "id1", version: "1.21.0"}));
-            service.addServiceInstance("host1", new ServiceInstance({id: "id2", version: "1.22.0"}));
-            service.addServiceInstance("host2", new ServiceInstance({id: "id3", version: "1.21.0"}));
-
-            expect(service.instancesByHost()["host1"].length).toBe(2);
-            expect(service.instancesByHost()["host2"].length).toBe(1);
-        });
-
-        it("should override rather than add service instance if it already exists for given id", function() {
-            service.addServiceInstance("host1", new ServiceInstance({id: "id1", version: "1.21.0"}));
-            service.addServiceInstance("host1", new ServiceInstance({id: "id1", version: "1.22.0"}));
-
-            expect(service.instancesByHost()["host1"][0].version()).toBe("1.22.0");
-
-            // re-add the old version
-            service.addServiceInstance("host1", new ServiceInstance({id: "id1", version: "1.23.0"}));
-
-            expect(service.instancesByHost()["host1"][0].version()).toBe("1.23.0");
-        });
-
-        it("should sort service instances on the same host based on descending version", function() {
-            service.addServiceInstance("host1", new ServiceInstance({id: "id1", version: "1.21.0"}));
-            service.addServiceInstance("host1", new ServiceInstance({id: "id2", version: "1.22.0"}));
-            service.addServiceInstance("host2", new ServiceInstance({id: "id3", version: "2.0.0"}));
-            service.addServiceInstance("host2", new ServiceInstance({id: "id4", version: "1.20.20"}));
-
-            expect(service.instancesByHost()["host1"][0].id()).toBe("id2");
-            expect(service.instancesByHost()["host1"][1].id()).toBe("id1");
-            expect(service.instancesByHost()["host2"][0].id()).toBe("id3");
-            expect(service.instancesByHost()["host2"][1].id()).toBe("id4");
+        it("should set name if given name", function() {
+            expect(service.name).toBe("service");
         });
     });
 
     describe("merge", function() {
 
-        it("should add all service instances from other service", function() {
-            service.addServiceInstance("host1", new ServiceInstance({id: "id1", version: "1.21.0"}));
-            service.addServiceInstance("host1", new ServiceInstance({id: "id2", version: "1.22.0"}));
-
-            var otherService = new Service({name: "service"});
-            otherService.addServiceInstance("host2", new ServiceInstance({id: "id3", version: "2.0.0"}));
-            otherService.addServiceInstance("host2", new ServiceInstance({id: "id4", version: "1.20.20"}));
-
-            service.merge(otherService);
-
-            expect(service.instancesByHost()["host1"][0].id()).toBe("id2");
-            expect(service.instancesByHost()["host1"][1].id()).toBe("id1");
-            expect(service.instancesByHost()["host2"][0].id()).toBe("id3");
-            expect(service.instancesByHost()["host2"][1].id()).toBe("id4");
-        });
-    });
-
-    describe("getRunningOrHighestVersionInstance", function() {
-
-        var HOST_NAME = "host1";
-
-        it("should return UNKNOWN instance if no data found for given host name", function() {
-            expect(service.getRunningOrHighestVersionInstance(HOST_NAME)).toBe(Service.UNKNOWN_INSTANCE);
-        })
-
-        it("should return highest version instance if no instances RUNNING for given host", function() {
-            var serviceInstance1 = new ServiceInstance({id: "id1", version: "1.21.0"});
-            service.addServiceInstance(HOST_NAME, serviceInstance1);
-            var serviceInstance2 = new ServiceInstance({id: "id2", version: "1.22.0"});
-            service.addServiceInstance(HOST_NAME, serviceInstance2);
-            var serviceInstance3 = new ServiceInstance({id: "id3", version: "1.22.1"});
-            service.addServiceInstance(HOST_NAME, serviceInstance3);
-
-            expect(service.getRunningOrHighestVersionInstance(HOST_NAME)).toBe(serviceInstance3);
-        })
-
-        it("should return running version instance", function() {
-            var serviceInstance1 = new ServiceInstance({id: "id1", version: "1.21.0", status: ServiceInstance.Status.RUNNING});
-            service.addServiceInstance(HOST_NAME, serviceInstance1);
-            var serviceInstance2 = new ServiceInstance({id: "id2", version: "1.22.0"});
-            service.addServiceInstance(HOST_NAME, serviceInstance2);
-            var serviceInstance3 = new ServiceInstance({id: "id3", version: "1.22.1"});
-            service.addServiceInstance(HOST_NAME, serviceInstance3);
-
-            expect(service.getRunningOrHighestVersionInstance(HOST_NAME)).toBe(serviceInstance1);
-        })
-    });
-
-    describe("getInstancesPerHost", function() {
-
-        var HOST_NAME = "host1";
-        var serviceInstance1;
-        var serviceInstance2;
-        var serviceInstance3;
+        var otherService;
 
         beforeEach(function() {
-            serviceInstance1 = new ServiceInstance({id: "id1", version: "1.21.0"});
-            service.addServiceInstance(HOST_NAME, serviceInstance1);
-            serviceInstance2 = new ServiceInstance({id: "id2", version: "1.22.0", status: ServiceInstance.Status.RUNNING});
-            service.addServiceInstance(HOST_NAME, serviceInstance2);
-            serviceInstance3 = new ServiceInstance({id: "id3", version: "1.22.1"});
-            service.addServiceInstance(HOST_NAME, serviceInstance3);
+            otherService = new Service({name: "service"});
         });
 
         afterEach(function() {
-            serviceInstance1 = null;
-            serviceInstance2 = null;
-            serviceInstance3 = null;
+            otherService = null;
         });
 
-        it("should sort instances based on version (descending) with running version first", function() {
-            expect(service.getInstancesPerHost()[0].serviceInstances[0]).toBe(serviceInstance2);
-            expect(service.getInstancesPerHost()[0].serviceInstances[1]).toBe(serviceInstance3);
-            expect(service.getInstancesPerHost()[0].serviceInstances[2]).toBe(serviceInstance1);
+        it("should add each service instance of other", function() {
+            spyOn(service, "addInstance").and.stub();
+
+            var serviceInstance = new ServiceInstance({id: "service-instance", version: "1.0.0", status: ServiceInstance.Status.RUNNING, hostName: "host"});
+            otherService.addInstance(serviceInstance);
+
+            service.merge(otherService);
+
+            expect(service.addInstance).toHaveBeenCalledWith(serviceInstance);
+        });
+    });
+
+    describe("addInstance", function() {
+
+        var HOST_NAME = "host1";
+
+        it("should add service instance to correct host list if not already existing", function() {
+            var serviceInstance = new ServiceInstance({id: "service-instance", version: "1.0.0", status: ServiceInstance.Status.RUNNING, hostName: HOST_NAME});
+            service.addInstance(serviceInstance);
+
+            expect(service.getInstancesForHost(HOST_NAME)[0]).toBe(serviceInstance);
         });
 
-        it("should set allStopped=false if any running", function() {
-            expect(service.getInstancesPerHost()[0].allStopped).toBe(false);
+        it("should update status of service instance if already existing with same ID", function() {
+            service.addInstance(new ServiceInstance({id: "service-instance", version: "1.0.0", status: ServiceInstance.Status.RUNNING, hostName: HOST_NAME}));
+
+            expect(service.getInstancesForHost(HOST_NAME)[0].status()).toBe(ServiceInstance.Status.RUNNING);
+
+            service.addInstance(new ServiceInstance({id: "service-instance", version: "1.0.0", status: ServiceInstance.Status.STOPPING, hostName: HOST_NAME}));
+
+            expect(service.getInstancesForHost(HOST_NAME)[0].status()).toBe(ServiceInstance.Status.STOPPING);
+        });
+    });
+
+    describe("getInstancesForHost", function() {
+
+        var HOST_NAME = "host1";
+
+        it("should return empty list if not found for host", function() {
+            expect(service.getInstancesForHost(HOST_NAME).length).toBe(0);
         });
 
-        it("should set allStopped=false if any stopping", function() {
-            serviceInstance2.status(ServiceInstance.Status.STOPPING);
+        it("should return existing list if found for host", function() {
+            var instance = new ServiceInstance({id: "service-instance", version: "1.0.0", status: ServiceInstance.Status.RUNNING});
+            service.instancesByHost()[HOST_NAME] = [instance]
 
-            expect(service.getInstancesPerHost()[0].allStopped).toBe(false);
-        });
-
-        it("should set allStopped=true if all stopped or unknown", function() {
-            serviceInstance2.status(ServiceInstance.Status.STOPPED);
-
-            expect(service.getInstancesPerHost()[0].allStopped).toBe(true);
+            expect(service.getInstancesForHost(HOST_NAME).length).toBe(1);
+            expect(service.getInstancesForHost(HOST_NAME)[0]).toBe(instance);
         });
     });
 });

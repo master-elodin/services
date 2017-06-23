@@ -1,41 +1,24 @@
-function ServiceInstance(loadingData) {
-    var instance = this;
-
-    instance.id = ko.observable(loadingData.id);
-    instance.version = ko.observable(loadingData.version);
+function ServiceInstance(creationData) {
+    this.id = creationData.id;
+    this.version = creationData.version;
+    this.hostName = creationData.hostName;
     
-    instance.status = ko.observable(loadingData.status || ServiceInstance.Status.UNKNOWN);
-
-    instance.isRunning = ko.pureComputed(function() {
-        return instance.status() === ServiceInstance.Status.RUNNING;
-    });
-
-    instance.isStopped = ko.pureComputed(function() {
-        return instance.status() === ServiceInstance.Status.STOPPED;
-    });
-
-    instance.hasNoStatus = ko.pureComputed(function() {
-        return instance.status() === ServiceInstance.Status.UNKNOWN || instance.status() === ServiceInstance.Status.NONE;
-    });
-
-    instance.isReal = ko.pureComputed(function() {
-        return instance.status() !== ServiceInstance.Status.NONE && instance !== Service.UNKNOWN_INSTANCE;
-    });
-
-    instance.start = function() {
-        ServiceInstance.start(instance.id());
-    }
-
-    instance.stop = function() {
-        ServiceInstance.stop(instance.id());
-    }
-
-    instance.restart = function() {
-        ServiceInstance.restart(instance.id());
-    }
+    this.status = ko.observable(creationData.status);
 }
+
+ServiceInstance.prototype.compareTo = function(other) {
+    var partsA = this.version.split(".");
+    var partsB = other.version.split(".");
+    for(var i = 0; i < partsA.length; i++) {
+        var diff = parseInt(partsB[i]) - parseInt(partsA[i]);
+        if(diff !== 0) {
+            return diff;
+        }
+    }
+    return 0;
+}
+
 ServiceInstance.Status = {
-    // TODO: add ForceStopping, Not Responding
     RUNNING: "Up",
     STOPPED: "Stopped",
     STOPPING: "Stopping",
@@ -45,14 +28,3 @@ ServiceInstance.Status = {
     DOWN: "Down",
     NONE: "N/A"
 };
-ServiceInstance.start = function(id) {
-    console.log("Start with ID: " + id);
-}
-
-ServiceInstance.stop = function(id) {
-    console.log("Stop with ID: " + id);
-}
-
-ServiceInstance.restart = function(id) {
-    console.log("Restart with ID: " + id);
-}

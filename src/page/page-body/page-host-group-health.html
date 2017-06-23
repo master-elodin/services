@@ -3,7 +3,7 @@
     <span>No hosts selected for given host-group!</span><br/>
     <span>Edit settings to add hosts.</span>
     <!-- /ko -->
-    <!-- ko foreach: getServiceHealths -->
-        ${src/service-health/service-health.html}
+    <!-- ko foreach: getServicesForActiveHostGroup -->
+        ${src/service/service.html}
     <!-- /ko -->
 </div>

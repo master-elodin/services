@@ -3,7 +3,7 @@ describe("A Service Instance", function() {
     var serviceInstance;
 
     beforeEach(function() {
-        serviceInstance = new ServiceInstance({id: "id", version: "1.2.0"});
+        serviceInstance = new ServiceInstance({id: "id", version: "1.2.1"});
     });
 
     afterEach(function() {
@@ -11,16 +11,14 @@ describe("A Service Instance", function() {
     });
 
     it("should set ID on creation", function() {
-        expect( serviceInstance.id() ).toBe( "id" );
+        expect( serviceInstance.id ).toBe( "id" );
     });
 
     it("should set version on creation", function() {
-        expect( serviceInstance.version() ).toBe( "1.2.0" );
+        expect( serviceInstance.version ).toBe( "1.2.1" );
     });
 
     it("should be able to update status", function() {
-        expect(serviceInstance.status()).toBe( "Unknown" );
-
         serviceInstance.status(ServiceInstance.Status.RUNNING);
 
         expect(serviceInstance.status()).toBe( ServiceInstance.Status.RUNNING );
@@ -30,22 +28,34 @@ describe("A Service Instance", function() {
         expect(serviceInstance.status()).toBe( ServiceInstance.Status.STOPPED );
     });
 
-    describe("isRunning", function() {
+    describe("compareTo", function() {
 
-        it("should return true if status is RUNNING", function() {
-            serviceInstance.status( ServiceInstance.Status.RUNNING);
-
-            expect(serviceInstance.isRunning()).toBe(true);
+        it("should return 0 if equal versions", function() {
+            expect(serviceInstance.compareTo(new ServiceInstance({id: "id", version: serviceInstance.version})) === 0).toBe(true);
         });
 
-        it("should return false if status is not RUNNING", function() {
-            serviceInstance.status( ServiceInstance.Status.STOPPED);
+        it("should return positive if lower major version than other", function() {
+            expect(serviceInstance.compareTo(new ServiceInstance({id: "id", version: "2.2.0"})) > 0).toBe(true);
+        });
 
-            expect(serviceInstance.isRunning()).toBe(false);
+        it("should return negative if higher major version than other", function() {
+            expect(serviceInstance.compareTo(new ServiceInstance({id: "id", version: "0.2.0"})) < 0).toBe(true);
+        });
 
-            serviceInstance.status( ServiceInstance.Status.STARTING);
+        it("should return positive if lower minor version than other", function() {
+            expect(serviceInstance.compareTo(new ServiceInstance({id: "id", version: "1.3.0"})) > 0).toBe(true);
+        });
 
-            expect(serviceInstance.isRunning()).toBe(false);
+        it("should return negative if higher minor version than other", function() {
+            expect(serviceInstance.compareTo(new ServiceInstance({id: "id", version: "1.1.0"})) < 0).toBe(true);
+        });
+
+        it("should return positive if lower patch version than other", function() {
+            expect(serviceInstance.compareTo(new ServiceInstance({id: "id", version: "1.2.2"})) > 0).toBe(true);
+        });
+
+        it("should return negative if higher patch version than other", function() {
+            expect(serviceInstance.compareTo(new ServiceInstance({id: "id", version: "1.2.0"})) < 0).toBe(true);
         });
     });
 });
