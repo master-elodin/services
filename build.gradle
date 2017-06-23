@@ -1,6 +1,6 @@
 def scriptProperties = [
     name: "Services",
-    version: "1.0.2",
+    version: "1.0.3",
     author: "Tim VanDoren",
     description: "Make the Service Console look nicer!",
     // target is what Tampermonkey uses to decide which pages to run on
@@ -93,8 +93,16 @@ task combineHtml {
         def lineLength = 300
         def htmlLines = []
         while(index < html.length()) {
-            htmlLines.add(html.substring(index, Math.min(index + lineLength, html.length())))
-            index += lineLength
+            def endIndex = Math.min(index + lineLength, html.length())
+            def nextLine = html.substring(index, endIndex)
+            if(nextLine.endsWith('\\')) {
+                println "ends with \\"
+                // don't end with \' because it breaks the HTML part of the script
+                endIndex++
+                nextLine = html.substring(index, endIndex)
+            }
+            htmlLines.add(nextLine)
+            index += (endIndex - index)
         }
         html = "'${htmlLines.join("'\n+ '")}'"
         new File(getBinFolder(), "combined.html").write("var html = ${html}\njQuery('body').removeClass().removeAttr('style').html(html);");
