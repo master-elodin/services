@@ -66,6 +66,12 @@ Item.prototype.addChild = function() {
     this.newChildName(null);
 }
 
+Item.prototype.getChildrenNames = function() {
+    return this.children().map(function(child) {
+        return child.name();
+    });
+}
+
 Item.prototype.getId = function() {
     if(!this.parent) {
         return this.name();

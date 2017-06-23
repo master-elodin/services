@@ -253,4 +253,17 @@ describe("Item", function() {
             expect(item.getId()).toBe("app-env-hostGroup");
         });
     });
+
+    describe("getChildrenNames", function() {
+
+        it("should return a list of all child names", function() {
+            item.newChildName("beta-child");
+            item.addChild();
+            item.newChildName("alpha-child");
+            item.addChild();
+
+            expect(item.getChildrenNames()[0]).toBe("alpha-child");
+            expect(item.getChildrenNames()[1]).toBe("beta-child");
+        });
+    });
 });

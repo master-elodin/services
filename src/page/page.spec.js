@@ -5,6 +5,12 @@ describe("A Page", function() {
 
     var page;
 
+    // for testing purposes only
+    Item.prototype.addChildWithName = function(name) {
+        this.newChildName(name);
+        this.addChild();
+    }
+
     beforeEach(function() {
         page = new Page();
         localStorage.removeItem(Page.DATA_NAME);
@@ -13,6 +19,27 @@ describe("A Page", function() {
     afterEach(function() {
         page = null;
     });
+
+    var itemSuffix = 0;
+
+    var createItem = function(name, childrenType, parent) {
+        var item = new Item({name: name});
+        item.childrenType = childrenType;
+        item.parent = parent;
+        return item;
+    };
+
+    var createApp = function() {
+        return createItem("app" + itemSuffix++, Item.ChildrenTypes.ENV);
+    }
+
+    var createEnv = function() {
+        return createItem("env" + itemSuffix++, Item.ChildrenTypes.HOST_GROUP, createApp());
+    }
+
+    var createHostGroup = function() {
+        return createItem("host-group" + itemSuffix++, Item.ChildrenTypes.HOST, createEnv());
+    }
 
     describe("load", function() {
 
@@ -70,30 +97,6 @@ describe("A Page", function() {
     });
 
     describe("activateItem", function() {
-
-        var itemSuffix = 0;
-
-        var createItem = function(name, childrenType, parent) {
-            var item = new Item({name: name});
-            item.childrenType = childrenType;
-            item[childrenType] = [];
-            item.parent = parent;
-            return item;
-        };
-
-        var createApp = function() {
-            return createItem("app" + itemSuffix++, Item.ChildrenTypes.ENV);
-        }
-
-        var createEnv = function() {
-            var app = createApp();
-            return createItem("env" + itemSuffix++, Item.ChildrenTypes.HOST_GROUP, app);
-        }
-
-        var createHostGroup = function() {
-            var env = createEnv();
-            return createItem("host-group" + itemSuffix++, Item.ChildrenTypes.HOST, env);
-        }
 
         it("should set activeApp if childrenType is ENV", function() {
             var item = createApp();
@@ -177,15 +180,156 @@ describe("A Page", function() {
         });
     });
 
+    describe("activeHostGroup", function() {
+
+        it("should call refresh on change", function() {
+            spyOn(page, "refresh").and.stub();
+
+            page.activeHostGroup(createHostGroup());
+
+            expect(page.refresh).toHaveBeenCalled();
+
+            page.activeHostGroup(createHostGroup());
+
+            expect(page.refresh).toHaveBeenCalled();
+        });
+    });
+
     describe("showHostGroupHealth", function() {
-        // TODO
+
+        it("should return true if showRefreshIcon and no activeService", function() {
+            spyOn(page, "showRefreshIcon").and.returnValue(true);
+            page.activeService(null);
+
+            expect(page.showHostGroupHealth()).toBe(true);
+        });
+
+        it("should return false if activeService", function() {
+            spyOn(page, "showRefreshIcon").and.returnValue(true);
+            page.activeService({});
+
+            expect(page.showHostGroupHealth()).toBe(false);
+        });
     });
 
     describe("showRefreshIcon", function() {
-        // TODO
+
+        it("should return true if host-group is selected", function() {
+            page.activateItem(createHostGroup());
+
+            expect(page.showRefreshIcon()).toBe(true);
+        });
+
+        it("should return false if no host-group is selected", function() {
+            page.activeHostGroup(null);
+
+            expect(page.showRefreshIcon()).toBe(false);
+        });
+
+        it("should return false if editMode=true", function() {
+            page.activateItem(createHostGroup());
+
+            page.editMode(true);
+
+            expect(page.showRefreshIcon()).toBe(false);
+        });
     });
 
     describe("refresh", function() {
-        // TODO
+
+        var activeHostGroup;
+
+        beforeEach(function() {
+            activeHostGroup = createHostGroup();
+            page.activateItem(activeHostGroup);
+
+            spyOn(Data, "getDataForHosts").and.returnValue(jQuery.Deferred().resolve([]));
+        });
+
+        afterEach(function() {
+            activeHostGroup = null;
+        });
+
+        it("should call Data.getDataForHosts for each host in activeHostGroup if not refreshing when clicked", function() {
+            var hostGroup = createHostGroup();
+            hostGroup.addChildWithName("host1");
+            hostGroup.addChildWithName("host2");
+            page.activeHostGroup(hostGroup);
+
+            page.isRefreshing(false);
+
+            page.refresh();
+
+            expect(Data.getDataForHosts).toHaveBeenCalledWith(hostGroup.getChildrenNames());
+        });
+
+        it("should set isRefreshing=true if not refreshing and has activeHostGroup when clicked", function() {
+            page.isRefreshing(false);
+
+            page.refresh();
+
+            expect(page.isRefreshing()).toBe(true);
+        });
+
+        it("should not set isRefreshing=true if no activeHostGroup", function() {
+            page.isRefreshing(false);
+            page.activeHostGroup(null);
+
+            page.refresh();
+
+            expect(page.isRefreshing()).toBe(false);
+        });
+    });
+
+    describe("addServiceData", function() {
+
+        var serviceList;
+
+        beforeEach(function() {
+            serviceList = [];
+            page.activeHostGroup(createHostGroup());
+        });
+
+        afterEach(function() {
+            serviceList = null;
+        });
+
+        it("should add services in name order if no existing services", function() {
+            serviceList.push(new Service({name: "service2"}));
+            serviceList.push(new Service({name: "service1"}));
+
+            page.addServiceData(serviceList);
+
+            expect(page.getServicesForActiveHostGroup().length).toBe(2);
+            expect(page.getServicesForActiveHostGroup()[0].name).toBe("service1");
+            expect(page.getServicesForActiveHostGroup()[1].name).toBe("service2");
+        });
+
+        it("should merge service if existing service with same name", function() {
+            var service1 = new Service({name: "service1"});
+            spyOn(service1, "merge").and.stub();
+            serviceList.push(service1);
+            var service2 = new Service({name: "service1"});
+            serviceList.push(service2);
+
+            page.addServiceData(serviceList);
+
+            expect(page.getServicesForActiveHostGroup().length).toBe(1);
+            expect(service1.merge).toHaveBeenCalledWith(service2);
+        });
+    });
+
+    describe("getServicesForActiveHostGroup", function() {
+
+        it("should return services for activeHostGroup", function() {
+            expect(page.getServicesForActiveHostGroup().length).toBe(0);
+
+            var services = [{}, {}];
+            var hostGroup = createHostGroup();
+            page.activeHostGroup(hostGroup);
+            page.servicesByHostGroupId[hostGroup.getId()] = services;
+
+            expect(page.getServicesForActiveHostGroup()).toBe(services);
+        });
     });
 });

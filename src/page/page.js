@@ -101,17 +101,54 @@ function Page() {
         }
     };
 
+    instance.servicesByHostGroupId = {};
+    instance.getServicesForActiveHostGroup = ko.pureComputed(function() {
+        return instance.activeHostGroup() && instance.servicesByHostGroupId[instance.activeHostGroup().getId()] || [];
+    });
+    instance.activeHostGroup.subscribe(function(newVal) {
+        if(newVal) {
+            instance.refresh();
+        }
+    });
+
+    var setErrorMessage = function(error) {
+        instance.errorMessage(error);
+    };
+
+    var clearErrorMessage = function() {
+        instance.errorMessage(null);
+    };
+
+    instance.addServiceData = function(serviceList) {
+        var existingServiceList = instance.getServicesForActiveHostGroup();
+        serviceList.forEach(function(newService) {
+            var existingService = existingServiceList.find(function(existingService) {
+                return newService.name === existingService.name;
+            });
+            if(existingService) {
+                existingService.merge(newService);
+            } else {
+                existingServiceList.push(newService);
+            }
+        });
+
+        existingServiceList.sort(function(a, b) {
+            return sortStrings(a.name, b.name);
+        });
+
+        clearErrorMessage();
+    };
+
     // TODO: refresh on timer
     instance.isRefreshing = ko.observable(false);
-    instance.refreshError = ko.observable();
+    instance.errorMessage = ko.observable();
     instance.refresh = function() {
-        if(!instance.isRefreshing()) {
+        if(!instance.isRefreshing() && instance.activeHostGroup()) {
             instance.isRefreshing(true);
-            instance.activeHostGroup().loadData().then(function() {
-                instance.refreshError(null);
-            }).fail(function(error) {
-                instance.refreshError(error);
-            }).always(function() {
+            Data.getDataForHosts(instance.activeHostGroup().getChildrenNames())
+            .then(instance.addServiceData)
+            .fail(setErrorMessage)
+            .always(function() {
                 instance.isRefreshing(false);
             });
         }
