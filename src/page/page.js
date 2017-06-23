@@ -17,8 +17,8 @@ function Page() {
         instance.editMode(false);
     }
 
-    // instance.serviceController = new ServiceController({activeHostGroup: instance.activeHostGroup});
-    // instance.startStopUnlocked = instance.serviceController.startStopUnlocked;
+    instance.serviceController = new ServiceController({activeHostGroup: instance.activeHostGroup});
+    instance.startStopUnlocked = instance.serviceController.startStopUnlocked;
 
     instance.showHostGroupHealth = ko.pureComputed(function() {
         return instance.showRefreshIcon() && !instance.activeService();
@@ -42,16 +42,25 @@ function Page() {
         instance.activeHostGroup(null);
         instance.activeService(null);
     };
+
+    var setActiveState = function(activeHolder, newActive) {
+        if(activeHolder()) {
+            activeHolder().isActive(false);
+        }
+        newActive.isActive(true);
+        activeHolder(newActive);
+    };
+
     instance.activateItem = function(item) {
         if(item.childrenType === Item.ChildrenTypes.ENV) {
-            instance.activeApp(item);
+            setActiveState(instance.activeApp, item);
         } else if(item.childrenType === Item.ChildrenTypes.HOST_GROUP) {
-            instance.activeApp(item.parent);
-            instance.activeEnv(item);
+            setActiveState(instance.activeApp, item.parent);
+            setActiveState(instance.activeEnv, item);
         } else if(item.childrenType === Item.ChildrenTypes.HOST) {
-            instance.activeApp(item.parent.parent);
-            instance.activeEnv(item.parent);
-            instance.activeHostGroup(item);
+            setActiveState(instance.activeApp, item.parent.parent);
+            setActiveState(instance.activeEnv, item.parent);
+            setActiveState(instance.activeHostGroup, item);
         }
     }
 
