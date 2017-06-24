@@ -1,5 +1,5 @@
 <div data-bind="css: {\'service-page__host-group-health--show-service-actions\': showServiceActions }" class="service-page__host-group-health">
-    <!-- ko if: activeHostGroup.children().length === 0 -->
+    <!-- ko if: noHostsConfigured -->
     <span>No hosts selected for given host-group!</span><br/>
     <span>Edit settings to add hosts.</span>
     <!-- /ko -->

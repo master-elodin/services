@@ -43,6 +43,10 @@ function Page() {
         instance.activeService(null);
     };
 
+    instance.noHostsConfigured = ko.pureComputed(function() {
+        return instance.activeHostGroup() && instance.activeHostGroup().children().length === 0;
+    });
+
     var setActiveState = function(activeHolder, newActive) {
         if(activeHolder()) {
             activeHolder().isActive(false);
@@ -76,17 +80,21 @@ function Page() {
         console.log("Saved page data as JSON", instance.pageData.export());
     };
 
+    var defaultListIfNull = function(list) {
+        return list || [];
+    }
+
     instance.load = function() {
         var existingData = JSON.parse(localStorage.getItem(Page.DATA_NAME) || "{}");
-        if(existingData && existingData.applications) {
+        if(existingData.applications) {
             console.log("Adding children types...");
             existingData.childrenType = Item.ChildrenTypes.APP;
             existingData.name = "configuration";
             existingData.applications.forEach(function(app) {
                 app.childrenType = Item.ChildrenTypes.ENV;
-                app.environments.forEach(function(env) {
+                defaultListIfNull(app.environments).forEach(function(env) {
                     env.childrenType = Item.ChildrenTypes.HOST_GROUP;
-                    env.hostGroups.forEach(function(hostGroup) {
+                    defaultListIfNull(env.hostGroups).forEach(function(hostGroup) {
                         hostGroup.childrenType = Item.ChildrenTypes.HOST;
                     });
                 });
@@ -101,9 +109,16 @@ function Page() {
         }
     };
 
+    instance.activeServices = ko.observableArray();
     instance.servicesByHostGroupId = {};
+    instance.filterValue = ko.observable("");
     instance.getServicesForActiveHostGroup = ko.pureComputed(function() {
-        return instance.activeHostGroup() && instance.servicesByHostGroupId[instance.activeHostGroup().getId()] || [];
+        var filterParts = instance.filterValue().toLowerCase().split(" ");
+        return instance.activeServices().filter(function(service) {
+            return filterParts.every(function(filterPart) {
+                return service.name.toLowerCase().indexOf(filterPart) > -1;
+            });
+        });
     });
     instance.activeHostGroup.subscribe(function(newVal) {
         if(newVal) {
@@ -120,7 +135,11 @@ function Page() {
     };
 
     instance.addServiceData = function(serviceList) {
-        var existingServiceList = instance.getServicesForActiveHostGroup();
+        var activeGroupId = instance.activeHostGroup().getId();
+        if(!instance.servicesByHostGroupId[activeGroupId]) {
+            instance.servicesByHostGroupId[activeGroupId] = [];
+        }
+        var existingServiceList = instance.servicesByHostGroupId[activeGroupId];
         serviceList.forEach(function(newService) {
             var existingService = existingServiceList.find(function(existingService) {
                 return newService.name === existingService.name;
@@ -128,6 +147,7 @@ function Page() {
             if(existingService) {
                 existingService.merge(newService);
             } else {
+                console.log("Received new service", newService);
                 existingServiceList.push(newService);
             }
         });
@@ -135,6 +155,7 @@ function Page() {
         existingServiceList.sort(function(a, b) {
             return sortStrings(a.name, b.name);
         });
+        instance.activeServices(existingServiceList);
 
         clearErrorMessage();
     };
@@ -153,8 +174,6 @@ function Page() {
             });
         }
     };
-
-    instance.filterValue = ko.observable("");
 
     instance.downloadConfig = function() {
         downloadAsFile(getSettingsAsJsonText(), "service-config.json");

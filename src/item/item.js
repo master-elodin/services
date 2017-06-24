@@ -1,6 +1,4 @@
 function Item(importData) {
-    var instance = this;
-
     this.name = ko.observable();
     this.children = ko.observableArray();
 
@@ -13,20 +11,22 @@ function Item(importData) {
     this.newChildName = ko.observable();
 
     if(importData) {
-        instance.import(importData);
+        this.import(importData);
     }
 }
 
 Item.prototype.import = function(data) {
     this.name(data.name);
-    if(data.childrenType) {
-        this.childrenType = data.childrenType;
+
+    this.parent = data.parent;
+    this.childrenType = data.childrenType;
+
+    if(data[data.childrenType]) {
         this.children(data[data.childrenType].map(function(child) {
-            var childItem = new Item(child);
             // parent example:
             // activating a host-group should also activate its parent environment and app
-            childItem.parent = this;
-            return childItem;
+            child.parent = this;
+            return new Item(child);
         }, this));
     }
 
@@ -57,7 +57,7 @@ Item.prototype.findChildByName = function(childName) {
 
 Item.prototype.addChild = function() {
     if(!this.findChildByName(this.newChildName())) {
-        this.children.push(new Item({name: this.newChildName()}));
+        this.children.push(new Item({name: this.newChildName(), parent: this, childrenType: this.getNextChildrenType(), isExpanded: true}));
         this.children.sort(function(a, b) {
             return sortStrings(a.name(), b.name());
         });
@@ -78,6 +78,16 @@ Item.prototype.getId = function() {
     } else {
         return this.parent.getId() + "-" + this.name();
     }
+}
+
+Item.prototype.getNextChildrenType = function() {
+    var childrenTypeKeys = Object.keys(Item.ChildrenTypes);
+    for(var i = 0; i < childrenTypeKeys.length; i++) {
+        if(Item.ChildrenTypes[childrenTypeKeys[i]] === this.childrenType) {
+            return Item.ChildrenTypes[childrenTypeKeys[i + 1]];
+        }
+    }
+    return null;
 }
 
 Item.ChildrenTypes = {

@@ -16,6 +16,7 @@ external.rel = "stylesheet";
 document.getElementsByTagName('head')[0].appendChild(external);
 
 ${src/utils/utils.js}
+${src/data/data.js}
 ${src/service-instance/service-instance.js}
 ${src/host-health/host-health.js}
 ${src/service/service.js}

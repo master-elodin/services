@@ -324,12 +324,32 @@ describe("A Page", function() {
         it("should return services for activeHostGroup", function() {
             expect(page.getServicesForActiveHostGroup().length).toBe(0);
 
-            var services = [{}, {}];
+            var services = [new Service({name: "service1"}), new Service({name: "service2"})];
             var hostGroup = createHostGroup();
             page.activeHostGroup(hostGroup);
-            page.servicesByHostGroupId[hostGroup.getId()] = services;
+            page.activeServices(services);
 
-            expect(page.getServicesForActiveHostGroup()).toBe(services);
+            expect(page.getServicesForActiveHostGroup().length).toBe(2);
+            expect(page.getServicesForActiveHostGroup()[0]).toBe(services[0]);
+            expect(page.getServicesForActiveHostGroup()[1]).toBe(services[1]);
+        });
+
+        it("should exclude services that don't match filter", function() {
+            var service1 = new Service({name: "alpha service"});
+            var service2 = new Service({name: "beta service"});
+            var service3 = new Service({name: "different name"});
+            var hostGroup = createHostGroup();
+            page.activeHostGroup(hostGroup);
+            page.activeServices([service1, service2, service3]);
+
+            page.filterValue("service");
+
+            expect(page.getServicesForActiveHostGroup()[0]).toBe(service1);
+            expect(page.getServicesForActiveHostGroup()[1]).toBe(service2);
+
+            page.filterValue("service Bet");
+
+            expect(page.getServicesForActiveHostGroup()[0]).toBe(service2);
         });
     });
 });

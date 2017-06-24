@@ -109,6 +109,13 @@ describe("Item", function() {
             expect(item.children()[0].parent).toBe(item);
             expect(item.children()[0].children()[0].parent).toBe(item.children()[0]);
         });
+
+        it("should set parent if given", function() {
+            var parent = new Item({name: "parent"});
+            item.import({parent: parent});
+
+            expect(item.parent).toBe(parent);
+        });
     });
 
     describe("export", function() {
@@ -180,8 +187,6 @@ describe("Item", function() {
             expect(item.children()[0].name()).toBe("alpha-newChild");
             expect(item.children()[1].name()).toBe("beta-newChild");
             expect(item.children()[2].name()).toBe("charlie-newChild");
-            expect(item.children()[0].isExpanded()).toBe(false);
-            expect(item.children()[0].isActive()).toBe(false);
         });
 
         it("should clear newChildName", function() {
@@ -213,12 +218,37 @@ describe("Item", function() {
             expect(item.children()[0].children().length).toBe(1);
         });
 
-        it("should page", function() {
+        it("should save page", function() {
             spyOn(page, "save").and.stub();
 
             item.addChild();
 
             expect(page.save).toHaveBeenCalled();
+        });
+
+        it("should set parent", function() {
+            item.newChildName("child");
+
+            item.addChild();
+
+            expect(item.children()[0].parent).toBe(item);
+        });
+
+        it("should set next childrenType based on parent", function() {
+            item.newChildName("child");
+            item.childrenType = Item.ChildrenTypes.APP;
+
+            item.addChild();
+
+            expect(item.children()[0].childrenType).toBe(Item.ChildrenTypes.ENV);
+        });
+
+        it("should set isExpanded=true", function() {
+            item.newChildName("child");
+
+            item.addChild();
+
+            expect(item.children()[0].isExpanded()).toBe(true);
         });
     });
 
@@ -264,6 +294,27 @@ describe("Item", function() {
 
             expect(item.getChildrenNames()[0]).toBe("alpha-child");
             expect(item.getChildrenNames()[1]).toBe("beta-child");
+        });
+    });
+
+    describe("getNextChildrenType", function() {
+
+        it("should return ENV if APP", function() {
+            item.childrenType = Item.ChildrenTypes.APP;
+
+            expect(item.getNextChildrenType()).toBe(Item.ChildrenTypes.ENV);
+        });
+
+        it("should return HOST_GROUP if ENV", function() {
+            item.childrenType = Item.ChildrenTypes.ENV;
+
+            expect(item.getNextChildrenType()).toBe(Item.ChildrenTypes.HOST_GROUP);
+        });
+
+        it("should return HOST if HOST_GROUP", function() {
+            item.childrenType = Item.ChildrenTypes.HOST_GROUP;
+
+            expect(item.getNextChildrenType()).toBe(Item.ChildrenTypes.HOST);
         });
     });
 });
