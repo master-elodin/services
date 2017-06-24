@@ -3,8 +3,10 @@
         <span data-bind="text: name"></span>
     </div>
     <div class="service-health__host-healths">
-        <!-- ko foreach: hostHealths -->
-            ${src/host-health/host-health.html}
+        <!-- ko foreach: $root.activeHosts -->
+            <!-- ko with: $parent.getFirstInstanceForHost($data) -->
+            ${src/service-instance/service-instance.html}
+            <!-- /ko -->
         <!-- /ko -->
     </div>
 </div>

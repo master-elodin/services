@@ -27,5 +27,7 @@ Data.getDataForHosts = function(hostNameList) {
         }
     });
 
+    // TODO: make sure status exists or defaults to UNKNOWN
+
     return jQuery.Deferred().resolve(data);
 }

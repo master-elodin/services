@@ -19,12 +19,49 @@ ServiceInstance.prototype.compareTo = function(other) {
 }
 
 ServiceInstance.Status = {
-    RUNNING: "Up",
-    STOPPED: "Stopped",
-    STOPPING: "Stopping",
-    STARTING: "Starting",
-    UNKNOWN: "Unknown",
-    START_FAILED: "Start Failed",
-    DOWN: "Down",
-    NONE: "N/A"
+    RUNNING: {
+        text: "Up",
+        icon: "fa-check-circle-o",
+        colorClass: "host-health__icon--running"
+    },
+    STOPPED: {
+        text: "Stopped",
+        icon: "fa-times-circle-o",
+        colorClass: "host-health__icon--stopped"
+    },
+    STOPPING: {
+        text: "Stopping" ,
+        icon: "fa-times-circle-o",
+        colorClass: "host-health__icon--stopping"
+    },
+    STARTING: {
+        text: "Starting",
+        icon: "fa-check-circle-o",
+        colorClass: "host-health__icon--starting"
+    },
+    UNKNOWN: {
+        text: "Unknown",
+        icon: "fa-question-circle-o",
+        colorClass: "host-health__icon--unknown"
+    },
+    START_FAILED: {
+        text: "Start Failed",
+        icon: "fa-exclamation-circle",
+        colorClass: "host-health__icon--failed"
+    },
+    RESTART_FAILED: {
+        text: "Restart Failed",
+        icon: "fa-exclamation-circle",
+        colorClass: "host-health__icon--failed"
+    },
+    DOWN: {
+        text: "Down",
+        icon: "fa-exclamation-circle",
+        colorClass: "host-health__icon--down"
+    },
+    NONE: {
+        text: "N/A",
+        icon: "fa-question-circle-o",
+        colorClass: "host-health__icon--unknown"
+    }
 };

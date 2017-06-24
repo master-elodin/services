@@ -35,11 +35,13 @@ function Page() {
     instance.activeApp = ko.observable();
     instance.activeEnv = ko.observable();
     instance.activeHostGroup = ko.observable();
+    instance.activeHosts = ko.observableArray();
     instance.activeService = ko.observable();
     instance.clearAllActive = function() {
         instance.activeApp(null);
         instance.activeEnv(null);
         instance.activeHostGroup(null);
+        instance.activeHosts([]);
         instance.activeService(null);
     };
 
@@ -65,6 +67,7 @@ function Page() {
             setActiveState(instance.activeApp, item.parent.parent);
             setActiveState(instance.activeEnv, item.parent);
             setActiveState(instance.activeHostGroup, item);
+            instance.activeHosts(item.getChildrenNames());
         }
     }
 
@@ -113,9 +116,8 @@ function Page() {
     instance.servicesByHostGroupId = {};
     instance.filterValue = ko.observable("");
     instance.getServicesForActiveHostGroup = ko.pureComputed(function() {
-        var filterParts = instance.filterValue().toLowerCase().split(" ");
         return instance.activeServices().filter(function(service) {
-            return filterParts.every(function(filterPart) {
+            return instance.filterValue().toLowerCase().split(" ").every(function(filterPart) {
                 return service.name.toLowerCase().indexOf(filterPart) > -1;
             });
         });

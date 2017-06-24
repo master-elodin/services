@@ -73,10 +73,28 @@ describe("Service", function() {
 
         it("should return existing list if found for host", function() {
             var instance = new ServiceInstance({id: "service-instance", version: "1.0.0", status: ServiceInstance.Status.RUNNING});
-            service.instancesByHost()[HOST_NAME] = [instance]
+            service.instancesByHost()[HOST_NAME] = [instance];
 
             expect(service.getInstancesForHost(HOST_NAME).length).toBe(1);
             expect(service.getInstancesForHost(HOST_NAME)[0]).toBe(instance);
+        });
+    });
+
+    describe("getFirstInstanceForHost", function() {
+
+        var HOST_NAME = "host1";
+
+        it("should return the first instance for the host", function() {
+            var instance = new ServiceInstance({id: "service-instance", version: "1.0.0", status: ServiceInstance.Status.RUNNING});
+            service.instancesByHost()[HOST_NAME] = [instance];
+
+            expect(service.getFirstInstanceForHost(HOST_NAME)).toBe(instance);
+        });
+
+        it("should return UNKNOWN instance if no data found for host", function() {
+            expect(service.getFirstInstanceForHost("other host").id).toBe("INSTANCE_NOT_FOUND");
+            expect(service.getFirstInstanceForHost("other host").hostName).toBe("other host");
+            expect(service.getFirstInstanceForHost("other host").status()).toBe(ServiceInstance.Status.UNKNOWN);
         });
     });
 });

@@ -10,6 +10,10 @@ Service.prototype.getInstancesForHost = function(hostName) {
     return this.instancesByHost()[hostName];
 };
 
+Service.prototype.getFirstInstanceForHost = function(hostName) {
+    return this.getInstancesForHost(hostName)[0] || new ServiceInstance({id: "INSTANCE_NOT_FOUND", hostName: hostName, status: ServiceInstance.Status.UNKNOWN, version: "N/A"});
+}
+
 Service.prototype.addInstance = function(newServiceInstance) {
     var existingInstances = this.getInstancesForHost(newServiceInstance.hostName);
     var existingServiceInstance = existingInstances.find(function(serviceInstance) {
