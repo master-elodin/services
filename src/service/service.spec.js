@@ -94,7 +94,7 @@ describe("Service", function() {
         it("should return UNKNOWN instance if no data found for host", function() {
             expect(service.getFirstInstanceForHost("other host").id).toBe("INSTANCE_NOT_FOUND");
             expect(service.getFirstInstanceForHost("other host").hostName).toBe("other host");
-            expect(service.getFirstInstanceForHost("other host").status()).toBe(ServiceInstance.Status.UNKNOWN);
+            expect(service.getFirstInstanceForHost("other host").status()).toBe(ServiceInstance.Status.NONE);
         });
     });
 });

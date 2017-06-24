@@ -4,6 +4,10 @@ function ServiceInstance(creationData) {
     this.hostName = creationData.hostName;
     
     this.status = ko.observable(creationData.status);
+
+    // for start/stop
+    this.selected = ko.observable(false);
+    this.toggleSelected = createToggle(this.selected);
 }
 
 ServiceInstance.prototype.compareTo = function(other) {
