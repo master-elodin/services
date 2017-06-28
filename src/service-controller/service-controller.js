@@ -1,229 +1,112 @@
-function ServiceController(loadingData) {
-    var instance = this;
+function ServiceController(creationData) {
+    this.activeServices = creationData.activeServices;
+    this.activeHostGroup = creationData.activeHostGroup;
 
-    instance.startStopUnlocked = ko.observable(false);
-    instance.toggleStartStop = createToggle(instance.startStopUnlocked);
+    this.activeActionListGroup = ko.observable(new ActionListGroup());
 
-    instance.activeHostGroup = loadingData.activeHostGroup;
+    this.startStopUnlocked = ko.observable(false);
+    this.toggleStartStop = createToggle(this.startStopUnlocked);
 
-    instance.delayForNext = ko.observable(0);
-    instance.selectionGroup = ko.observableArray();
+    this.showLoadSave = ko.observable(false);
+    this.toggleShowLoadSave = createToggle(this.showLoadSave);
 
-    var scrollToBottom = function() {
-        var bodyEl = jQuery(".service-controller__body")[0];
-        if(bodyEl) {
-            bodyEl.scrollTop = bodyEl.scrollHeight;
-        }
-    };
-    var scrollToTop = function() {
-        var bodyEl = jQuery(".service-controller__body")[0];
-        if(bodyEl) {
-            bodyEl.scrollTop = 0;
-        }
-    }
+    this.delayForNext = ko.observable(0);
 
-    var addSelectionGroup = function(filter) {
-        if(!instance.disableAddClearButtons()) {
-            // selection group is a list of service instances with a delay
-            instance.selectionGroup.push({delay: ko.observable(parseInt(instance.delayForNext())),
-                services: ko.observableArray(instance.activeHostGroup().getServiceHealths().map(function(serviceHealth) {
-                    var selected = {name: serviceHealth.name()};
-                    // reset delay for next
-                    instance.delayForNext(0);
-                    selected.data = ko.observableArray(serviceHealth.hostHealths().filter(filter).map(function(selectedHostHealth) {
-                        return {
-                            id: selectedHostHealth.id(), 
-                            version: selectedHostHealth.version(), 
-                            hostName: selectedHostHealth.hostName()
-                        };
-                    }).sort(function(a, b) {
-                        return a.hostName.localeCompare(b.hostName);
-                    }));
-                    return selected;
-                }).filter(function(serviceInstance) {
-                    return serviceInstance.data().length > 0;
-                }))
-            });
-            // scroll to bottom to be able to see newly-added items
-            scrollToBottom();
+    // TODO: load/save
+    // TODO: import/export
 
-            instance.activeHostGroup().getServiceHealths().forEach(function(serviceHealth) {
-                serviceHealth.hostHealths().forEach(function(hostHealth) {
-                    hostHealth.selected(false);
-                });
-            });
-        }
-    };
+    this.isRunning = ko.observable(false);
+    this.currentRun = ko.observable();
+    this.isPaused = ko.pureComputed(function() {
+        return !!this.currentRun() && this.currentRun().isPaused();
+    }, this);
 
-    instance.configurationName = ko.observable("default-configuration");
-    instance.configurationName.subscribe(function(newVal) {
-        if(newVal) {
-            instance.configurationName(newVal.replace(" ", "-"));
-        }
-    });
-    instance.showLoadSave = ko.observable(false);
-    instance.toggleShowLoadSave = createToggle(instance.showLoadSave);
-    var getSavedData = function() {
-        var savedJson = localStorage.getItem(ServiceController.DATA_NAME);
-        return savedJson ? JSON.parse(savedJson) : { configurations: [] };
-    }
-    instance.savedConfigNames = ko.observableArray(getSavedData().configurations.map(function(config) {
-        return config.configurationName;
-    }));
+    this.confirmationType = ko.observable();
+    this.needsConfirmation = ko.pureComputed(function() {
+        return !!this.confirmationType();
+    }, this);
 
-    var getConfigForSaving = function() {
-        var configForSaving = { configurationName: instance.configurationName() };
-        configForSaving.selectionGroup = ko.mapping.toJS(instance.selectionGroup);
-        configForSaving.scriptVersion = SCRIPT_VERSION;
-        return configForSaving;
-    };
+    this.disableAddClearButtons = ko.pureComputed(function() {
+        return this.isRunning() || this.needsConfirmation() || this.isPaused() || this.showLoadSave();
+    }, this);
+};
 
-    var addConfigToSavedData = function(newConfig, savedData) {
-        var existingConfig = false;
-        for(var i = 0; i < savedData.configurations.length; i++) {
-            if(savedData.configurations[i].configurationName === newConfig.configurationName) {
-                savedData.configurations[i] = newConfig;
-                existingConfig = true;
-                break;
-            }
-        }
-        if(!existingConfig) {
-            savedData.configurations.push(newConfig);
-            instance.savedConfigNames.push(newConfig.configurationName);
-            instance.savedConfigNames.sort(function(a, b) {
-                return a.localeCompare(b);
-            });
-        }
-        localStorage.setItem(ServiceController.DATA_NAME, JSON.stringify(savedData));
-    };
-
-    instance.save = function() {
-        var savedData = getSavedData();
-        addConfigToSavedData(getConfigForSaving(), savedData);
-    };
-
-    instance.load = function(configName) {
-        var savedData = getSavedData();
-        var configurationToLoad = savedData.configurations.find(function(config) {
-            return config.configurationName === configName;
-        });
-        instance.configurationName(configurationToLoad.name);
-        instance.selectionGroup(ko.mapping.fromJS(configurationToLoad.selectionGroup)());
-        instance.showLoadSave(false);
-    };
-
-    instance.downloadConfig = function() {
-        downloadAsFile(JSON.stringify(getConfigForSaving()), instance.configurationName().replace(" ", "-") + ".json");
-    };
-
-    instance.uploadConfig = function() {
-        uploadFile("#upload-configuration-input", function(configText) {
-            addConfigToSavedData(JSON.parse(configText), getSavedData());
-        });
-    };
-
-    instance.addAll = function() {
-        addSelectionGroup(function(hostHealth) {
-            return hostHealth.isReal();
-        });
-    };
-    instance.addSelected = function() {
-        addSelectionGroup(function(hostHealth) {
-            return hostHealth.selected() && hostHealth.isReal();
-        });
-    };
-
-    instance.clear = function() {
-        if(!instance.disableAddClearButtons()) {
-            instance.selectionGroup([]);
-        }
-    };
-
-    instance.disableAddClearButtons = ko.pureComputed(function() {
-        return instance.isRunning() || instance.needsConfirmation() || instance.isAborted() || instance.showLoadSave();
-    });
-
-    instance.needsConfirmation = ko.observable(false);
-    instance.confirmationType = ko.observable();
-    var CONFIRMATION_TYPES = { START: "start", STOP: "stop"}
-
-    var countdown = null;
-    var runningAction = null;
-    instance.isRunning = ko.observable(false);
-    var run = function(serviceGroup) {
-        if(serviceGroup) {
-            var deferred = jQuery.Deferred();
-            clearInterval(countdown);
-            countdown = setInterval(function() {
-                serviceGroup.delay(serviceGroup.delay() - 1);
-            }, 1000);
-            clearInterval(runningAction);
-            runningAction = setTimeout(function() {
-                clearInterval(countdown);
-                var service = serviceGroup.services.shift();
-                while(service) {
-                    var dataList = service.data().shift();
-                    while(dataList) {
-                        ServiceInstance[instance.confirmationType()](dataList.id);
-                        dataList = service.data.shift();
-                    }
-                    service = serviceGroup.services.shift();
-                }
-                instance.selectionGroup.shift();
-                deferred.resolve(instance.selectionGroup()[0]);
-            }, serviceGroup.delay() * 1000);
-            deferred.then(run);
-        } else {
-            end();
-        }
-    };
-
-    var end = function() {
-        clearInterval(countdown);
-        clearTimeout(runningAction);
-        instance.isRunning(false);
-    };
-    instance.isAborted = ko.observable(false);
-    instance.abort = function() {
-        end();
-        instance.isAborted(true);
-    };
-
-    instance.confirm = function() {
-        instance.isRunning(true);
-        instance.needsConfirmation(false);
-        run(instance.selectionGroup()[0]);
-    };
-
-    instance.cancel = function() {
-        instance.needsConfirmation(false);
-        instance.isAborted(false);
-    };
-
-    instance.resume = function() {
-        instance.confirm();
-    };
-
-    instance.cancelRun = function() {
-        instance.cancel();
-        instance.clear();
-    };
-
-    var confirmRun = function(confirmationType) {
-        if(!instance.isRunning()) {
-            scrollToTop();
-            instance.confirmationType(confirmationType);
-            instance.needsConfirmation(true);
-            instance.isAborted(false);
-        }
-    };
-
-    instance.confirmRunStart = function() {
-        confirmRun(CONFIRMATION_TYPES.START);
-    };
-
-    instance.confirmRunStop = function() {
-        confirmRun(CONFIRMATION_TYPES.STOP);
-    };
-}
 ServiceController.DATA_NAME = "saved-configurations";
+
+ServiceController.ConfirmationType = {
+    START: {
+        title: "Start",
+        actionType: "start"
+    },
+    STOP: {
+        title: "Stop",
+        actionType: "stop"
+    }
+}
+
+ServiceController.prototype.getActiveHosts = function() {
+    return this.activeHostGroup() ? this.activeHostGroup().getChildrenNames() : [];
+};
+
+ServiceController.prototype.add = function(filterFunction) {
+    var actionList = new ActionList({delayInMillis: this.delayForNext()});
+    var activeHosts = this.getActiveHosts();
+    this.activeServices().forEach(function(service) {
+        service.getAllInstances().filter(filterFunction).forEach(function(serviceInstance) {
+            actionList.addAction(new Action({serviceName: service.name, hostIndex: activeHosts.indexOf(serviceInstance.hostName)}));
+        });
+    });
+    this.activeActionListGroup().addActionList(actionList);
+};
+
+ServiceController.prototype.addSelected = function() {
+    this.add(function(serviceInstance) {
+        return serviceInstance.selected();
+    });
+};
+
+ServiceController.prototype.addAll = function() {
+    this.add(function(serviceInstance) {
+        return true;
+    });
+};
+
+ServiceController.prototype.clear = function() {
+    this.activeActionListGroup().actionLists([]);
+};
+
+ServiceController.prototype.pause = function() {
+    this.currentRun().pause();
+};
+
+ServiceController.prototype.run = function() {
+    var actionTypeChanged = true;
+    if(this.currentRun()) {
+        if(this.currentRun().actionType === this.confirmationType().actionType) {
+            actionTypeChanged = false;
+        } else {
+            this.currentRun().pause();
+        }
+    }
+    if(actionTypeChanged) {
+        this.currentRun(new ActionRunner({
+            actionListGroup: this.activeActionListGroup,
+            actionType: this.confirmationType().actionType,
+            hostNameList: this.getActiveHosts()
+        }));
+    }
+    this.currentRun().run();
+};
+
+ServiceController.prototype.cancel = function() {
+    this.confirmationType(null);
+    this.currentRun(null);
+};
+
+ServiceController.prototype.start = function() {
+    this.confirmationType(ServiceController.ConfirmationType.START);
+};
+
+ServiceController.prototype.stop = function() {
+    this.confirmationType(ServiceController.ConfirmationType.STOP);
+};

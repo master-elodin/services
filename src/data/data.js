@@ -30,4 +30,9 @@ Data.getDataForHosts = function(hostNameList) {
     // TODO: make sure status exists or defaults to UNKNOWN
 
     return jQuery.Deferred().resolve(data);
-}
+};
+
+Data.runAction = function(runData) {
+    // TODO
+    console.log(runData);
+};

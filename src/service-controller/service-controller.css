@@ -31,14 +31,6 @@
     cursor: default;
 }
 
-.service-controller__cancel {
-    display: inline-block;
-}
-
-.service-controller__cancel a:visited {
-    color: $lightBlue;
-}
-
 .service-controller__service-name {
     font-weight: bold;
     margin-bottom: 5px;

@@ -17,9 +17,6 @@ function Page() {
         instance.editMode(false);
     }
 
-    instance.serviceController = new ServiceController({activeHostGroup: instance.activeHostGroup});
-    instance.startStopUnlocked = instance.serviceController.startStopUnlocked;
-
     instance.showHostGroupHealth = ko.pureComputed(function() {
         return instance.showRefreshIcon() && !instance.activeService();
     });
@@ -187,6 +184,10 @@ function Page() {
             instance.load();
         });
     };
+
+    // must be declared after activeServices exists
+    instance.serviceController = new ServiceController({activeServices: instance.activeServices, activeHostGroup: instance.activeHostGroup});
+    instance.startStopUnlocked = instance.serviceController.startStopUnlocked;
 };
 
 Page.DATA_NAME = "all-data";

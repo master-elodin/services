@@ -97,4 +97,18 @@ describe("Service", function() {
             expect(service.getFirstInstanceForHost("other host").status()).toBe(ServiceInstance.Status.NONE);
         });
     });
+
+    describe("getAllInstances", function() {
+
+        it("should return all instances", function() {
+            var serviceInstance1 = new ServiceInstance({id: "service-instance1", version: "1.0.0", status: ServiceInstance.Status.RUNNING, hostName: "host1"});
+            service.addInstance(serviceInstance1);
+            var serviceInstance2 = new ServiceInstance({id: "service-instance2", version: "1.0.0", status: ServiceInstance.Status.RUNNING, hostName: "host2"});
+            service.addInstance(serviceInstance2);
+            var serviceInstance3 = new ServiceInstance({id: "service-instance3", version: "1.1.0", status: ServiceInstance.Status.STOPPING, hostName: "host1"});
+            service.addInstance(serviceInstance3);
+
+            expect(service.getAllInstances().length).toBe(3);
+        });
+    });
 });

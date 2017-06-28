@@ -44,4 +44,18 @@ var uploadFile = function(inputId, callback) {
 
 var sortStrings = function(a, b) {
     return a.localeCompare(b);
-}
+};
+
+var scrollToBottom = function(selector) {
+    var bodyEl = jQuery(selector)[0];
+    if(bodyEl) {
+        bodyEl.scrollTop = bodyEl.scrollHeight;
+    }
+};
+
+var scrollToTop = function(selector) {
+    var bodyEl = jQuery(selector)[0];
+    if(bodyEl) {
+        bodyEl.scrollTop = 0;
+    }
+};

@@ -37,3 +37,11 @@ Service.prototype.merge = function(otherService) {
         });
     });
 };
+
+Service.prototype.getAllInstances = function() {
+    var serviceInstances = [];
+    Object.keys(this.instancesByHost()).forEach(function(hostName) {
+        Array.prototype.push.apply(serviceInstances, this.instancesByHost()[hostName]);
+    }, this);
+    return serviceInstances;
+};

@@ -21,6 +21,7 @@ ${src/service-instance/service-instance.js}
 ${src/host-health/host-health.js}
 ${src/service/service.js}
 ${src/item/item.js}
+${src/action-runner/action-runner.js}
 ${src/service-controller/service-controller.js}
 ${src/selections/selections.js}
 ${src/page/page.js}

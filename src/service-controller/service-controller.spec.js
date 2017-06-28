@@ -1,129 +1,324 @@
 describe("ServiceController", function() {
     
     var activeHostGroup;
+    var activeServices;
     var serviceController;
 
+    // for testing purposes only
+    Item.prototype.addChildWithName = function(name) {
+        this.newChildName(name);
+        this.addChild();
+    }
+
     beforeEach(function() {
-        activeHostGroup = ko.observable({getServiceHealths: function() {}});
-        serviceController = new ServiceController({activeHostGroup: activeHostGroup});
+        activeHostGroup = ko.observable(new Item());
+        activeServices = ko.observableArray();
+        serviceController = new ServiceController({activeServices: activeServices, activeHostGroup: activeHostGroup});
     });
 
     afterEach(function() {
         activeHostGroup = null;
+        activeServices = null;
         serviceController = null;
     });
 
-    var createHostHealth = function(selected, id, version, hostName) {
-        return {selected: ko.observable(selected), id: ko.observable(id), version: ko.observable(version), hostName: ko.observable(hostName), isReal: ko.observable(true)};
-    }
+    describe("getActiveHosts", function() {
+
+        it("should return empty list if no activeHostGroup", function() {
+            activeHostGroup(null);
+
+            expect(serviceController.getActiveHosts().length).toBe(0);
+        });
+
+        it("should return host names if activeHostGroup", function() {
+            activeHostGroup().addChildWithName("beta-host");
+            activeHostGroup().addChildWithName("alpha-host");
+
+            expect(serviceController.getActiveHosts().length).toBe(2);
+            expect(serviceController.getActiveHosts()[0]).toBe("alpha-host");
+            expect(serviceController.getActiveHosts()[1]).toBe("beta-host");
+        });
+    });
+
+    describe("disableAddClearButtons", function() {
+
+        it("should return false if not isRunning, isPaused, needing confirmation, or or showing load/save", function() {
+            expect(serviceController.disableAddClearButtons()).toBe(false);
+        });
+
+        it("should return true if isRunning=true", function() {
+            serviceController.isRunning(true);
+
+            expect(serviceController.disableAddClearButtons()).toBe(true);
+        });
+
+        it("should return true if needsConfirmation=true", function() {
+            serviceController.confirmationType(ServiceController.ConfirmationType.START);
+
+            expect(serviceController.disableAddClearButtons()).toBe(true);
+        });
+
+        it("should return true if isPaused=true", function() {
+            spyOn(serviceController, "isPaused").and.returnValue(true);
+
+            expect(serviceController.disableAddClearButtons()).toBe(true);
+        });
+
+        it("should return true if showLoadSave=true", function() {
+            serviceController.showLoadSave(true);
+
+            expect(serviceController.disableAddClearButtons()).toBe(true);
+        });
+    });
 
     describe("addSelected", function() {
 
-        it("should add data for each service that has a selected host", function() {
-            activeHostGroup().getServiceHealths = function() {
-                var serviceHealth1 = {
-                    name: ko.observable("serviceHealth1"),
-                    hostHealths: ko.observableArray([
-                        createHostHealth(true, "id1", "1.21.0", "host1"),
-                        createHostHealth(true, "id2", "1.21.1", "host2"),
-                        createHostHealth(false, "id3", "1.21.0", "host1")
-                    ])
-                };
-                var serviceHealth2 = {
-                    name: ko.observable("serviceHealth2"),
-                    hostHealths: ko.observableArray([
-                        createHostHealth(false, "id4", "1.22.0", "host1")
-                    ])
-                };
-                var serviceHealth3 = {
-                    name: ko.observable("serviceHealth3"),
-                    hostHealths: ko.observableArray([
-                        createHostHealth(true, "id5", "1.23.0", "host1"),
-                        createHostHealth(false, "id6", "1.23.0", "host2")
-                    ])
-                };
-                return [serviceHealth1, serviceHealth2, serviceHealth3];
-            }
+        var service1;
+        var service2;
 
-            serviceController.addSelected();
+        var addServiceInstance = function(service, id, hostName) {
+            var serviceInstance = new ServiceInstance({id: id, hostName: hostName});
+            service.addInstance(serviceInstance);
+            return serviceInstance;
+        }
 
-            expect(serviceController.selectionGroup()[0].services().length).toBe(2);
-            expect(serviceController.selectionGroup()[0].services()[0].name).toBe("serviceHealth1");
-            expect(serviceController.selectionGroup()[0].services()[0].data()[0].id).toBe("id1");
-            expect(serviceController.selectionGroup()[0].services()[0].data()[0].version).toBe("1.21.0");
-            expect(serviceController.selectionGroup()[0].services()[0].data()[1].id).toBe("id2");
-            expect(serviceController.selectionGroup()[0].services()[0].data()[1].version).toBe("1.21.1");
-            expect(serviceController.selectionGroup()[0].services()[1].name).toBe("serviceHealth3");
-            expect(serviceController.selectionGroup()[0].services()[1].data()[0].id).toBe("id5");
-            expect(serviceController.selectionGroup()[0].services()[1].data()[0].version).toBe("1.23.0");
+        beforeEach(function() {
+            service1 = new Service({name: "service1"});
+            activeServices.push(service1);
+            addServiceInstance(service1, "service-instance1", "host1");
+            addServiceInstance(service1, "service-instance2", "host2");
+            service2 = new Service({name: "service2"});
+            activeServices.push(service2);
+            addServiceInstance(service2, "service-instance3", "host1");
+            addServiceInstance(service2, "service-instance4", "host2");
+
+            spyOn(serviceController, "getActiveHosts").and.returnValue(["host1", "host2"]);
         });
 
-        it("should set selected to be false for all hostHealths", function() {
-            var serviceHealth1 = {
-                name: ko.observable("serviceHealth1"),
-                hostHealths: ko.observableArray([
-                    createHostHealth(true, "id1", "1.21.0", "host1"),
-                    createHostHealth(false, "id2", "1.21.0", "host1")
-                ])
-            };
-            var serviceHealth2 = {
-                name: ko.observable("serviceHealth2"),
-                hostHealths: ko.observableArray([
-                    createHostHealth(false, "id3", "1.22.0", "host1")
-                ])
-            };
-            activeHostGroup().getServiceHealths = function() {
-                return [serviceHealth1, serviceHealth2];
-            }
-
-            serviceController.addSelected();
-
-            expect(serviceHealth1.hostHealths()[0].selected()).toBe(false);
-            expect(serviceHealth1.hostHealths()[1].selected()).toBe(false);
-            expect(serviceHealth2.hostHealths()[0].selected()).toBe(false);
+        afterEach(function() {
+            service1 = null;
+            service2 = null;
         });
 
-        it("should sort service instance data based on host name", function() {
-            var serviceHealth1 = {
-                name: ko.observable("serviceHealth1"),
-                hostHealths: ko.observableArray([
-                    createHostHealth(true, "id1", "1.21.0", "host2"),
-                    createHostHealth(true, "id2", "1.21.0", "host1")
-                ])
-            };
-            var serviceHealth2 = {
-                name: ko.observable("serviceHealth2"),
-                hostHealths: ko.observableArray([
-                    createHostHealth(true, "id3", "1.22.0", "host1")
-                ])
-            };
-            activeHostGroup().getServiceHealths = function() {
-                return [serviceHealth1, serviceHealth2];
-            }
+        it("should add action based on host index if service instance is selected", function() {
+            service1.getAllInstances()[1].selected(true);
+            service2.getAllInstances()[0].selected(true);
+            service2.getAllInstances()[1].selected(true);
 
             serviceController.addSelected();
 
-            expect(serviceController.selectionGroup()[0].services()[0].data()[0].id).toBe("id2");
-            expect(serviceController.selectionGroup()[0].services()[0].data()[1].id).toBe("id1");
-            expect(serviceController.selectionGroup()[0].services()[1].data()[0].id).toBe("id3");
+            var actionList = serviceController.activeActionListGroup().actionLists()[0];
+            expect(actionList.actions()[0].serviceName).toBe(service1.name);
+            expect(actionList.actions()[0].hostIndexes().length).toBe(1);
+            expect(actionList.actions()[0].hostIndexes()[0]).toBe(1);
+
+            expect(actionList.actions()[1].serviceName).toBe(service2.name);
+            expect(actionList.actions()[1].hostIndexes().length).toBe(2);
+            expect(actionList.actions()[1].hostIndexes()[0]).toBe(0);
+            expect(actionList.actions()[1].hostIndexes()[1]).toBe(1);
         });
 
-        it("should not include non-real host healths", function() {
-            var serviceHealth1 = {
-                name: ko.observable("serviceHealth1"),
-                hostHealths: ko.observableArray([
-                    createHostHealth(true, "id1", "1.21.0", "host2"),
-                    createHostHealth(true, "id2", "1.21.0", "host1")
-                ])
-            };
-            serviceHealth1.hostHealths()[0].isReal(false);
-            activeHostGroup().getServiceHealths = function() {
-                return [serviceHealth1];
-            }
+        it("should set delayInMillis", function() {
+            serviceController.delayForNext(15);
 
             serviceController.addSelected();
 
-            expect(serviceController.selectionGroup()[0].services()[0].data().length).toBe(1);
+            expect(serviceController.activeActionListGroup().actionLists()[0].delayInMillis).toBe(15);
+            expect(serviceController.activeActionListGroup().actionLists()[0].remainingDelay()).toBe(15);
+        });
+    });
+
+    describe("addAll", function() {
+
+        var service1;
+        var service2;
+
+        var addServiceInstance = function(service, id, hostName) {
+            var serviceInstance = new ServiceInstance({id: id, hostName: hostName});
+            service.addInstance(serviceInstance);
+            return serviceInstance;
+        }
+
+        beforeEach(function() {
+            service1 = new Service({name: "service1"});
+            activeServices.push(service1);
+            addServiceInstance(service1, "service-instance1", "host1");
+            addServiceInstance(service1, "service-instance2", "host2");
+            service2 = new Service({name: "service2"});
+            activeServices.push(service2);
+            addServiceInstance(service2, "service-instance3", "host1");
+            addServiceInstance(service2, "service-instance4", "host2");
+
+            spyOn(serviceController, "getActiveHosts").and.returnValue(["host1", "host2"]);
+        });
+
+        afterEach(function() {
+            service1 = null;
+            service2 = null;
+        });
+
+        it("should add action based on host index if service instance is selected", function() {
+            service1.getAllInstances()[1].selected(true);
+            service2.getAllInstances()[0].selected(true);
+            service2.getAllInstances()[1].selected(true);
+
+            serviceController.addAll();
+
+            var actionList = serviceController.activeActionListGroup().actionLists()[0];
+            expect(actionList.actions()[0].serviceName).toBe(service1.name);
+            expect(actionList.actions()[0].hostIndexes().length).toBe(2);
+            expect(actionList.actions()[0].hostIndexes()[0]).toBe(0);
+            expect(actionList.actions()[0].hostIndexes()[1]).toBe(1);
+
+            expect(actionList.actions()[1].serviceName).toBe(service2.name);
+            expect(actionList.actions()[1].hostIndexes().length).toBe(2);
+            expect(actionList.actions()[1].hostIndexes()[0]).toBe(0);
+            expect(actionList.actions()[1].hostIndexes()[1]).toBe(1);
+        });
+
+        it("should set delayInMillis", function() {
+            serviceController.delayForNext(15);
+
+            serviceController.addSelected();
+
+            expect(serviceController.activeActionListGroup().actionLists()[0].delayInMillis).toBe(15);
+            expect(serviceController.activeActionListGroup().actionLists()[0].remainingDelay()).toBe(15);
+        });
+    });
+
+    describe("clear", function() {
+
+        it("should remove all action lists", function() {
+            serviceController.activeActionListGroup().actionLists.push(new ActionList({}));
+
+            expect(serviceController.activeActionListGroup().actionLists().length).toBe(1);
+
+            serviceController.clear();
+
+            expect(serviceController.activeActionListGroup().actionLists().length).toBe(0);
+        });
+    });
+
+    describe("needsConfirmation", function() {
+
+        it("should return true if confirmationType is not null", function() {
+            serviceController.confirmationType(ServiceController.ConfirmationType.START);
+
+            expect(serviceController.needsConfirmation()).toBe(true);
+
+            serviceController.confirmationType(null);
+
+            expect(serviceController.needsConfirmation()).toBe(false);
+
+            serviceController.confirmationType(ServiceController.ConfirmationType.STOP);
+
+            expect(serviceController.needsConfirmation()).toBe(true);
+        });
+    });
+
+    describe("start", function() {
+
+        it("should set confirmationType as START", function() {
+            serviceController.start();
+
+            expect(serviceController.confirmationType()).toBe(ServiceController.ConfirmationType.START);
+        });
+    });
+
+    describe("stop", function() {
+
+        it("should set confirmationType as STOP", function() {
+            serviceController.stop();
+
+            expect(serviceController.confirmationType()).toBe(ServiceController.ConfirmationType.STOP);
+        });
+    });
+
+    describe("cancel", function() {
+
+        it("should clear confirmationType and currentRun", function() {
+            serviceController.confirmationType(ServiceController.ConfirmationType.START);
+            serviceController.currentRun({});
+
+            serviceController.cancel();
+
+            expect(serviceController.confirmationType()).toBe(null);
+            expect(serviceController.currentRun()).toBe(null);
+        });
+    });
+
+    describe("run", function() {
+
+        it("should create new currentRun with START if START and no currentRun", function() {
+            serviceController.confirmationType(ServiceController.ConfirmationType.START);
+
+            serviceController.run();
+
+            expect(serviceController.currentRun().actionType).toBe(ServiceController.ConfirmationType.START.actionType);
+            expect(serviceController.currentRun().actionListGroup).toBe(serviceController.activeActionListGroup);
+        });
+
+        it("should call run on currentRun if START, currentRun exists, and currentRun is START", function() {
+            var actionRunner = new ActionRunner({actionType: ServiceController.ConfirmationType.START.actionType});
+            spyOn(actionRunner, "run").and.stub();
+            serviceController.currentRun(actionRunner);
+
+            serviceController.confirmationType(ServiceController.ConfirmationType.START);
+
+            serviceController.run();
+
+            expect(actionRunner.run).toHaveBeenCalled();
+        });
+
+        it("should create new currentRun and call stop on existing currentRun if START, currentRun exists, and currentRun is STOP", function() {
+            var actionRunner = new ActionRunner({actionType: ServiceController.ConfirmationType.STOP.actionType});
+            spyOn(actionRunner, "pause").and.stub();
+            serviceController.currentRun(actionRunner);
+
+            serviceController.confirmationType(ServiceController.ConfirmationType.START);
+
+            serviceController.run();
+
+            expect(actionRunner.pause).toHaveBeenCalled();
+            expect(serviceController.currentRun().actionType).toBe(ServiceController.ConfirmationType.START.actionType);
+        });
+    });
+
+    describe("pause", function() {
+
+        it("should call pause on currentRun", function() {
+            var actionRunner = new ActionRunner({actionType: ServiceController.ConfirmationType.STOP.actionType});
+            spyOn(actionRunner, "pause").and.stub();
+            serviceController.currentRun(actionRunner);
+
+            serviceController.pause();
+
+            expect(actionRunner.pause).toHaveBeenCalled();
+        });
+    });
+
+    describe("isPaused", function() {
+
+        it("should return true if currentRun is not null and currentRun.isPaused=true", function() {
+            var actionRunner = new ActionRunner({actionType: ServiceController.ConfirmationType.STOP.actionType});
+            serviceController.currentRun(actionRunner);
+            spyOn(actionRunner, "isPaused").and.returnValue(true);
+
+            expect(serviceController.isPaused()).toBe(true);
+        });
+
+        it("should return false if currentRun is not null and currentRun.isPaused=false", function() {
+            var actionRunner = new ActionRunner({actionType: ServiceController.ConfirmationType.STOP.actionType});
+            serviceController.currentRun(actionRunner);
+            spyOn(actionRunner, "isPaused").and.returnValue(false);
+
+            expect(serviceController.isPaused()).toBe(false);
+        });
+
+        it("should return false if currentRun is null", function() {
+            serviceController.currentRun(null);
+
+            expect(serviceController.isPaused()).toBe(false);
         });
     });
 });
