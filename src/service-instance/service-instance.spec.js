@@ -57,5 +57,20 @@ describe("A Service Instance", function() {
         it("should return negative if higher patch version than other", function() {
             expect(serviceInstance.compareTo(new ServiceInstance({id: "id", version: "1.2.0"})) < 0).toBe(true);
         });
+
+        it("should return negative if status not NONE and other status is NONE", function() {
+            serviceInstance.status(ServiceInstance.Status.RUNNING);
+            expect(serviceInstance.compareTo(new ServiceInstance({id: "INSTANCE_NOT_FOUND", status: ServiceInstance.Status.NONE}))).toBe(-1);
+        });
+
+        it("should return positive if status NONE and other status is not NONE", function() {
+            serviceInstance.status(ServiceInstance.Status.NONE);
+            expect(serviceInstance.compareTo(new ServiceInstance({id: "INSTANCE_NOT_FOUND", status: ServiceInstance.Status.RUNNING}))).toBe(1);
+        });
+
+        it("should return 0 if status NONE and other status is NONE", function() {
+            serviceInstance.status(ServiceInstance.Status.NONE);
+            expect(serviceInstance.compareTo(new ServiceInstance({id: "INSTANCE_NOT_FOUND", status: ServiceInstance.Status.NONE}))).toBe(0);
+        });
     });
 });

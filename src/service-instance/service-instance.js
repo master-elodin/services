@@ -11,13 +11,19 @@ function ServiceInstance(creationData) {
 }
 
 ServiceInstance.prototype.compareTo = function(other) {
-    var partsA = this.version.split(".");
-    var partsB = other.version.split(".");
-    for(var i = 0; i < partsA.length; i++) {
-        var diff = parseInt(partsB[i]) - parseInt(partsA[i]);
-        if(diff !== 0) {
-            return diff;
+    if(this.status() !== ServiceInstance.Status.NONE && other.status() !== ServiceInstance.Status.NONE) {
+        var partsA = this.version.split(".");
+        var partsB = other.version.split(".");
+        for(var i = 0; i < partsA.length; i++) {
+            var diff = parseInt(partsB[i]) - parseInt(partsA[i]);
+            if(diff !== 0) {
+                return diff;
+            }
         }
+    } else if(this.status() === ServiceInstance.Status.NONE && other.status() !== ServiceInstance.Status.NONE) {
+        return 1;
+    } else if(this.status() !== ServiceInstance.Status.NONE && other.status() === ServiceInstance.Status.NONE) {
+        return -1;
     }
     return 0;
 }
@@ -28,25 +34,20 @@ ServiceInstance.Status = {
         icon: "fa-check-circle-o",
         colorClass: "host-health__icon--running"
     },
-    STOPPED: {
-        text: "Stopped",
-        icon: "fa-times-circle-o",
-        colorClass: "host-health__icon--stopped"
+    STARTING: {
+        text: "Starting",
+        icon: "fa-check-circle-o",
+        colorClass: "host-health__icon--starting"
     },
     STOPPING: {
         text: "Stopping" ,
         icon: "fa-times-circle-o",
         colorClass: "host-health__icon--stopping"
     },
-    STARTING: {
-        text: "Starting",
-        icon: "fa-check-circle-o",
-        colorClass: "host-health__icon--starting"
-    },
-    UNKNOWN: {
-        text: "Unknown",
-        icon: "fa-question-circle-o",
-        colorClass: "host-health__icon--unknown"
+    STOPPED: {
+        text: "Stopped",
+        icon: "fa-times-circle-o",
+        colorClass: "host-health__icon--stopped"
     },
     START_FAILED: {
         text: "Start Failed",
@@ -62,6 +63,11 @@ ServiceInstance.Status = {
         text: "Down",
         icon: "fa-exclamation-circle",
         colorClass: "host-health__icon--down"
+    },
+    UNKNOWN: {
+        text: "Unknown",
+        icon: "fa-question-circle-o",
+        colorClass: "host-health__icon--unknown"
     },
     NONE: {
         text: "N/A",

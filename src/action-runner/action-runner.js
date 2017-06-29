@@ -28,10 +28,13 @@ ActionRunner.prototype.run = function(activeServices) {
                     });
                     // each action has a service name and a list of host indexes
                     action.hostIndexes().forEach(function(hostIndex) {
-                        Data.runAction({
-                            actionType: instance.actionType,
-                            id: service.getFirstInstanceForHost(instance.hostNameList[hostIndex])
-                        });
+                        var serviceInstance = service.getFirstInstanceForHost(instance.hostNameList[hostIndex]);
+                        if(serviceInstance.status() !== ServiceInstance.Status.NONE) {
+                            Data.runAction({
+                                actionType: instance.actionType,
+                                id: serviceInstance.id
+                            });
+                        }
                     });
                 });
                 runActionList();

@@ -19,13 +19,20 @@ describe("ActionRunner", function() {
         beforeEach(function() {
             spyOn(Data, "runAction").and.stub();
 
-            actionList1 = new ActionList({delayInMillis: 1});
-            actionList1.addAction(new Action({serviceName: "service1", hostIndex: 0}));
-            actionRunner.actionLists.push(actionList1);
+            var createActionList = function(name) {
+                var actionList = new ActionList({delayInMillis: 1});
+                actionList.addAction(new Action({serviceName: name, hostIndex: 0}));
+                actionRunner.actionLists.push(actionList);
 
-            actionList2 = new ActionList({delayInMillis: 1});
-            actionList2.addAction(new Action({serviceName: "service2", hostIndex: 0}));
-            actionRunner.actionLists.push(actionList2);
+                spyOn(actionList, "startCountdown").and.callFake(function() {
+                    actionList.remainingDelay(0);
+                    return jQuery.Deferred().resolve();
+                });
+                return actionList;
+            }
+
+            actionList1 = createActionList("service1");
+            actionList2 = createActionList("service2");
 
             var service1 = new Service({name: "service1"});
             var service2 = new Service({name: "service2"});
@@ -46,35 +53,23 @@ describe("ActionRunner", function() {
             expect(actionRunner.isPaused()).toBe(false);
         });
 
-        it("should call Data.runAction after countdown complete", function(done) {
-            spyOn(actionList1, "startCountdown").and.callFake(function() {
-                actionList1.remainingDelay(0);
-                return jQuery.Deferred().resolve();
-            });
-
-            var runComplete = actionRunner.run(activeServices);
-
-            runComplete.then(function() {
+        it("should run next actionList after countdown complete", function(done) {
+            activeServices()[0].addInstance(new ServiceInstance({status: ServiceInstance.Status.RUNNING, hostName: "host1"}));
+            activeServices()[1].addInstance(new ServiceInstance({status: ServiceInstance.Status.RUNNING, hostName: "host1"}));
+            actionRunner.run(activeServices).then(function() {
                 expect(Data.runAction).toHaveBeenCalled();
+                expect(Data.runAction.calls.count()).toBe(2);
                 done();
             });
         });
 
-        it("should run next actionList after countdown complete", function(done) {
-            spyOn(actionList1, "startCountdown").and.callFake(function() {
-                actionList1.remainingDelay(0);
-                return jQuery.Deferred().resolve();
-            });
-            spyOn(actionList2, "startCountdown").and.callFake(function() {
-                actionList2.remainingDelay(0);
-                return jQuery.Deferred().resolve();
-            });
+        it("should not include service instance for host if service instance status is NONE", function(done) {
+            actionList1.actions()[0].hostIndexes([0, 1]);
+            activeServices()[0].addInstance(new ServiceInstance({status: ServiceInstance.Status.NONE, hostName: "host1"}));
+            activeServices()[0].addInstance(new ServiceInstance({status: ServiceInstance.Status.RUNNING, hostName: "host1"}));
 
-            var runComplete = actionRunner.run(activeServices);
-
-            runComplete.then(function() {
-                expect(Data.runAction).toHaveBeenCalled();
-                expect(Data.runAction.calls.count()).toBe(2);
+            actionRunner.run(activeServices).then(function() {
+                expect(Data.runAction.calls.count()).toBe(1);
                 done();
             });
         });
