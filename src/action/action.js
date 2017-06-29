@@ -5,6 +5,9 @@ function Action(creationData) {
     this.hostIndexes.push(creationData.hostIndex);
     // used for viewmodel only
     this.hostNames = ko.observableArray();
+    this.hostNameString = ko.pureComputed(function() {
+        return this.hostNames().join(", ");
+    }, this);
 }
 
 Action.prototype.merge = function(otherAction) {

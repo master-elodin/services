@@ -352,4 +352,33 @@ describe("A Page", function() {
             expect(page.getServicesForActiveHostGroup()[0]).toBe(service2);
         });
     });
+
+    describe("selectService", function() {
+
+        it("should set active service if startStopUnlocked=false", function() {
+            page.startStopUnlocked(false);
+            var service = new Service({});
+
+            page.selectService(service);
+
+            expect(page.activeService()).toBe(service);
+        });
+
+        it("should set service instances as selected=true if startStopUnlocked=true", function() {
+            page.startStopUnlocked(true);
+            var activeHostGroup = new Item({});
+            activeHostGroup.addChildWithName("host1");
+            activeHostGroup.addChildWithName("host2");
+            page.activeHostGroup(activeHostGroup);
+            var service = new Service({});
+            service.addInstance(new ServiceInstance({id: "id1", hostName: "host1", version: ""}));
+            service.addInstance(new ServiceInstance({id: "id2", hostName: "host1", version: ""}));
+            service.addInstance(new ServiceInstance({id: "id3", hostName: "host2", version: ""}));
+
+            page.selectService(service);
+
+            expect(service.getFirstInstanceForHost("host1").selected()).toBe(true);
+            expect(service.getFirstInstanceForHost("host2").selected()).toBe(true);
+        });
+    });
 });

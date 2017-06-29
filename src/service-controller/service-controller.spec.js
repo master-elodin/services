@@ -126,6 +126,14 @@ describe("ServiceController", function() {
             expect(serviceController.activeActionListGroup().actionLists()[0].delayInMillis).toBe(15);
             expect(serviceController.activeActionListGroup().actionLists()[0].remainingDelay()).toBe(15);
         });
+
+        it("should call updateHostNamesForActions", function() {
+            spyOn(serviceController, "updateHostNamesForActions").and.stub();
+
+            serviceController.addSelected();
+
+            expect(serviceController.updateHostNamesForActions).toHaveBeenCalled();
+        });
     });
 
     describe("addAll", function() {

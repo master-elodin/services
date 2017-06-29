@@ -24,4 +24,13 @@ describe("Action", function() {
             expect(action.hostIndexes[2]).toBe(3);
         });
     });
+
+    describe("hostNameString", function() {
+
+        it("should return hostNames joined by comma", function() {
+            action.hostNames(["host1", "host2", "host3"]);
+
+            expect(action.hostNameString()).toBe("host1, host2, host3");
+        });
+    });
 });

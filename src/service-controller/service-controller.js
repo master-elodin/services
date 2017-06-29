@@ -1,16 +1,7 @@
 function ServiceController(creationData) {
     this.activeServices = creationData.activeServices;
     this.activeHostGroup = creationData.activeHostGroup;
-    this.activeHostGroup.subscribe(function(newVal) {
-        if(newVal) {
-            var hostNames = newVal.getChildrenNames();
-            this.activeActionListGroup().getAllActions().forEach(function(action) {
-                action.hostNames(action.hostIndexes.map(function(hostIndex) {
-                    return hostNames[hostIndex];
-                }));
-            });
-        }
-    }, this);
+    this.activeHostGroup.subscribe(this.updateHostNamesForActions.bind(this));
 
     this.activeActionListGroup = ko.observable(new ActionListGroup());
 
@@ -54,6 +45,17 @@ ServiceController.ConfirmationType = {
     }
 }
 
+ServiceController.prototype.updateHostNamesForActions = function() {
+    if(this.activeHostGroup()) {
+        var hostNames = this.activeHostGroup().getChildrenNames();
+        this.activeActionListGroup().getAllActions().forEach(function(action) {
+            action.hostNames(action.hostIndexes.map(function(hostIndex) {
+                return hostNames[hostIndex];
+            }));
+        });
+    }
+}
+
 ServiceController.prototype.getActiveHosts = function() {
     return this.activeHostGroup() ? this.activeHostGroup().getChildrenNames() : [];
 };
@@ -67,6 +69,8 @@ ServiceController.prototype.add = function(filterFunction) {
         });
     });
     this.activeActionListGroup().addActionList(actionList);
+    this.updateHostNamesForActions();
+    this.delayForNext(0);
 };
 
 ServiceController.prototype.addSelected = function() {

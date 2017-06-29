@@ -42,6 +42,16 @@ function Page() {
         instance.activeService(null);
     };
 
+    instance.selectService = function(service) {
+        if(instance.startStopUnlocked()) {
+            instance.activeHostGroup().getChildrenNames().forEach(function(hostName) {
+                service.getFirstInstanceForHost(hostName).selected(true);
+            });
+        } else {
+            instance.activeService(service);
+        }
+    };
+
     instance.noHostsConfigured = ko.pureComputed(function() {
         return instance.activeHostGroup() && instance.activeHostGroup().children().length === 0;
     });
