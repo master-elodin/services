@@ -1,6 +1,16 @@
 function ServiceController(creationData) {
     this.activeServices = creationData.activeServices;
     this.activeHostGroup = creationData.activeHostGroup;
+    this.activeHostGroup.subscribe(function(newVal) {
+        if(newVal) {
+            var hostNames = newVal.getChildrenNames();
+            this.activeActionListGroup().getAllActions().forEach(function(action) {
+                action.hostNames(action.hostIndexes.map(function(hostIndex) {
+                    return hostNames[hostIndex];
+                }));
+            });
+        }
+    }, this);
 
     this.activeActionListGroup = ko.observable(new ActionListGroup());
 

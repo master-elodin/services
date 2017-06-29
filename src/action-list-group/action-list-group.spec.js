@@ -29,4 +29,21 @@ describe("ActionListGroup", function() {
             expect(actionListGroup.actionLists()[1]).toBe(actionList2);
         });
     });
+
+    describe("getAllActions", function() {
+
+        it("should return all actions", function() {
+            var actionList1 = new ActionList({});
+            actionList1.addAction(new Action({serviceName: "name1"}));
+            actionList1.addAction(new Action({serviceName: "name2"}));
+            actionListGroup.addActionList(actionList1);
+
+            var actionList2 = new ActionList({});
+            actionList2.addAction(new Action({serviceName: "name3"}));
+            actionList2.addAction(new Action({serviceName: "name4"}));
+            actionListGroup.addActionList(actionList2);
+
+            expect(actionListGroup.getAllActions().length).toBe(4);
+        });
+    });
 });

@@ -27,8 +27,8 @@ ActionRunner.prototype.run = function(activeServices) {
                         return service.name === action.serviceName;
                     });
                     // each action has a service name and a list of host indexes
-                    action.hostIndexes().forEach(function(hostIndex) {
-                        var serviceInstance = service.getFirstInstanceForHost(instance.hostNameList[hostIndex]);
+                    action.hostNames().forEach(function(hostName) {
+                        var serviceInstance = service.getFirstInstanceForHost(hostName);
                         if(serviceInstance.status() !== ServiceInstance.Status.NONE) {
                             Data.runAction({
                                 actionType: instance.actionType,

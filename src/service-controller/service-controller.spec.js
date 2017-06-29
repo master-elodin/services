@@ -109,13 +109,13 @@ describe("ServiceController", function() {
 
             var actionList = serviceController.activeActionListGroup().actionLists()[0];
             expect(actionList.actions()[0].serviceName).toBe(service1.name);
-            expect(actionList.actions()[0].hostIndexes().length).toBe(1);
-            expect(actionList.actions()[0].hostIndexes()[0]).toBe(1);
+            expect(actionList.actions()[0].hostIndexes.length).toBe(1);
+            expect(actionList.actions()[0].hostIndexes[0]).toBe(1);
 
             expect(actionList.actions()[1].serviceName).toBe(service2.name);
-            expect(actionList.actions()[1].hostIndexes().length).toBe(2);
-            expect(actionList.actions()[1].hostIndexes()[0]).toBe(0);
-            expect(actionList.actions()[1].hostIndexes()[1]).toBe(1);
+            expect(actionList.actions()[1].hostIndexes.length).toBe(2);
+            expect(actionList.actions()[1].hostIndexes[0]).toBe(0);
+            expect(actionList.actions()[1].hostIndexes[1]).toBe(1);
         });
 
         it("should set delayInMillis", function() {
@@ -166,14 +166,14 @@ describe("ServiceController", function() {
 
             var actionList = serviceController.activeActionListGroup().actionLists()[0];
             expect(actionList.actions()[0].serviceName).toBe(service1.name);
-            expect(actionList.actions()[0].hostIndexes().length).toBe(2);
-            expect(actionList.actions()[0].hostIndexes()[0]).toBe(0);
-            expect(actionList.actions()[0].hostIndexes()[1]).toBe(1);
+            expect(actionList.actions()[0].hostIndexes.length).toBe(2);
+            expect(actionList.actions()[0].hostIndexes[0]).toBe(0);
+            expect(actionList.actions()[0].hostIndexes[1]).toBe(1);
 
             expect(actionList.actions()[1].serviceName).toBe(service2.name);
-            expect(actionList.actions()[1].hostIndexes().length).toBe(2);
-            expect(actionList.actions()[1].hostIndexes()[0]).toBe(0);
-            expect(actionList.actions()[1].hostIndexes()[1]).toBe(1);
+            expect(actionList.actions()[1].hostIndexes.length).toBe(2);
+            expect(actionList.actions()[1].hostIndexes[0]).toBe(0);
+            expect(actionList.actions()[1].hostIndexes[1]).toBe(1);
         });
 
         it("should set delayInMillis", function() {
@@ -319,6 +319,28 @@ describe("ServiceController", function() {
             serviceController.currentRun(null);
 
             expect(serviceController.isPaused()).toBe(false);
+        });
+    });
+
+    describe("activeHostGroup", function() {
+
+        it("should update hostNames for all actions when activeHostGroup changes", function() {
+            var action = new Action({});
+            action.hostIndexes = [1, 2];
+            var actionList = new ActionList({});
+            actionList.addAction(action);
+            serviceController.activeActionListGroup().addActionList(actionList);
+
+            var newActiveHostGroup = new Item();
+            newActiveHostGroup.addChildWithName("host1");
+            newActiveHostGroup.addChildWithName("host2");
+            newActiveHostGroup.addChildWithName("host3");
+
+            serviceController.activeHostGroup(newActiveHostGroup);
+
+            expect(serviceController.activeActionListGroup().actionLists()[0].actions()[0].hostNames().length).toBe(2);
+            expect(serviceController.activeActionListGroup().actionLists()[0].actions()[0].hostNames()[0]).toBe("host2");
+            expect(serviceController.activeActionListGroup().actionLists()[0].actions()[0].hostNames()[1]).toBe("host3");
         });
     });
 });

@@ -22,6 +22,7 @@ describe("ActionRunner", function() {
             var createActionList = function(name) {
                 var actionList = new ActionList({delayInMillis: 1});
                 actionList.addAction(new Action({serviceName: name, hostIndex: 0}));
+                actionList.actions()[0].hostNames(["host1"]);
                 actionRunner.actionLists.push(actionList);
 
                 spyOn(actionList, "startCountdown").and.callFake(function() {
@@ -64,7 +65,7 @@ describe("ActionRunner", function() {
         });
 
         it("should not include service instance for host if service instance status is NONE", function(done) {
-            actionList1.actions()[0].hostIndexes([0, 1]);
+            actionList1.actions()[0].hostNames(["host1"]);
             activeServices()[0].addInstance(new ServiceInstance({status: ServiceInstance.Status.NONE, hostName: "host1"}));
             activeServices()[0].addInstance(new ServiceInstance({status: ServiceInstance.Status.RUNNING, hostName: "host1"}));
 
