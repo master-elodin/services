@@ -1,8 +1,14 @@
 function ActionList(creationData) {
     this.delayInMillis = creationData.delayInMillis;
     this.remainingDelay = ko.observable(creationData.delayInMillis);
+    this.isComplete = ko.pureComputed(function() {
+        return this.remainingDelay() === 0;
+    }, this);
 
     this.actions = ko.observableArray();
+
+    this.countdownInterval = null;
+    this.countdownComplete = null;
 }
 
 ActionList.prototype.addAction = function(newAction) {
@@ -20,3 +26,23 @@ ActionList.prototype.addAction = function(newAction) {
         });
     }
 };
+
+ActionList.prototype.startCountdown = function() {
+    clearInterval(this.countdownInterval);
+
+    this.countdownComplete = jQuery.Deferred();
+    this.countdownInterval = setInterval((function() {
+        this.remainingDelay(this.remainingDelay() - 1);
+        if(this.isComplete()) {
+            this.countdownComplete.resolve();
+        }
+    }).bind(this), 1000);
+    return this.countdownComplete;
+}
+
+ActionList.prototype.pauseCountdown = function() {
+    clearInterval(this.countdownInterval);
+    if(this.countdownComplete) {
+        this.countdownComplete.reject();
+    }
+}

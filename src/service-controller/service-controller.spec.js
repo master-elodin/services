@@ -255,7 +255,7 @@ describe("ServiceController", function() {
             serviceController.run();
 
             expect(serviceController.currentRun().actionType).toBe(ServiceController.ConfirmationType.START.actionType);
-            expect(serviceController.currentRun().actionListGroup).toBe(serviceController.activeActionListGroup);
+            expect(serviceController.currentRun().actionLists).toBe(serviceController.activeActionListGroup().actionLists);
         });
 
         it("should call run on currentRun if START, currentRun exists, and currentRun is START", function() {

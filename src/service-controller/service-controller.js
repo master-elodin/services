@@ -90,12 +90,12 @@ ServiceController.prototype.run = function() {
     }
     if(actionTypeChanged) {
         this.currentRun(new ActionRunner({
-            actionListGroup: this.activeActionListGroup,
+            actionLists: this.activeActionListGroup().actionLists,
             actionType: this.confirmationType().actionType,
             hostNameList: this.getActiveHosts()
         }));
     }
-    this.currentRun().run();
+    this.currentRun().run(this.activeServices);
 };
 
 ServiceController.prototype.cancel = function() {
