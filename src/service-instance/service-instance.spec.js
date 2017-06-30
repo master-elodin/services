@@ -73,4 +73,19 @@ describe("A Service Instance", function() {
             expect(serviceInstance.compareTo(new ServiceInstance({id: "INSTANCE_NOT_FOUND", status: ServiceInstance.Status.NONE}))).toBe(0);
         });
     });
+
+    describe("isReal", function() {
+
+        it("should return true if status is not NONE", function() {
+            serviceInstance.status(ServiceInstance.Status.RUNNING);
+
+            expect(serviceInstance.isReal()).toBe(true);
+        });
+
+        it("should return false if status is NONE", function() {
+            serviceInstance.status(ServiceInstance.Status.NONE);
+
+            expect(serviceInstance.isReal()).toBe(false);
+        });
+    });
 });

@@ -4,6 +4,9 @@ function ServiceInstance(creationData) {
     this.hostName = creationData.hostName;
     
     this.status = ko.observable(creationData.status);
+    this.isReal = ko.pureComputed(function() {
+        return this.status() !== ServiceInstance.Status.NONE;
+    }, this);
 
     // for start/stop
     this.selected = ko.observable(false);

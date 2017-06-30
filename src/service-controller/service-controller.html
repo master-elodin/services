@@ -31,11 +31,11 @@
             <!-- /ko -->
         <!-- /ko -->
         <!-- ko if: needsConfirmation -->
-        <div data-bind="click: run" class="service-controller__button">
-            <span>Confirm</span><span data-bind="text: confirmationType().title"></span>
+        <div data-bind="click: run" class="service-controller__button service-controller__button--confirmation">
+            <span>Confirm </span><span data-bind="text: confirmationType().title"></span>
         </div>
         <div data-bind="click: cancel" class="service-controller__button">
-            <span>Cancel</span>></span>
+            <span>Cancel</span>
         </div>
         <!-- /ko -->
         <!-- ko ifnot: needsConfirmation -->

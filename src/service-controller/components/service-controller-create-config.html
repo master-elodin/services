@@ -1,5 +1,6 @@
 <!-- ko with: activeActionListGroup -->
 <!-- ko foreach: actionLists -->
+    <!-- ko ifnot: isComplete -->
     <!-- ko with: remainingDelay -->
         <!-- ko if: $data > 0 -->
         ${src/service-controller/components/service-controller-delay.html}
@@ -12,6 +13,7 @@
             <span data-bind="text: hostNameString"></span>
         </div>
     </div>
+    <!-- /ko -->
     <!-- /ko -->
 <!-- /ko -->
 <!-- /ko -->

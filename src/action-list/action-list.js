@@ -1,8 +1,9 @@
 function ActionList(creationData) {
     this.delayInMillis = creationData.delayInMillis;
     this.remainingDelay = ko.observable(creationData.delayInMillis);
+    this.hasStarted = ko.observable(false);
     this.isComplete = ko.pureComputed(function() {
-        return this.remainingDelay() === 0;
+        return this.hasStarted() && this.remainingDelay() < 1;
     }, this);
 
     this.actions = ko.observableArray();
@@ -30,13 +31,20 @@ ActionList.prototype.addAction = function(newAction) {
 ActionList.prototype.startCountdown = function() {
     clearInterval(this.countdownInterval);
 
+    this.hasStarted(true);
+
     this.countdownComplete = jQuery.Deferred();
-    this.countdownInterval = setInterval((function() {
-        this.remainingDelay(this.remainingDelay() - 1);
-        if(this.isComplete()) {
-            this.countdownComplete.resolve();
-        }
-    }).bind(this), 1000);
+    if(this.delayInMillis > 0) {
+        this.countdownInterval = setInterval((function() {
+            this.remainingDelay(this.remainingDelay() - 1);
+            if(this.isComplete()) {
+                clearInterval(this.countdownInterval);
+                this.countdownComplete.resolve();
+            }
+        }).bind(this), 1000);
+    } else {
+        this.countdownComplete.resolve();
+    }
     return this.countdownComplete;
 }
 

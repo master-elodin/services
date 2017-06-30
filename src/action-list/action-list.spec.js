@@ -85,6 +85,12 @@ describe("ActionList", function() {
             expect(actionList.remainingDelay()).toBe(0);
             expect(mockDeferred.resolve).toHaveBeenCalled();
         });
+
+        it("should set hasStarted=true", function() {
+            actionList.startCountdown();
+
+            expect(actionList.hasStarted()).toBe(true);
+        });
     });
 
     describe("pauseCountdown", function() {
@@ -105,6 +111,28 @@ describe("ActionList", function() {
             actionList.pauseCountdown();
 
             expect(mockDeferred.reject).toHaveBeenCalled();
+        });
+    });
+
+    describe("isComplete", function() {
+
+        it("should return false if remainingDelay is not 0", function() {
+            actionList.remainingDelay(10);
+
+            expect(actionList.isComplete()).toBe(false);
+        });
+
+        it("should return false if hasStarted is false", function() {
+            actionList.hasStarted(false);
+
+            expect(actionList.isComplete()).toBe(false);
+        });
+
+        it("should return true if hasStarted is true and remainingDelay is 0", function() {
+            actionList.hasStarted(true);
+            actionList.remainingDelay(0);
+
+            expect(actionList.isComplete()).toBe(true);
         });
     });
 });

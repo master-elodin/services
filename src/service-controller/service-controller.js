@@ -66,6 +66,7 @@ ServiceController.prototype.add = function(filterFunction) {
     this.activeServices().forEach(function(service) {
         service.getAllInstances().filter(filterFunction).forEach(function(serviceInstance) {
             actionList.addAction(new Action({serviceName: service.name, hostIndex: activeHosts.indexOf(serviceInstance.hostName)}));
+            serviceInstance.selected(false);
         });
     });
     this.activeActionListGroup().addActionList(actionList);
@@ -110,6 +111,7 @@ ServiceController.prototype.run = function() {
         }));
     }
     this.currentRun().run(this.activeServices);
+    this.confirmationType(null);
 };
 
 ServiceController.prototype.cancel = function() {

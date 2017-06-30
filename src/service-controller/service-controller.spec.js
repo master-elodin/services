@@ -134,6 +134,24 @@ describe("ServiceController", function() {
 
             expect(serviceController.updateHostNamesForActions).toHaveBeenCalled();
         });
+
+        it("should set delayForNext to 0", function() {
+            serviceController.delayForNext(60);
+
+            serviceController.addSelected();
+
+            expect(serviceController.delayForNext()).toBe(0);
+        });
+
+        it("should set selected=false for all services", function() {
+            service1.getAllInstances()[1].selected(true);
+            service2.getAllInstances()[0].selected(true);
+
+            serviceController.addSelected();
+
+            expect(service1.getAllInstances()[0].selected()).toBe(false);
+            expect(service1.getAllInstances()[1].selected()).toBe(false);
+        });
     });
 
     describe("addAll", function() {
@@ -289,6 +307,14 @@ describe("ServiceController", function() {
 
             expect(actionRunner.pause).toHaveBeenCalled();
             expect(serviceController.currentRun().actionType).toBe(ServiceController.ConfirmationType.START.actionType);
+        });
+
+        it("should clear confirmationType", function() {
+            serviceController.confirmationType(ServiceController.ConfirmationType.START);
+
+            serviceController.run();
+
+            expect(serviceController.confirmationType()).toBe(null);
         });
     });
 

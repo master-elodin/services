@@ -27,6 +27,7 @@ describe("ActionRunner", function() {
 
                 spyOn(actionList, "startCountdown").and.callFake(function() {
                     actionList.remainingDelay(0);
+                    actionList.hasStarted(true);
                     return jQuery.Deferred().resolve();
                 });
                 return actionList;
@@ -92,14 +93,17 @@ describe("ActionRunner", function() {
         it("should return first action list that is not complete", function() {
             var actionList1 = new ActionList({});
             actionList1.remainingDelay(1);
+            actionList1.hasStarted(true);
             actionRunner.actionLists.push(actionList1);
 
             var actionList2 = new ActionList({});
             actionList2.remainingDelay(1);
+            actionList2.hasStarted(true);
             actionRunner.actionLists.push(actionList2);
 
             var actionList3 = new ActionList({});
             actionList3.remainingDelay(1);
+            actionList3.hasStarted(true);
             actionRunner.actionLists.push(actionList3);
 
             expect(actionRunner.currentActionList()).toBe(actionList1);

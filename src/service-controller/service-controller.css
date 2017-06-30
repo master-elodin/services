@@ -18,9 +18,14 @@
     border-radius: 10px;
     cursor: pointer;
     font-size: 25px;
-    line-height: 25px;
+    line-height: 20px;
     margin: 0 5px;
     padding: 5px 15px;
+    text-align: center;
+}
+
+.service-controller__button--confirmation {
+    width: 100px;
 }
 
 .service-controller__button span {

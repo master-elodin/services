@@ -10,19 +10,21 @@ function ActionRunner(creationData) {
     }, this);
 
     this.isPaused = ko.observable(false);
-    this.runComplete = null;
 }
 
 ActionRunner.prototype.run = function(activeServices) {
+    console.log("Running actions!");
     this.isPaused(false);
-    this.runComplete = jQuery.Deferred();
+    var runComplete = jQuery.Deferred();
 
     var instance = this;
     var runActionList = function() {
         var actionList = instance.currentActionList();
         if(actionList) {
+            console.log("Running actions", actionList);
             actionList.startCountdown().then(function() {
                 actionList.actions().forEach(function(action) {
+                    console.log("Running action", action);
                     var service = activeServices().find(function(service) {
                         return service.name === action.serviceName;
                     });
@@ -40,13 +42,15 @@ ActionRunner.prototype.run = function(activeServices) {
                 runActionList();
             });
         } else {
-            instance.runComplete.resolve();
+            console.log("Action runs complete!");
+            runComplete.resolve();
         }
     }
     runActionList();
-    return this.runComplete;
+    return  runComplete;
 };
 
 ActionRunner.prototype.pause = function() {
+    console.log("Pausing actions...");
     this.isPaused(true);
 };
