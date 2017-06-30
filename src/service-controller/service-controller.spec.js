@@ -437,7 +437,7 @@ describe("ServiceController", function() {
         it("should add to savedConfigurations if it does not already exist", function() {
             serviceController.save();
 
-            expect(serviceController.savedConfigurations()[0]).toBe(serviceController.activeActionListGroup());
+            expect(serviceController.savedConfigurations()[0].name()).toBe(serviceController.activeActionListGroup().name());
         });
     });
 

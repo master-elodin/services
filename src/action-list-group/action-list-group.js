@@ -41,3 +41,7 @@ ActionListGroup.prototype.export = function() {
         numTimesCompleted: this.numTimesCompleted
     };
 };
+
+ActionListGroup.prototype.duplicate = function() {
+    return new ActionListGroup(this.export());
+}

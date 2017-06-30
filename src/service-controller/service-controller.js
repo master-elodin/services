@@ -28,6 +28,7 @@ function ServiceController(creationData) {
         return this.isRunning() || this.needsConfirmation() || this.isPaused() || this.showLoadSave();
     }, this);
 
+    this.configurationName = ko.observable();
     this.savedConfigurations = ko.observableArray();
 
     this.loadSavedData();
@@ -153,7 +154,7 @@ ServiceController.prototype.loadSavedData = function() {
         var actionListGroup = new ActionListGroup(savedConfig);
         instance.savedConfigurations.push(actionListGroup);
         if(actionListGroup.name() === savedData.activeListGroupName) {
-            instance.activeActionListGroup(actionListGroup);
+            instance.activeActionListGroup(actionListGroup.duplicate());
         }
     });
 };
@@ -183,7 +184,8 @@ ServiceController.prototype.save = function() {
         saveData.savedConfigurations.splice(saveData.savedConfigurations.indexOf(existingActionListGroup), 1, actionActionListGroupData);
     } else {
         saveData.savedConfigurations.push(actionActionListGroupData);
-        this.savedConfigurations.push(this.activeActionListGroup());
+        // copy active into a new ActionListGroup
+        this.savedConfigurations.push(this.activeActionListGroup().duplicate());
     }
     saveData.activeListGroupName = actionActionListGroupData.name;
     localStorage.setItem(ServiceController.DATA_NAME, JSON.stringify(saveData));
