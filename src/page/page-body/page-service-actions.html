@@ -7,13 +7,13 @@
             </tr>
         </thead>
         <tbody>
-            <!-- ko foreach: getInstancesPerHost -->
+            <!-- ko foreach: { data: hostNames, as: \'hostName\' }-->
             <tr>
                 <td class="service-actions__host">
                     <span data-bind="text: hostName"></span>
                 </td>
                 <td class="service-actions__service-instances">
-                    <!-- ko foreach: serviceInstances -->
+                    <!-- ko foreach: $parent.getInstancesForHost(hostName) -->
                         <!-- ko if: isReal -->
                             <!-- ko if: isRunning -->
                             <div data-bind="click: stop" class="service-actions__service-action">
@@ -26,13 +26,13 @@
                             </div>
                             <!-- /ko -->
                             <!-- ko ifnot: isRunning -->
-                            <!-- ko if: $parent.allStopped -->
+                            <!-- ko if: $parents[1].allStoppedForHost(hostName) -->
                             <div data-bind="click: start" class="service-actions__service-action">
                                 <span data-bind="text: version"></span>
                                 <i class="fa fa-play" aria-hidden="true"></i>
                             </div>
                             <!-- /ko -->
-                            <!-- ko ifnot: $parent.allStopped -->
+                            <!-- ko ifnot: $parents[1].allStoppedForHost(hostName) -->
                             <div class="service-actions__service-action service-actions__service-action--disabled">
                                 <span data-bind="text: version"></span>
                                 <i class="fa fa-minus-circle" aria-hidden="true"></i>
@@ -43,7 +43,7 @@
                     <!-- /ko -->
                 </td>
             </tr>
-        <!-- /ko -->
+            <!-- /ko -->
         </tbody>
     </table>
 </div>

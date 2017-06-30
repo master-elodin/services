@@ -88,4 +88,19 @@ describe("A Service Instance", function() {
             expect(serviceInstance.isReal()).toBe(false);
         });
     });
+
+    describe("isRunning", function() {
+
+        it("should return true if status is RUNNING", function() {
+            serviceInstance.status(ServiceInstance.Status.RUNNING);
+
+            expect(serviceInstance.isRunning()).toBe(true);
+        });
+
+        it("should return false if status is not RUNNING", function() {
+            serviceInstance.status(ServiceInstance.Status.STARTING);
+
+            expect(serviceInstance.isRunning()).toBe(false);
+        });
+    })
 });

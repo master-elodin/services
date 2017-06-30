@@ -1,6 +1,14 @@
 function Service(creationData) {
     this.name = creationData.name;
     this.instancesByHost = ko.observable({});
+    this.hostNames = ko.pureComputed(function() {
+        return Object.keys(this.instancesByHost())
+            .filter(function(hostName) {
+                return this.getInstancesForHost(hostName).find(function(serviceInstance) {
+                    return serviceInstance.isReal();
+                });
+            }, this).sort(sortStrings);
+    }, this);
 }
 
 Service.prototype.getInstancesForHost = function(hostName) {
@@ -8,6 +16,12 @@ Service.prototype.getInstancesForHost = function(hostName) {
         this.instancesByHost()[hostName] = [];
     }
     return this.instancesByHost()[hostName];
+};
+
+Service.prototype.allStoppedForHost = function(hostName) {
+    return this.getInstancesForHost(hostName).every(function(serviceInstance) {
+        return serviceInstance.status() === ServiceInstance.Status.STOPPED;
+    });
 };
 
 Service.prototype.getFirstInstanceForHost = function(hostName) {
@@ -32,6 +46,7 @@ Service.prototype.addInstance = function(newServiceInstance) {
             return a.compareTo(b);
         });
     }
+    this.instancesByHost.valueHasMutated();
 }
 
 Service.prototype.merge = function(otherService) {

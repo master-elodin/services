@@ -78,6 +78,7 @@ function Page() {
             setActiveState(instance.activeEnv, item.parent);
             setActiveState(instance.activeHostGroup, item);
             instance.activeHosts(item.getChildrenNames());
+            instance.activeService(null);
         }
     }
 

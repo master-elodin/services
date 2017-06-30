@@ -4,6 +4,9 @@ function ServiceInstance(creationData) {
     this.hostName = creationData.hostName;
     
     this.status = ko.observable(creationData.status);
+    this.isRunning = ko.pureComputed(function() {
+        return this.status() === ServiceInstance.Status.RUNNING;
+    }, this);
     this.isReal = ko.pureComputed(function() {
         return this.status() !== ServiceInstance.Status.NONE;
     }, this);
@@ -11,24 +14,6 @@ function ServiceInstance(creationData) {
     // for start/stop
     this.selected = ko.observable(false);
     this.toggleSelected = createToggle(this.selected);
-}
-
-ServiceInstance.prototype.compareTo = function(other) {
-    if(this.status() !== ServiceInstance.Status.NONE && other.status() !== ServiceInstance.Status.NONE) {
-        var partsA = this.version.split(".");
-        var partsB = other.version.split(".");
-        for(var i = 0; i < partsA.length; i++) {
-            var diff = parseInt(partsB[i]) - parseInt(partsA[i]);
-            if(diff !== 0) {
-                return diff;
-            }
-        }
-    } else if(this.status() === ServiceInstance.Status.NONE && other.status() !== ServiceInstance.Status.NONE) {
-        return 1;
-    } else if(this.status() !== ServiceInstance.Status.NONE && other.status() === ServiceInstance.Status.NONE) {
-        return -1;
-    }
-    return 0;
 }
 
 ServiceInstance.Status = {
@@ -77,4 +62,34 @@ ServiceInstance.Status = {
         icon: "fa-question-circle-o",
         colorClass: "host-health__icon--unknown"
     }
+};
+
+ServiceInstance.prototype.compareTo = function(other) {
+    if(this.status() !== ServiceInstance.Status.NONE && other.status() !== ServiceInstance.Status.NONE) {
+        var partsA = this.version.split(".");
+        var partsB = other.version.split(".");
+        for(var i = 0; i < partsA.length; i++) {
+            var diff = parseInt(partsB[i]) - parseInt(partsA[i]);
+            if(diff !== 0) {
+                return diff;
+            }
+        }
+    } else if(this.status() === ServiceInstance.Status.NONE && other.status() !== ServiceInstance.Status.NONE) {
+        return 1;
+    } else if(this.status() !== ServiceInstance.Status.NONE && other.status() === ServiceInstance.Status.NONE) {
+        return -1;
+    }
+    return 0;
+}
+
+ServiceInstance.prototype.start = function() {
+    Data.runAction({id: this.id, actionType: ServiceController.ConfirmationType.START.actionType});
+};
+
+ServiceInstance.prototype.stop = function() {
+    Data.runAction({id: this.id, actionType: ServiceController.ConfirmationType.STOP.actionType});
+};
+
+ServiceInstance.prototype.restart = function() {
+    Data.runAction({id: this.id, actionType: ServiceController.ConfirmationType.RESTART.actionType});
 };

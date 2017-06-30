@@ -42,6 +42,10 @@ ServiceController.ConfirmationType = {
     STOP: {
         title: "Stop",
         actionType: "stop"
+    },
+    RESTART: {
+        title: "Restart",
+        actionType: "stopAndRestart"
     }
 }
 

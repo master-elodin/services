@@ -111,4 +111,48 @@ describe("Service", function() {
             expect(service.getAllInstances().length).toBe(3);
         });
     });
+
+    describe("allStoppedForHost", function() {
+
+        it("should return true if all service instances STOPPED for given host", function() {
+            var serviceInstance1 = new ServiceInstance({id: "service-instance1", version: "1.0.0", status: ServiceInstance.Status.STOPPED, hostName: "host1"});
+            service.addInstance(serviceInstance1);
+            var serviceInstance2 = new ServiceInstance({id: "service-instance2", version: "1.0.0", status: ServiceInstance.Status.STOPPED, hostName: "host1"});
+            service.addInstance(serviceInstance2);
+
+            expect(service.allStoppedForHost("host1")).toBe(true);
+        });
+
+        it("should return false if all service instances not STOPPED for given host", function() {
+            var serviceInstance1 = new ServiceInstance({id: "service-instance1", version: "1.0.0", status: ServiceInstance.Status.STOPPING, hostName: "host1"});
+            service.addInstance(serviceInstance1);
+            var serviceInstance2 = new ServiceInstance({id: "service-instance2", version: "1.0.0", status: ServiceInstance.Status.STOPPED, hostName: "host1"});
+            service.addInstance(serviceInstance2);
+
+            expect(service.allStoppedForHost("host1")).toBe(false);
+        });
+    });
+
+    describe("hostNames", function() {
+
+        it("should return keys from instancesByHost if any service instance on host is real", function() {
+            expect(service.hostNames().length).toBe(0);
+
+            service.addInstance(new ServiceInstance({id: "service-instance1", version: "1.0.0", status: ServiceInstance.Status.STOPPING, hostName: "host1"}));
+
+            expect(service.hostNames().length).toBe(1);
+            expect(service.hostNames()[0]).toBe("host1");
+
+            service.addInstance(new ServiceInstance({id: "service-instance2", version: "1.0.0", status: ServiceInstance.Status.NONE, hostName: "host2"}));
+
+            expect(service.hostNames().length).toBe(1);
+            expect(service.hostNames()[0]).toBe("host1");
+
+            service.addInstance(new ServiceInstance({id: "service-instance3", version: "1.0.0", status: ServiceInstance.Status.STOPPING, hostName: "host2"}));
+
+            expect(service.hostNames().length).toBe(2);
+            expect(service.hostNames()[0]).toBe("host1");
+            expect(service.hostNames()[1]).toBe("host2");
+        });
+    });
 });
