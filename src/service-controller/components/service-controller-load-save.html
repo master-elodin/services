@@ -6,7 +6,7 @@
 </div>
 <div class="service-controller__saved-config">
     <!-- ko foreach: savedConfigurations -->
-    <div data-bind="click: $parent.load" class="service-controller__saved-config-name">
+    <div data-bind="click: $parent.load.bind($parent)" class="service-controller__saved-config-name">
         <span data-bind="text: name"></span>
     </div>
     <!-- /ko -->

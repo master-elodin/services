@@ -59,3 +59,10 @@ var scrollToTop = function(selector) {
         bodyEl.scrollTop = 0;
     }
 };
+
+Array.prototype.remove = function(item) {
+    var index = this.indexOf(item);
+    if(index > -1) {
+        this.splice(index, 1);
+    }
+}

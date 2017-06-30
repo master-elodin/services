@@ -4,6 +4,7 @@ function ServiceController(creationData) {
     this.activeHostGroup.subscribe(this.updateHostNamesForActions.bind(this));
 
     this.activeActionListGroup = ko.observable(new ActionListGroup());
+    this.activeActionListGroup.subscribe(this.updateHostNamesForActions.bind(this));
 
     this.startStopUnlocked = ko.observable(false);
     this.toggleStartStop = createToggle(this.startStopUnlocked);
@@ -54,6 +55,8 @@ ServiceController.ConfirmationType = {
 ServiceController.prototype.updateHostNamesForActions = function() {
     if(this.activeHostGroup()) {
         var hostNames = this.activeHostGroup().getChildrenNames();
+        console.log(hostNames);
+        console.log("ACTIONS", this.activeActionListGroup().getAllActions());
         this.activeActionListGroup().getAllActions().forEach(function(action) {
             action.hostNames(action.hostIndexes.map(function(hostIndex) {
                 return hostNames[hostIndex];
@@ -171,6 +174,7 @@ ServiceController.prototype.getSavedData = function() {
 
 ServiceController.prototype.load = function(actionListGroup) {
     this.activeActionListGroup(actionListGroup);
+    this.startStopUnlocked(false);
 };
 
 ServiceController.prototype.save = function() {

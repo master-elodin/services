@@ -32,4 +32,27 @@ describe("utils", function () {
             expect(item()).toBe(false);
         });
     });
+
+    describe("remove", function() {
+
+        it("should remove an item if it's found in the array", function() {
+            var array = [1, 2, 3];
+
+            array.remove(2);
+
+            expect(array.length).toBe(2);
+            expect(array[0]).toBe(1);
+            expect(array[1]).toBe(3);
+        });
+
+        it("should do nothing if item not found in the array", function() {
+            var array = [1, 3];
+
+            array.remove(4);
+
+            expect(array.length).toBe(2);
+            expect(array[0]).toBe(1);
+            expect(array[1]).toBe(3);
+        });
+    });
 });

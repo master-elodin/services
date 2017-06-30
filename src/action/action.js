@@ -1,8 +1,10 @@
 function Action(creationData) {
     this.serviceName = creationData.serviceName;
     // to be modular, use list of indexes of the hosts rather than the hosts themselves
-    this.hostIndexes = [];
-    this.hostIndexes.push(creationData.hostIndex);
+    this.hostIndexes = creationData.hostIndexes || [];
+    if(creationData.hostIndex !== undefined) {
+        this.hostIndexes.push(creationData.hostIndex);
+    }
     // used for viewmodel only
     this.hostNames = ko.observableArray();
     this.hostNameString = ko.pureComputed(function() {

@@ -78,7 +78,8 @@
 
 .service-controller__show-load-save--active,
 .service-controller__show-load-save:hover {
-    background-color: $slightlyDarkerClouds;
+    background-color: $midnight;
+    color: $clouds;
 }
 
 .service-controller__load-save-actions {
@@ -105,6 +106,25 @@
 }
 
 .service-controller__saved-config-name {
+    border-radius: 10px;
     cursor: pointer;
-    padding: 5px 0;
+    overflow-x: hidden;
+    padding: 5px 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 250px;
+}
+
+.service-controller__saved-config-name:hover {
+    background-color: $midnight;
+    color: $clouds;
+}
+
+.service-controller__action-list-group-name {
+    font-size: 22px;
+    padding: 10px;
+}
+
+.service-controller__service-instances-per-host {
+    padding: 0 10px;
 }

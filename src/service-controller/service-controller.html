@@ -47,7 +47,7 @@
             <span>Delay</span>
             <input data-bind="textInput: delayForNext">
         </div>
-        <div data-bind="click: toggleShowLoadSave, css: {\'.service-controller__show-load-save--active\': showLoadSave}" class="service-controller__show-load-save" title="Load/save configuration">
+        <div data-bind="click: toggleShowLoadSave, css: {\'service-controller__show-load-save--active\': showLoadSave}" class="service-controller__show-load-save" title="Load/save configuration">
             <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
         </div>
         <!-- /ko -->
@@ -57,6 +57,10 @@
         ${src/service-controller/components/service-controller-load-save.html}
         <!-- /ko -->
         <!-- ko ifnot: showLoadSave -->
+        <div class="service-controller__action-list-group-name">
+            <span>Run Configuration: </span>
+            <span data-bind="text: activeActionListGroup().name"></span>
+        </div>
         ${src/service-controller/components/service-controller-create-config.html}
         <!-- /ko -->
     </div>
