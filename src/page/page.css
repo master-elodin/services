@@ -114,7 +114,7 @@
 }
 
 .service-page__service-controller {
-    background-color: #D3D7D8;
+    background-color: $darkerClouds;
     border: 2px solid $darkerMidnight;
     border-radius: 15px;
     padding: 10px;

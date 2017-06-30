@@ -33,4 +33,19 @@ describe("Action", function() {
             expect(action.hostNameString()).toBe("host1, host2, host3");
         });
     });
+
+    describe("export", function() {
+
+        it("should should include name", function() {
+            expect(action.export().serviceName).toBe("service");
+        });
+
+        it("should should include host indexes", function() {
+            action.hostIndexes = [1, 3];
+
+            expect(action.export().hostIndexes.length).toBe(2);
+            expect(action.export().hostIndexes[0]).toBe(1);
+            expect(action.export().hostIndexes[1]).toBe(3);
+        });
+    });
 });

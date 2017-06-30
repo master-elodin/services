@@ -13,7 +13,7 @@ var createToggle = function(observable) {
 var downloadAsFile = function(jsonData, fileName) {
     var element = document.createElement("a");
     element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(jsonData));
-    element.setAttribute("download", fileName);
+    element.setAttribute("download", fileName + ".json");
     element.style.display = "none";
     document.body.appendChild(element);
 
@@ -22,8 +22,8 @@ var downloadAsFile = function(jsonData, fileName) {
     document.body.removeChild(element);
 };
 
-var uploadFile = function(inputId, callback) {
-    var inputEl = jQuery(inputId);
+var uploadFile = function(callback) {
+    var inputEl = jQuery("#upload-configuration-input");
     inputEl.on("change", function() {
         var reader = new FileReader();
         reader.onload = function(){

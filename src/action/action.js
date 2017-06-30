@@ -18,3 +18,10 @@ Action.prototype.merge = function(otherAction) {
     }, this);
     this.hostIndexes.sort();
 }
+
+Action.prototype.export = function() {
+    return {
+        serviceName: this.serviceName,
+        hostIndexes: this.hostIndexes
+    }
+};

@@ -13,9 +13,6 @@ function ServiceController(creationData) {
 
     this.delayForNext = ko.observable(0);
 
-    // TODO: load/save
-    // TODO: import/export
-
     this.isRunning = ko.observable(false);
     this.currentRun = ko.observable();
     this.isPaused = ko.pureComputed(function() {
@@ -30,6 +27,10 @@ function ServiceController(creationData) {
     this.disableAddClearButtons = ko.pureComputed(function() {
         return this.isRunning() || this.needsConfirmation() || this.isPaused() || this.showLoadSave();
     }, this);
+
+    this.savedConfigurations = ko.observableArray();
+
+    this.loadSavedData();
 };
 
 ServiceController.DATA_NAME = "saved-configurations";
@@ -98,6 +99,18 @@ ServiceController.prototype.pause = function() {
     this.currentRun().pause();
 };
 
+ServiceController.prototype.resetCurrentRun = function() {
+    this.activeActionListGroup().actionLists().forEach(function(actionList) {
+        actionList.remainingDelay(actionList.delayInMillis);
+        actionList.hasStarted(false);
+    });
+    this.currentRun(new ActionRunner({
+        actionLists: this.activeActionListGroup().actionLists,
+        actionType: this.confirmationType().actionType,
+        hostNameList: this.getActiveHosts()
+    }));
+}
+
 ServiceController.prototype.run = function() {
     var actionTypeChanged = true;
     if(this.currentRun()) {
@@ -108,19 +121,21 @@ ServiceController.prototype.run = function() {
         }
     }
     if(actionTypeChanged) {
-        this.currentRun(new ActionRunner({
-            actionLists: this.activeActionListGroup().actionLists,
-            actionType: this.confirmationType().actionType,
-            hostNameList: this.getActiveHosts()
-        }));
+        this.resetCurrentRun();
     }
-    this.currentRun().run(this.activeServices);
-    this.confirmationType(null);
+    var instance = this;
+    this.isRunning(true);
+    this.currentRun().run(this.activeServices).then(function() {
+        instance.isRunning(false);
+        instance.confirmationType(null);
+    });
 };
 
 ServiceController.prototype.cancel = function() {
+    this.resetCurrentRun();
     this.confirmationType(null);
     this.currentRun(null);
+    this.isRunning(false);
 };
 
 ServiceController.prototype.start = function() {
@@ -129,4 +144,59 @@ ServiceController.prototype.start = function() {
 
 ServiceController.prototype.stop = function() {
     this.confirmationType(ServiceController.ConfirmationType.STOP);
+};
+
+ServiceController.prototype.loadSavedData = function() {
+    var savedData = this.getSavedData();
+    var instance = this;
+    savedData.savedConfigurations.forEach(function(savedConfig) {
+        var actionListGroup = new ActionListGroup(savedConfig);
+        instance.savedConfigurations.push(actionListGroup);
+        if(actionListGroup.name() === savedData.activeListGroupName) {
+            instance.activeActionListGroup(actionListGroup);
+        }
+    });
+};
+
+ServiceController.prototype.getSavedData = function() {
+    var savedData = localStorage.getItem(ServiceController.DATA_NAME);
+    if(savedData) {
+        savedData = JSON.parse(savedData);
+    } else {
+        savedData = {savedConfigurations: [], activeListGroupName: null};
+    }
+    return savedData;
+};
+
+ServiceController.prototype.load = function(actionListGroup) {
+    this.activeActionListGroup(actionListGroup);
+};
+
+ServiceController.prototype.save = function() {
+    var saveData = this.getSavedData();
+    var nameMatches = (function(actionListGroup) {
+        return actionListGroup.name === this.activeActionListGroup().name();
+    }).bind(this);
+    var actionActionListGroupData = this.activeActionListGroup().export();
+    var existingActionListGroup = saveData.savedConfigurations.find(nameMatches);
+    if(existingActionListGroup) {
+        saveData.savedConfigurations.splice(saveData.savedConfigurations.indexOf(existingActionListGroup), 1, actionActionListGroupData);
+    } else {
+        saveData.savedConfigurations.push(actionActionListGroupData);
+        this.savedConfigurations.push(this.activeActionListGroup());
+    }
+    saveData.activeListGroupName = actionActionListGroupData.name;
+    localStorage.setItem(ServiceController.DATA_NAME, JSON.stringify(saveData));
+};
+
+ServiceController.prototype.downloadConfig = function() {
+    downloadAsFile(getSavedData(), ServiceController.DATA_NAME);
+};
+
+ServiceController.prototype.uploadConfig = function() {
+    var instance = this;
+    uploadFile(function(configText) {
+        localStorage.setItem(ServiceController.DATA_NAME, configText);
+        instance.loadSavedData();
+    });
 };

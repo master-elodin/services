@@ -53,4 +53,5 @@ ActionRunner.prototype.run = function(activeServices) {
 ActionRunner.prototype.pause = function() {
     console.log("Pausing actions...");
     this.isPaused(true);
+    this.currentActionList().pauseCountdown();
 };

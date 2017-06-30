@@ -79,12 +79,30 @@ describe("ActionRunner", function() {
 
     describe("pause", function() {
 
+        var actionList;
+
+        beforeEach(function() {
+            actionList = new ActionList({delayInMillis: 1});
+            spyOn(actionList, "pauseCountdown").and.stub();
+            actionRunner.actionLists.push(actionList);
+        });
+
+        afterEach(function() {
+            actionList = null;
+        });
+
         it("should set isPaused=true", function() {
             actionRunner.isPaused(false);
 
             actionRunner.pause();
 
             expect(actionRunner.isPaused()).toBe(true);
+        });
+
+        it("should pause countdown", function() {
+            actionRunner.pause();
+
+            expect(actionList.pauseCountdown).toHaveBeenCalled();
         });
     });
 

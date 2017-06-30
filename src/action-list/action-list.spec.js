@@ -135,4 +135,55 @@ describe("ActionList", function() {
             expect(actionList.isComplete()).toBe(true);
         });
     });
+
+    describe("export", function() {
+
+        it("should include delayInMillis", function() {
+            actionList.delayInMillis = 15;
+            
+            expect(actionList.export().delayInMillis).toBe(15);
+        });
+
+        it("should include actions", function() {
+            var createAction = function(name) {
+                var action = new Action({serviceName: name, hostIndexes: []});
+                var actionExport = {};
+                spyOn(action, "export").and.returnValue(actionExport);
+                actionList.addAction(action);
+                return action;
+            }
+            var action1 = createAction("service1");
+            var action2 = createAction("service2");
+
+            expect(actionList.export().actions.length).toBe(2);
+            expect(actionList.export().actions[0]).toBe(action1.export());
+            expect(actionList.export().actions[1]).toBe(action2.export());
+        });
+    });
+
+    describe("import", function() {
+
+        it("should set delayInMillis and remainingDelay", function() {
+            actionList.import({
+                delayInMillis: 42,
+                actions: []
+            });
+
+            expect(actionList.delayInMillis).toBe(42);
+            expect(actionList.remainingDelay()).toBe(42);
+        });
+
+        it("should set actions", function() {
+            var action1 = new Action({serviceName: "service1"});
+            var action2 = new Action({serviceName: "service2"});
+            actionList.import({
+                delayInMillis: 0,
+                actions: [action1.export(), action2.export()]
+            });
+
+            expect(actionList.actions().length).toBe(2);
+            expect(actionList.actions()[0].serviceName).toBe("service1");
+            expect(actionList.actions()[1].serviceName).toBe("service2");
+        });
+    });
 });

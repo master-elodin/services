@@ -1,6 +1,7 @@
 function ActionList(creationData) {
-    this.delayInMillis = creationData.delayInMillis;
-    this.remainingDelay = ko.observable(creationData.delayInMillis);
+    this.delayInMillis = 0;
+    this.remainingDelay = ko.observable();
+    
     this.hasStarted = ko.observable(false);
     this.isComplete = ko.pureComputed(function() {
         return this.hasStarted() && this.remainingDelay() < 1;
@@ -10,6 +11,10 @@ function ActionList(creationData) {
 
     this.countdownInterval = null;
     this.countdownComplete = null;
+
+    if(creationData) {
+        this.import(creationData);
+    }
 }
 
 ActionList.prototype.addAction = function(newAction) {
@@ -53,4 +58,23 @@ ActionList.prototype.pauseCountdown = function() {
     if(this.countdownComplete) {
         this.countdownComplete.reject();
     }
-}
+};
+
+ActionList.prototype.import = function(importData) {
+    this.delayInMillis = importData.delayInMillis;
+    this.remainingDelay(importData.delayInMillis);
+    if(importData.actions) {
+        importData.actions.forEach(function(actionData) {
+            this.actions.push(new Action(actionData));
+        }, this);
+    }
+};
+
+ActionList.prototype.export = function() {
+    return {
+        delayInMillis: this.delayInMillis,
+        actions: this.actions().map(function(action) {
+            return action.export();
+        })
+    }
+};

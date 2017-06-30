@@ -1,5 +1,12 @@
-function ActionListGroup() {
+function ActionListGroup(creationData) {
+    this.name = ko.observable();
     this.actionLists = ko.observableArray();
+    // TODO: update this value when runs complete
+    this.numTimesCompleted = 0;
+
+    if(creationData) {
+        this.import(creationData);
+    }
 }
 
 ActionListGroup.prototype.addActionList = function(actionList) {
@@ -14,4 +21,23 @@ ActionListGroup.prototype.getAllActions = function() {
         });
     });
     return allActions;
+};
+
+ActionListGroup.prototype.import = function(importData) {
+    this.name(importData.name);
+    if(importData.actionLists) {
+        this.actionLists(importData.actionLists.map(function(actionList) {
+            return new ActionList(actionList);
+        }));
+    }
+};
+
+ActionListGroup.prototype.export = function() {
+    return {
+        name: this.name(),
+        actionLists: this.actionLists().map(function(actionList) {
+            return actionList.export();
+        }),
+        numTimesCompleted: this.numTimesCompleted
+    };
 };

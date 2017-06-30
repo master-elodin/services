@@ -198,11 +198,11 @@ function Page() {
     };
 
     instance.downloadConfig = function() {
-        downloadAsFile(getSettingsAsJsonText(), "service-config.json");
+        downloadAsFile(getSettingsAsJsonText(), "service-config");
     };
 
     instance.uploadConfig = function() {
-        uploadFile("#upload-configuration-input", function(configText) {
+        uploadFile(function(configText) {
             localStorage.setItem(Page.DATA_NAME, configText);
             instance.load();
         });

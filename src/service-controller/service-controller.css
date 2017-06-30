@@ -64,15 +64,21 @@
 }
 
 .service-controller__show-load-save {
-    background-color: $slightlyDarkerClouds;
+    background-color: $darkerClouds;
     border-radius: 5px;
     color: $midnight;
     cursor: pointer;
     font-size: 25px;
+    line-height: 25px;
     margin-left: 10px;
     padding-top: 5px;
     text-align: center;
     width: 25px;
+}
+
+.service-controller__show-load-save--active,
+.service-controller__show-load-save:hover {
+    background-color: $slightlyDarkerClouds;
 }
 
 .service-controller__load-save-actions {

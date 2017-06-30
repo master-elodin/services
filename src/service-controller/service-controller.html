@@ -9,26 +9,29 @@
         <div data-bind="click: clear, css: {\'service-controller__button--disabled\': disableAddClearButtons}" class="service-controller__button" title="Clear">
             <i class="fa fa-eraser" aria-hidden="true"></i>
         </div>
+        <!-- ko if: isRunning -->
+        <!-- ko ifnot: isPaused -->
         <div data-bind="click: pause, visible: isRunning" class="service-controller__button">
             <span>Abort</span>
         </div>
+        <!-- /ko -->
+        <!-- ko if: isPaused -->
+        <div data-bind="click: run" class="service-controller__button">
+            <span>Resume</span>
+        </div>
+        <div data-bind="click: cancel" class="service-controller__button">
+            <span>Cancel</span>
+        </div>
+        <!-- /ko -->
+        <!-- /ko -->
         <!-- ko ifnot: isRunning -->
-            <!-- ko if: isPaused -->
-            <div data-bind="click: run" class="service-controller__button">
-                <span>Resume</span>
-            </div>
-            <div data-bind="click: cancel" class="service-controller__button">
-                <span>Cancel</span>
-            </div>
-            <!-- /ko -->
-            <!-- ko ifnot: isPaused -->
-            <div data-bind="click: start, css: {\'service-controller__button--disabled\': showLoadSave}" class="service-controller__button" title="Start">
-                <i class="fa fa-play" aria-hidden="true"></i>
-            </div>
-            <div data-bind="click: stop, css: {\'service-controller__button--disabled\': showLoadSave}" class="service-controller__button" title="Stop">
-                <i class="fa fa-stop" aria-hidden="true"></i>
-            </div>
-            <!-- /ko -->
+        <!-- ko ifnot: isPaused -->
+        <div data-bind="click: start, css: {\'service-controller__button--disabled\': showLoadSave}" class="service-controller__button" title="Start">
+            <i class="fa fa-play" aria-hidden="true"></i>
+        </div>
+        <div data-bind="click: stop, css: {\'service-controller__button--disabled\': showLoadSave}" class="service-controller__button" title="Stop">
+            <i class="fa fa-stop" aria-hidden="true"></i>
+        </div>
         <!-- /ko -->
         <!-- ko if: needsConfirmation -->
         <div data-bind="click: run" class="service-controller__button service-controller__button--confirmation">
@@ -38,12 +41,13 @@
             <span>Cancel</span>
         </div>
         <!-- /ko -->
+        <!-- /ko -->
         <!-- ko ifnot: needsConfirmation -->
         <div class="service-controller__delay-input">
             <span>Delay</span>
             <input data-bind="textInput: delayForNext">
         </div>
-        <div data-bind="click: toggleShowLoadSave" class="service-controller__show-load-save" title="Load/save configuration">
+        <div data-bind="click: toggleShowLoadSave, css: {\'.service-controller__show-load-save--active\': showLoadSave}" class="service-controller__show-load-save" title="Load/save configuration">
             <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
         </div>
         <!-- /ko -->
