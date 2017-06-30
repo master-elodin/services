@@ -6,24 +6,16 @@
         </div>
         <div class="service-page__active-items">
             <!-- ko with: activeApp -->
-            <div data-bind="click: $root.activateItem" class="service-page__active-item service-page__active-item--application">
-                <span data-bind="text: name"></span>
-            </div>
+            <div data-bind="click: $root.activateItem, text: name" class="service-page__active-item service-page__active-item--application"></div>
             <!-- /ko -->
             <!-- ko with: activeEnv -->
-            <div data-bind="click: $root.activateItem" class="service-page__active-item service-page__active-item--environment">
-                <span data-bind="text: name"></span>
-            </div>
+            <div data-bind="click: $root.activateItem, text: name" class="service-page__active-item service-page__active-item--environment"></div>
             <!-- /ko -->
             <!-- ko with: activeHostGroup -->
-            <div data-bind="click: $root.activateItem"  class="service-page__active-item service-page__active-item--host-group">
-                <span data-bind="text: name"></span>
-            </div>
+            <div data-bind="click: $root.activateItem, text: name"  class="service-page__active-item service-page__active-item--host-group"></div>
             <!-- /ko -->
             <!-- ko with: activeService -->
-            <div class="service-page__active-item service-page__active-item--service">
-                <span data-bind="text: name"></span>
-            </div>
+            <div data-bind="text: name" class="service-page__active-item service-page__active-item--service"></div>
             <!-- /ko -->
         </div>
         <!-- ko if: showRefreshIcon -->
