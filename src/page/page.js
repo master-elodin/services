@@ -62,6 +62,7 @@ function Page() {
         }
         newActive.isActive(true);
         activeHolder(newActive);
+        instance.filterValue("");
     };
 
     instance.activateItem = function(item) {
