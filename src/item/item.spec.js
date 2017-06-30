@@ -317,4 +317,29 @@ describe("Item", function() {
             expect(item.getNextChildrenType()).toBe(Item.ChildrenTypes.HOST);
         });
     });
+
+    describe("isActive", function() {
+
+        it("should set isExpanded=true if isActive changed to true", function() {
+            item.isExpanded(false);
+
+            item.isActive(true);
+
+            expect(item.isExpanded()).toBe(true);
+        });
+
+        it("should not change if isActive changed to false", function() {
+            item.isExpanded(false);
+
+            item.isActive(false);
+
+            expect(item.isExpanded()).toBe(false);
+
+            item.isExpanded(true);
+
+            item.isActive(false);
+
+            expect(item.isExpanded()).toBe(true);
+        });
+    });
 });

@@ -104,6 +104,8 @@ describe("A Page", function() {
             page.activateItem(item);
 
             expect(page.activeApp()).toBe(item);
+            expect(page.activeEnv()).toBe(null);
+            expect(page.activeHostGroup()).toBe(null);
         });
 
         it("should set activeApp if childrenType is HOST_GROUP", function() {
@@ -113,6 +115,7 @@ describe("A Page", function() {
 
             expect(page.activeApp()).toBe(env.parent);
             expect(page.activeEnv()).toBe(env);
+            expect(page.activeHostGroup()).toBe(null);
         });
 
         it("should set activeEnv and activeApp if childrenType is HOST", function() {

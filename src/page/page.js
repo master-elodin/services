@@ -67,9 +67,12 @@ function Page() {
     instance.activateItem = function(item) {
         if(item.childrenType === Item.ChildrenTypes.ENV) {
             setActiveState(instance.activeApp, item);
+            instance.activeEnv(null);
+            instance.activeHostGroup(null);
         } else if(item.childrenType === Item.ChildrenTypes.HOST_GROUP) {
             setActiveState(instance.activeApp, item.parent);
             setActiveState(instance.activeEnv, item);
+            instance.activeHostGroup(null);
         } else if(item.childrenType === Item.ChildrenTypes.HOST) {
             setActiveState(instance.activeApp, item.parent.parent);
             setActiveState(instance.activeEnv, item.parent);
@@ -111,6 +114,15 @@ function Page() {
             });
             console.log("Loading data", existingData);
             instance.pageData.import(existingData);
+            var activateItems = function(item) {
+                if(item.isActive()) {
+                    instance.activateItem(item);
+                }
+                item.children().forEach(function(child) {
+                    activateItems(child);
+                });
+            }
+            activateItems(instance.pageData);
             console.log("Page data after load", instance.pageData.export());
         } else {
             console.log("Tried to load but no valid existing data found", existingData);

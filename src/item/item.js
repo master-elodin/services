@@ -5,7 +5,11 @@ function Item(importData) {
     this.isExpanded = ko.observable(false);
     this.toggleExpanded = createToggle(this.isExpanded);
     this.isActive = ko.observable(false);
-    // don't save edit state
+    this.isActive.subscribe(function(newVal) {
+        if(newVal) {
+            this.isExpanded(true);
+        }
+    }, this);
     this.isEditingName = ko.observable(false);
 
     this.newChildName = ko.observable();
