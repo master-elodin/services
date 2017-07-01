@@ -128,6 +128,16 @@ describe("A Page", function() {
             expect(page.activeHostGroup()).toBe(hostGroup);
         });
 
+        it("should toggle editingName if editMode=true", function() {
+            page.editMode(true);
+            var hostGroup = createHostGroup();
+
+            page.activateItem(hostGroup);
+
+            expect(hostGroup.isEditingName()).toBe(true);
+            expect(page.activeHostGroup()).not.toBe(hostGroup);
+        });
+
         describe("setting isActive", function() {
 
             it("should set new item isActive=true and old isActive=false if app", function() {

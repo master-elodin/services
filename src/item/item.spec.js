@@ -342,4 +342,16 @@ describe("Item", function() {
             expect(item.isExpanded()).toBe(true);
         });
     });
+
+    describe("removeChild", function() {
+
+        it("should remove the given child", function() {
+            var child = new Item({});
+            item.children([child]);
+
+            item.removeChild(child);
+
+            expect(item.children().length).toBe(0);
+        });
+    });
 });

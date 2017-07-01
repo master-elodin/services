@@ -47,3 +47,18 @@
 .selections__child {
     position: relative;
 }
+
+.selections__name .selections__trash {
+    font-size: 20px;
+    opacity: 0;
+    position: absolute;
+    right: 0;
+}
+
+.selections__name:hover .selections__trash {
+    opacity: .5;
+}
+
+.selections__name:hover .selections__trash:hover {
+    opacity: 1;
+}

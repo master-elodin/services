@@ -66,20 +66,25 @@ function Page() {
     };
 
     instance.activateItem = function(item) {
-        if(item.childrenType === Item.ChildrenTypes.ENV) {
-            setActiveState(instance.activeApp, item);
-            instance.activeEnv(null);
-            instance.activeHostGroup(null);
-        } else if(item.childrenType === Item.ChildrenTypes.HOST_GROUP) {
-            setActiveState(instance.activeApp, item.parent);
-            setActiveState(instance.activeEnv, item);
-            instance.activeHostGroup(null);
-        } else if(item.childrenType === Item.ChildrenTypes.HOST) {
-            setActiveState(instance.activeApp, item.parent.parent);
-            setActiveState(instance.activeEnv, item.parent);
-            setActiveState(instance.activeHostGroup, item);
-            instance.activeHosts(item.getChildrenNames());
-            instance.activeService(null);
+        if(instance.editMode()) {
+            item.isEditingName(!item.isEditingName());
+        } else {
+            if(item.childrenType === Item.ChildrenTypes.ENV) {
+                setActiveState(instance.activeApp, item);
+                instance.activeEnv(null);
+                instance.activeHostGroup(null);
+            } else if(item.childrenType === Item.ChildrenTypes.HOST_GROUP) {
+                setActiveState(instance.activeApp, item.parent);
+                setActiveState(instance.activeEnv, item);
+                instance.activeHostGroup(null);
+            } else if(item.childrenType === Item.ChildrenTypes.HOST) {
+                setActiveState(instance.activeApp, item.parent.parent);
+                setActiveState(instance.activeEnv, item.parent);
+                setActiveState(instance.activeHostGroup, item);
+                instance.activeHosts(item.getChildrenNames());
+                instance.activeService(null);
+            }
+            instance.save();
         }
     }
 

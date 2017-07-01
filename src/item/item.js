@@ -94,6 +94,11 @@ Item.prototype.getNextChildrenType = function() {
     return null;
 }
 
+Item.prototype.removeChild = function(child) {
+    this.children().remove(child);
+    this.children.valueHasMutated();
+}
+
 Item.ChildrenTypes = {
     APP: "applications",
     ENV: "environments",
