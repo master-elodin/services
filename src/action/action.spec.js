@@ -32,6 +32,12 @@ describe("Action", function() {
 
             expect(action.hostNameString()).toBe("host1, host2, host3");
         });
+
+        it("should not include non-real host names", function() {
+            action.hostNames(["host1", null, undefined]);
+
+            expect(action.hostNameString()).toBe("host1");
+        });
     });
 
     describe("export", function() {

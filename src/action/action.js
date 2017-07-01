@@ -8,7 +8,9 @@ function Action(creationData) {
     // used for viewmodel only
     this.hostNames = ko.observableArray();
     this.hostNameString = ko.pureComputed(function() {
-        return this.hostNames().join(", ");
+        return this.hostNames().filter(function(hostName) {
+            return !!hostName;
+        }).join(", ");
     }, this);
 }
 

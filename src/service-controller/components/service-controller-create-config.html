@@ -1,20 +1,23 @@
 <!-- ko with: activeActionListGroup -->
 <!-- ko foreach: actionLists -->
-    <!-- ko ifnot: isComplete -->
-    <!-- ko with: remainingDelay -->
-        <!-- ko if: $data > 0 -->
-        ${src/service-controller/components/service-controller-delay.html}
+    <div class="service-controller__action-list">
+        <i data-bind="click: $parent.removeActionList.bind($parent)" class="fa fa-trash" aria-hidden="true"></i>
+        <!-- ko ifnot: isComplete -->
+        <!-- ko with: remainingDelay -->
+            <!-- ko if: $data > 0 -->
+            ${src/service-controller/components/service-controller-delay.html}
+            <!-- /ko -->
         <!-- /ko -->
-    <!-- /ko -->
-    <!-- ko foreach: actions -->
-    <div class="service-controller__service-instances-per-host">
-        <span data-bind="text: serviceName" class="service-controller__service-name"></span>
-        <div class="service-controller__service-instance">
-            <span data-bind="text: hostNameString"></span>
+        <!-- ko foreach: actions -->
+        <div class="service-controller__service-instances-per-host">
+            <span data-bind="text: serviceName" class="service-controller__service-name"></span>
+            <div class="service-controller__service-instance">
+                <span data-bind="text: hostNameString"></span>
+            </div>
         </div>
+        <!-- /ko -->
+        <!-- /ko -->
     </div>
-    <!-- /ko -->
-    <!-- /ko -->
 <!-- /ko -->
 <!-- /ko -->
 <!-- ko with: delayForNext -->

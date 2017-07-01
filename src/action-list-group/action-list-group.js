@@ -45,3 +45,9 @@ ActionListGroup.prototype.export = function() {
 ActionListGroup.prototype.duplicate = function() {
     return new ActionListGroup(this.export());
 }
+
+ActionListGroup.prototype.removeActionList = function(actionList) {
+    console.log("Removing action list", actionList);
+    this.actionLists().remove(actionList);
+    this.actionLists.valueHasMutated();
+}

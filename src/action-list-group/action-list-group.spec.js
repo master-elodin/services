@@ -91,4 +91,16 @@ describe("ActionListGroup", function() {
             expect(actionListGroup.actionLists()[0].delayInMillis).toBe(15);
         });
     });
+
+    describe("removeActionList", function() {
+
+        it("should remove action from action list", function() {
+            var actionList = new ActionList({});
+            actionListGroup.addActionList(actionList);
+
+            actionListGroup.removeActionList(actionList);
+
+            expect(actionListGroup.actionLists().length).toBe(0);
+        });
+    });
 });

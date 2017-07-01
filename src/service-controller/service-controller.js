@@ -55,8 +55,6 @@ ServiceController.ConfirmationType = {
 ServiceController.prototype.updateHostNamesForActions = function() {
     if(this.activeHostGroup()) {
         var hostNames = this.activeHostGroup().getChildrenNames();
-        console.log(hostNames);
-        console.log("ACTIONS", this.activeActionListGroup().getAllActions());
         this.activeActionListGroup().getAllActions().forEach(function(action) {
             action.hostNames(action.hostIndexes.map(function(hostIndex) {
                 return hostNames[hostIndex];
