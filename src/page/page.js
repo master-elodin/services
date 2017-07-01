@@ -126,6 +126,7 @@ function Page() {
             }
             activateItems(instance.pageData);
             console.log("Page data after load", instance.pageData.export());
+            instance.editMode(false);
         } else {
             console.log("Tried to load but no valid existing data found", existingData);
             console.log("Using page data:", instance.pageData.export());
