@@ -19,7 +19,14 @@ Service.prototype.getInstancesForHost = function(hostName) {
 };
 
 Service.prototype.allStoppedForHost = function(serviceInstance) {
-    var nonRunningStatuses = [ServiceInstance.Status.STOPPED, ServiceInstance.Status.UNKNOWN, ServiceInstance.Status.NONE];
+    var nonRunningStatuses = [
+        ServiceInstance.Status.STOPPED,
+        ServiceInstance.Status.DOWN,
+        ServiceInstance.Status.UNKNOWN,
+        ServiceInstance.Status.NONE,
+        ServiceInstance.Status.START_FAILED,
+        ServiceInstance.Status.RESTART_FAILED
+    ];
     return this.getInstancesForHost(serviceInstance.hostName).every(function(serviceInstance) {
         return nonRunningStatuses.indexOf(serviceInstance.status()) > -1;
     });
