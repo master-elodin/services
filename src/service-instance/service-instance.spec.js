@@ -60,17 +60,22 @@ describe("A Service Instance", function() {
 
         it("should return negative if status not NONE and other status is NONE", function() {
             serviceInstance.status(ServiceInstance.Status.RUNNING);
-            expect(serviceInstance.compareTo(new ServiceInstance({id: "INSTANCE_NOT_FOUND", status: ServiceInstance.Status.NONE}))).toBe(-1);
+            expect(serviceInstance.compareTo(new ServiceInstance({id: "INSTANCE_NOT_FOUND", status: ServiceInstance.Status.NONE})) < 0).toBe(true);
         });
 
         it("should return positive if status NONE and other status is not NONE", function() {
             serviceInstance.status(ServiceInstance.Status.NONE);
-            expect(serviceInstance.compareTo(new ServiceInstance({id: "INSTANCE_NOT_FOUND", status: ServiceInstance.Status.RUNNING}))).toBe(1);
+            expect(serviceInstance.compareTo(new ServiceInstance({id: "INSTANCE_NOT_FOUND", status: ServiceInstance.Status.RUNNING})) > 0).toBe(true);
         });
 
         it("should return 0 if status NONE and other status is NONE", function() {
             serviceInstance.status(ServiceInstance.Status.NONE);
             expect(serviceInstance.compareTo(new ServiceInstance({id: "INSTANCE_NOT_FOUND", status: ServiceInstance.Status.NONE}))).toBe(0);
+        });
+
+        it("should return negative if status RUNNING and other status not RUNNING", function() {
+            serviceInstance.status(ServiceInstance.Status.RUNNING);
+            expect(serviceInstance.compareTo(new ServiceInstance({id: "INSTANCE_NOT_FOUND", status: ServiceInstance.Status.NONE})) < 0).toBe(true);
         });
     });
 
