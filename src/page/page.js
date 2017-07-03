@@ -195,6 +195,7 @@ function Page() {
     instance.refresh = function() {
         if(!instance.isRefreshing() && instance.activeHostGroup()) {
             instance.isRefreshing(true);
+            instance.activeServices([]);
             Data.getDataForHosts(instance.activeHostGroup().getChildrenNames())
             .then(instance.addServiceData)
             .fail(setErrorMessage)

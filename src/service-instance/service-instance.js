@@ -2,7 +2,7 @@ function ServiceInstance(creationData) {
     this.id = creationData.id;
     this.version = creationData.version;
     this.hostName = creationData.hostName;
-    
+
     this.status = ko.observable(creationData.status);
     this.isRunning = ko.pureComputed(function() {
         return this.status() === ServiceInstance.Status.RUNNING;
@@ -61,6 +61,16 @@ ServiceInstance.Status = {
         text: "N/A",
         icon: "fa-question-circle-o",
         colorClass: "host-health__icon--unknown"
+    },
+    getForText: function(statusText) {
+        var foundStatus = this.UNKNOWN;
+        Object.keys(this).forEach(function(statusKey) {
+            if(this[statusKey].text === statusText) {
+                foundStatus = this[statusKey];
+                return false;
+            }
+        }, this);
+        return foundStatus;
     }
 };
 

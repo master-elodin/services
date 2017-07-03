@@ -102,5 +102,22 @@ describe("A Service Instance", function() {
 
             expect(serviceInstance.isRunning()).toBe(false);
         });
-    })
+    });
+
+    describe("Status", function() {
+
+        describe("getForText", function() {
+
+            it("should return the status for the given text if found", function() {
+                expect(ServiceInstance.Status.getForText("Stopped")).toBe(ServiceInstance.Status.STOPPED);
+                expect(ServiceInstance.Status.getForText("Up")).toBe(ServiceInstance.Status.RUNNING);
+                expect(ServiceInstance.Status.getForText("Start Failed")).toBe(ServiceInstance.Status.START_FAILED);
+                expect(ServiceInstance.Status.getForText("Down")).toBe(ServiceInstance.Status.DOWN);
+            });
+
+            it("should return UNKNOWN if given text not found", function() {
+                expect(ServiceInstance.Status.getForText("not real status")).toBe(ServiceInstance.Status.UNKNOWN);
+            });
+        });
+    });
 });

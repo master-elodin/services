@@ -164,7 +164,8 @@ ServiceController.prototype.getSavedData = function() {
     var savedData = localStorage.getItem(ServiceController.DATA_NAME);
     if(savedData) {
         savedData = JSON.parse(savedData);
-    } else {
+    }
+    if(!savedData || !savedData.savedConfigurations) {
         savedData = {savedConfigurations: [], activeListGroupName: null};
     }
     return savedData;

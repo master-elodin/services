@@ -14,6 +14,7 @@ describe("A Page", function() {
     beforeEach(function() {
         page = new Page();
         localStorage.removeItem(Page.DATA_NAME);
+        spyOn(Data, "getDataForHosts").and.returnValue(jQuery.Deferred().resolve([]));
     });
 
     afterEach(function() {
@@ -255,8 +256,6 @@ describe("A Page", function() {
         beforeEach(function() {
             activeHostGroup = createHostGroup();
             page.activateItem(activeHostGroup);
-
-            spyOn(Data, "getDataForHosts").and.returnValue(jQuery.Deferred().resolve([]));
         });
 
         afterEach(function() {
