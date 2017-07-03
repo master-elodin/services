@@ -176,7 +176,6 @@ function Page() {
             if(existingService) {
                 existingService.merge(newService);
             } else {
-                console.log("Received new service", newService);
                 existingServiceList.push(newService);
             }
         });

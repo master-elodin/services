@@ -26,13 +26,13 @@
                             </div>
                             <!-- /ko -->
                             <!-- ko ifnot: isRunning -->
-                            <!-- ko if: $parents[1].allStoppedForHost(hostName) -->
+                            <!-- ko if: $parents[1].allStoppedForHost($data) -->
                             <div data-bind="click: start" class="service-actions__service-action">
                                 <span data-bind="text: version"></span>
                                 <i class="fa fa-play" aria-hidden="true"></i>
                             </div>
                             <!-- /ko -->
-                            <!-- ko ifnot: $parents[1].allStoppedForHost(hostName) -->
+                            <!-- ko ifnot: $parents[1].allStoppedForHost($data) -->
                             <div class="service-actions__service-action service-actions__service-action--disabled">
                                 <span data-bind="text: version"></span>
                                 <i class="fa fa-minus-circle" aria-hidden="true"></i>

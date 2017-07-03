@@ -120,7 +120,7 @@ describe("Service", function() {
             var serviceInstance2 = new ServiceInstance({id: "service-instance2", version: "1.0.0", status: ServiceInstance.Status.STOPPED, hostName: "host1"});
             service.addInstance(serviceInstance2);
 
-            expect(service.allStoppedForHost("host1")).toBe(true);
+            expect(service.allStoppedForHost(serviceInstance1)).toBe(true);
         });
 
         it("should return false if all service instances not STOPPED for given host", function() {
@@ -129,7 +129,7 @@ describe("Service", function() {
             var serviceInstance2 = new ServiceInstance({id: "service-instance2", version: "1.0.0", status: ServiceInstance.Status.STOPPED, hostName: "host1"});
             service.addInstance(serviceInstance2);
 
-            expect(service.allStoppedForHost("host1")).toBe(false);
+            expect(service.allStoppedForHost(serviceInstance1)).toBe(false);
         });
     });
 
