@@ -81,6 +81,7 @@ function Page() {
                 setActiveState(instance.activeApp, item.parent.parent);
                 setActiveState(instance.activeEnv, item.parent);
                 setActiveState(instance.activeHostGroup, item);
+                instance.activeServices([]);
                 instance.activeHosts(item.getChildrenNames());
                 instance.activeService(null);
             }
@@ -194,7 +195,6 @@ function Page() {
     instance.refresh = function() {
         if(!instance.isRefreshing() && instance.activeHostGroup()) {
             instance.isRefreshing(true);
-            instance.activeServices([]);
             Data.getDataForHosts(instance.activeHostGroup().getChildrenNames())
             .then(instance.addServiceData)
             .fail(setErrorMessage)

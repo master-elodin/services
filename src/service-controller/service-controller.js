@@ -173,7 +173,6 @@ ServiceController.prototype.getSavedData = function() {
 
 ServiceController.prototype.load = function(actionListGroup) {
     this.activeActionListGroup(actionListGroup);
-    this.startStopUnlocked(false);
 };
 
 ServiceController.prototype.save = function() {
