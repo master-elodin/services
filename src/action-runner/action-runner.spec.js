@@ -56,8 +56,8 @@ describe("ActionRunner", function() {
         });
 
         it("should run next actionList after countdown complete", function(done) {
-            activeServices()[0].addInstance(new ServiceInstance({status: ServiceInstance.Status.RUNNING, hostName: "host1"}));
-            activeServices()[1].addInstance(new ServiceInstance({status: ServiceInstance.Status.RUNNING, hostName: "host1"}));
+            activeServices()[0].addInstance(new ServiceInstance({id: "id1", status: ServiceInstance.Status.RUNNING, hostName: "host1"}));
+            activeServices()[1].addInstance(new ServiceInstance({id: "id2", status: ServiceInstance.Status.RUNNING, hostName: "host1"}));
             actionRunner.run(activeServices).then(function() {
                 expect(Data.runAction).toHaveBeenCalled();
                 expect(Data.runAction.calls.count()).toBe(2);
@@ -67,8 +67,8 @@ describe("ActionRunner", function() {
 
         it("should not include service instance for host if service instance status is NONE", function(done) {
             actionList1.actions()[0].hostNames(["host1"]);
-            activeServices()[0].addInstance(new ServiceInstance({status: ServiceInstance.Status.NONE, hostName: "host1"}));
-            activeServices()[0].addInstance(new ServiceInstance({status: ServiceInstance.Status.RUNNING, hostName: "host1"}));
+            activeServices()[0].addInstance(new ServiceInstance({id: "id1", status: ServiceInstance.Status.NONE, hostName: "host1"}));
+            activeServices()[0].addInstance(new ServiceInstance({id: "id2", status: ServiceInstance.Status.RUNNING, hostName: "host1"}));
 
             actionRunner.run(activeServices).then(function() {
                 expect(Data.runAction.calls.count()).toBe(1);

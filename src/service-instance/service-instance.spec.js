@@ -3,7 +3,7 @@ describe("A Service Instance", function() {
     var serviceInstance;
 
     beforeEach(function() {
-        serviceInstance = new ServiceInstance({id: "id", version: "1.2.1"});
+        serviceInstance = new ServiceInstance({id: "GROUP;SERVICE;1_0_0;host1;Stopping", version: "1.2.1"});
     });
 
     afterEach(function() {
@@ -11,7 +11,11 @@ describe("A Service Instance", function() {
     });
 
     it("should set ID on creation", function() {
-        expect( serviceInstance.id ).toBe( "id" );
+        expect( serviceInstance.id ).toBe( "GROUP;SERVICE;1_0_0;host1;Stopping" );
+    });
+
+    it("should set idWithoutStatus on creation", function() {
+        expect( serviceInstance.idWithoutStatus ).toBe( "GROUP;SERVICE;1_0_0;host1" );
     });
 
     it("should set version on creation", function() {

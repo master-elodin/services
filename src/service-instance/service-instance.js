@@ -3,6 +3,8 @@ function ServiceInstance(creationData) {
     this.version = creationData.version;
     this.hostName = creationData.hostName;
 
+    this.idWithoutStatus = creationData.id.substring(0, creationData.id.lastIndexOf(";"));
+
     this.status = ko.observable(creationData.status || ServiceInstance.Status.UNKNOWN);
     this.isRunning = ko.pureComputed(function() {
         return this.status() === ServiceInstance.Status.RUNNING;

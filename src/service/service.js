@@ -44,7 +44,7 @@ Service.prototype.getFirstInstanceForHost = function(hostName) {
 Service.prototype.addInstance = function(newServiceInstance) {
     var existingInstances = this.getInstancesForHost(newServiceInstance.hostName);
     var existingServiceInstance = existingInstances.find(function(serviceInstance) {
-        return newServiceInstance.id === serviceInstance.id;
+        return newServiceInstance.idWithoutStatus === serviceInstance.idWithoutStatus;
     });
     if(existingServiceInstance) {
         existingServiceInstance.status(newServiceInstance.status());
