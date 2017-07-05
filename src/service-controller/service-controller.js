@@ -173,6 +173,7 @@ ServiceController.prototype.getSavedData = function() {
 
 ServiceController.prototype.load = function(actionListGroup) {
     this.activeActionListGroup(actionListGroup);
+    this.showLoadSave(false);
 };
 
 ServiceController.prototype.save = function() {
@@ -194,7 +195,7 @@ ServiceController.prototype.save = function() {
 };
 
 ServiceController.prototype.downloadConfig = function() {
-    downloadAsFile(getSavedData(), ServiceController.DATA_NAME);
+    downloadAsFile(JSON.stringify(this.getSavedData()), ServiceController.DATA_NAME);
 };
 
 ServiceController.prototype.uploadConfig = function() {
