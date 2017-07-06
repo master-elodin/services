@@ -1,0 +1,34 @@
+.message {
+    border-radius: 5px 0 0 5px;
+    color: $clouds;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: -270px;
+    padding: 5px 10px;
+    position: fixed;
+    right: 0;
+    transition: .5s;
+    top: 60px;
+    width: 250px;
+}
+
+.message--visible {
+    margin-right: 0;
+}
+
+.message--success {
+    background-color: green;
+}
+
+.message--warning {
+    background-color: yellow;
+}
+
+.message--error {
+    background-color: red;
+}
+
+.message__title {
+    font-weight: bold;
+    padding-right: 10px;
+}

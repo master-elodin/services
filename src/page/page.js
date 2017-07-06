@@ -35,9 +35,15 @@ function Page() {
     instance.activeHosts = ko.observableArray();
     instance.activeService = ko.observable();
     instance.clearAllActive = function() {
-        instance.activeApp(null);
-        instance.activeEnv(null);
-        instance.activeHostGroup(null);
+        var clearIsActive = function(observable) {
+            if(observable()) {
+                observable().isActive(false);
+            }
+            observable(null);
+        }
+        clearIsActive(instance.activeApp);
+        clearIsActive(instance.activeEnv);
+        clearIsActive(instance.activeHostGroup);
         instance.activeHosts([]);
         instance.activeService(null);
     };
@@ -70,20 +76,18 @@ function Page() {
             item.isEditingName(!item.isEditingName());
         } else {
             if(item.childrenType === Item.ChildrenTypes.ENV) {
+                instance.clearAllActive();
                 setActiveState(instance.activeApp, item);
-                instance.activeEnv(null);
-                instance.activeHostGroup(null);
             } else if(item.childrenType === Item.ChildrenTypes.HOST_GROUP) {
+                instance.clearAllActive();
                 setActiveState(instance.activeApp, item.parent);
                 setActiveState(instance.activeEnv, item);
-                instance.activeHostGroup(null);
             } else if(item.childrenType === Item.ChildrenTypes.HOST) {
+                instance.clearAllActive();
                 setActiveState(instance.activeApp, item.parent.parent);
                 setActiveState(instance.activeEnv, item.parent);
                 setActiveState(instance.activeHostGroup, item);
-                instance.activeServices([]);
                 instance.activeHosts(item.getChildrenNames());
-                instance.activeService(null);
             }
             instance.save();
         }
@@ -156,12 +160,15 @@ function Page() {
         }
     });
 
-    var setErrorMessage = function(error) {
-        instance.errorMessage(error);
+    instance.pageMessage = ko.observable();
+    var setMessage = function(msg) {
+        instance.pageMessage(msg);
     };
 
-    var clearErrorMessage = function() {
-        instance.errorMessage(null);
+    instance.clearMessage = function() {
+        if(instance.pageMessage()) {
+            instance.pageMessage().visible(false);
+        }
     };
 
     instance.addServiceData = function(serviceList) {
@@ -186,19 +193,19 @@ function Page() {
         });
         instance.activeServices(existingServiceList);
 
-        clearErrorMessage();
+        instance.clearMessage();
     };
 
     // TODO: refresh on timer
     instance.isRefreshing = ko.observable(false);
-    instance.errorMessage = ko.observable();
     instance.refresh = function() {
         if(!instance.isRefreshing() && instance.activeHostGroup()) {
             instance.isRefreshing(true);
             Data.getDataForHosts(instance.activeHostGroup().getChildrenNames())
             .then(instance.addServiceData)
-            .fail(setErrorMessage)
-            .always(function() {
+            .fail(function(error) {
+                setMessage(new Message({text: error.error, type: Message.Type.ERROR}));
+            }).always(function() {
                 instance.isRefreshing(false);
             });
         }

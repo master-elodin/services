@@ -1,5 +1,8 @@
 <div class="service-page">
     <input id="upload-configuration-input" type="file" style="display: none">
+    <!-- ko with: pageMessage -->
+    ${src/message/message.html}
+    <!-- /ko -->
     <div class="service-page__header">
         <div data-bind="click: clearAllActive" class="service-page__home-icon">
             <i class="fa fa-home" aria-hidden="true"></i>

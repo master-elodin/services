@@ -107,14 +107,22 @@ ServiceInstance.prototype.compareTo = function(other) {
     return statusDiff;
 }
 
+ServiceInstance.prototype.run = function(confirmationType) {
+    Data.runAction({id: this.id, actionType: confirmationType.actionType}).then(function(success){
+        // TODO?
+    }).fail(function(error) {
+        page.pageMessage(new Message({text: error.error, type: Message.Type.ERROR}));
+    });
+}
+
 ServiceInstance.prototype.start = function() {
-    Data.runAction({id: this.id, actionType: ServiceController.ConfirmationType.START.actionType});
+    this.run(ServiceController.ConfirmationType.START);
 };
 
 ServiceInstance.prototype.stop = function() {
-    Data.runAction({id: this.id, actionType: ServiceController.ConfirmationType.STOP.actionType});
+    this.run(ServiceController.ConfirmationType.STOP);
 };
 
 ServiceInstance.prototype.restart = function() {
-    Data.runAction({id: this.id, actionType: ServiceController.ConfirmationType.RESTART.actionType});
+    this.run(ServiceController.ConfirmationType.RESTART);
 };
