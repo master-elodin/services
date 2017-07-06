@@ -196,7 +196,9 @@ function Page() {
         instance.clearMessage();
     };
 
-    // TODO: refresh on timer
+    setInterval(function() {
+        instance.refresh();
+    }, REFRESH_INTERVAL_MILLIS);
     instance.isRefreshing = ko.observable(false);
     instance.refresh = function() {
         if(!instance.isRefreshing() && instance.activeHostGroup()) {
