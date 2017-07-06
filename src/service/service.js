@@ -47,6 +47,7 @@ Service.prototype.addInstance = function(newServiceInstance) {
         return newServiceInstance.idWithoutStatus === serviceInstance.idWithoutStatus;
     });
     if(existingServiceInstance) {
+        existingServiceInstance.id = newServiceInstance.id;
         existingServiceInstance.status(newServiceInstance.status());
     } else {
         existingInstances.push(newServiceInstance);

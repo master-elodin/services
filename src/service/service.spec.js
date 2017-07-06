@@ -62,7 +62,7 @@ describe("Service", function() {
             expect(service.getInstancesForHost(HOST_NAME)[0].status()).toBe(ServiceInstance.Status.STOPPING);
         });
 
-        it("should ignore status in the ID", function() {
+        it("should ignore status in the ID and update ID to include status", function() {
             service.addInstance(new ServiceInstance({id: "GROUP;SERVICE;1_0_0;host1;Up", version: "1.0.0", status: ServiceInstance.Status.RUNNING, hostName: HOST_NAME}));
 
             expect(service.getInstancesForHost(HOST_NAME)[0].status()).toBe(ServiceInstance.Status.RUNNING);
@@ -70,6 +70,7 @@ describe("Service", function() {
             service.addInstance(new ServiceInstance({id: "GROUP;SERVICE;1_0_0;host1;Stopping", version: "1.0.0", status: ServiceInstance.Status.STOPPING, hostName: HOST_NAME}));
 
             expect(service.getInstancesForHost(HOST_NAME)[0].status()).toBe(ServiceInstance.Status.STOPPING);
+            expect(service.getInstancesForHost(HOST_NAME)[0].id).toBe("GROUP;SERVICE;1_0_0;host1;Stopping");
         });
     });
 
