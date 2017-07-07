@@ -18,11 +18,13 @@ function Item(importData) {
             page.save();
         } else {
             previousName = this.name();
-            var inputId = this.getInputId();
-            setTimeout(function() {
-                // timeout to allow time for knockout to finish its bindings
-                jQuery("#" + inputId).focus();
-            }, 100);
+            if(newVal) {
+                var inputId = this.getInputId();
+                setTimeout(function() {
+                    // timeout to allow time for knockout to finish its bindings
+                    jQuery("#" + inputId).focus();
+                }, 100);
+            }
         }
     }, this);
 
