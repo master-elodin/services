@@ -1,6 +1,6 @@
 <div data-bind="css: {\'selections__name--selectable\': !$root.editMode()}" class="selections__name">
     <!-- ko if: isEditingName -->
-    <input data-bind="textInput: name, valueUpdate: \'afterkeydown\', enterkey: toggleEditingName">
+    <input data-bind="textInput: name, valueUpdate: \'afterkeydown\', enterkey: toggleEditingName, attr: {id: getInputId()}">
     <i data-bind="click: toggleEditingName" class="fa fa-save" aria-hidden="true"></i>
     <!-- /ko -->
     <!-- ko ifnot: isEditingName -->
