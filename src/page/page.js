@@ -1,7 +1,7 @@
 function Page() {
     var instance = this;
 
-    var REFRESH_INTERVAL_MILLIS = 60000;
+    var REFRESH_INTERVAL_MILLIS = 300000;
 
     instance.scriptVersion = ko.observable(SCRIPT_VERSION);
 
@@ -72,9 +72,7 @@ function Page() {
     };
 
     instance.activateItem = function(item) {
-        if(instance.editMode()) {
-            item.isEditingName(!item.isEditingName());
-        } else {
+        if(!instance.editMode()) {
             if(item.childrenType === Item.ChildrenTypes.ENV) {
                 instance.clearAllActive();
                 setActiveState(instance.activeApp, item);

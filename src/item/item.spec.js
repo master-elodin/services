@@ -354,4 +354,29 @@ describe("Item", function() {
             expect(item.children().length).toBe(0);
         });
     });
+
+    describe("isEditingName", function() {
+
+        it("should save page if newVal=false and name different from previous name", function() {
+            spyOn(page, "save").and.stub();
+            item.name("original-name");
+            item.isEditingName(true);
+
+            item.name("new-name");
+            item.isEditingName(false);
+
+            expect(page.save).toHaveBeenCalled();
+        });
+
+        it("should not save page if newVal=false and name same as previous name", function() {
+            spyOn(page, "save").and.stub();
+            item.name("original-name");
+            item.isEditingName(true);
+
+            item.name("original-name");
+            item.isEditingName(false);
+
+            expect(page.save).not.toHaveBeenCalled();
+        });
+    });
 });

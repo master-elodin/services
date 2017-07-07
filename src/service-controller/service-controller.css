@@ -109,6 +109,7 @@
 .service-controller__saved-config-name {
     border-radius: 10px;
     cursor: pointer;
+    float: left;
     overflow-x: hidden;
     padding: 5px 10px;
     text-overflow: ellipsis;
@@ -130,10 +131,16 @@
     padding: 0 10px;
 }
 
+.service-controller__delete-saved-config {
+    float: right;
+}
+
+.service-controller__delete-saved-config,
 .service-controller__action-list {
     position: relative;
 }
 
+.service-controller__delete-saved-config .fa-trash,
 .service-controller__action-list .fa-trash {
     color: $midnight;
     cursor: pointer;
@@ -144,6 +151,7 @@
     top: 0;
 }
 
+.service-controller__delete-saved-config .fa-trash:hover,
 .service-controller__action-list .fa-trash:hover {
     opacity: 1;
 }

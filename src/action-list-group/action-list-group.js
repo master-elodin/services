@@ -1,5 +1,5 @@
 function ActionListGroup(creationData) {
-    this.name = ko.observable();
+    this.name = ko.observable("UNNAMED");
     this.actionLists = ko.observableArray();
     // TODO: update this value when runs complete
     this.numTimesCompleted = 0;
@@ -48,6 +48,7 @@ ActionListGroup.prototype.duplicate = function() {
 
 ActionListGroup.prototype.removeActionList = function(actionList) {
     console.log("Removing action list", actionList);
+    this.name("");
     this.actionLists().remove(actionList);
     this.actionLists.valueHasMutated();
 }

@@ -11,6 +11,15 @@ function Item(importData) {
         }
     }, this);
     this.isEditingName = ko.observable(false);
+    this.toggleEditingName = createToggle(this.isEditingName);
+    var previousName = "";
+    this.isEditingName.subscribe(function(newVal) {
+        if(!newVal && previousName !== this.name()) {
+            page.save();
+        } else {
+            previousName = this.name();
+        }
+    }, this);
 
     this.newChildName = ko.observable();
 

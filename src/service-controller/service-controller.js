@@ -205,3 +205,8 @@ ServiceController.prototype.uploadConfig = function() {
         instance.loadSavedData();
     });
 };
+
+ServiceController.prototype.removeConfiguration = function(configuration) {
+    this.savedConfigurations().remove(configuration);
+    this.savedConfigurations.valueHasMutated();
+}

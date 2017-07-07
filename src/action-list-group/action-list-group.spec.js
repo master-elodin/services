@@ -102,5 +102,13 @@ describe("ActionListGroup", function() {
 
             expect(actionListGroup.actionLists().length).toBe(0);
         });
+
+        it("should remove name", function() {
+            actionListGroup.name("group!");
+
+            actionListGroup.removeActionList(new ActionList({}));
+
+            expect(actionListGroup.name()).toBe("");
+        });
     });
 });

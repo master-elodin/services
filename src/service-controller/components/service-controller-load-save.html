@@ -9,5 +9,8 @@
     <div data-bind="click: $parent.load.bind($parent)" class="service-controller__saved-config-name">
         <span data-bind="text: name"></span>
     </div>
+    <div class="service-controller__delete-saved-config">
+        <i data-bind="click: $parent.removeConfiguration.bind($parent)" class="fa fa-trash selections__trash" aria-hidden="true"></i>
+    </div>
     <!-- /ko -->
 </div>

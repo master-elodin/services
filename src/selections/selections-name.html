@@ -1,9 +1,10 @@
 <div data-bind="css: {\'selections__name--selectable\': !$root.editMode()}" class="selections__name">
     <!-- ko if: isEditingName -->
-    <input data-bind="textInput: name, valueUpdate: \'afterkeydown\', enterkey: $root.activateItem">
+    <input data-bind="textInput: name, valueUpdate: \'afterkeydown\', enterkey: toggleEditingName">
+    <i data-bind="click: toggleEditingName" class="fa fa-save" aria-hidden="true"></i>
     <!-- /ko -->
     <!-- ko ifnot: isEditingName -->
-    <span data-bind="text: name, click: $root.activateItem"></span>
+    <span data-bind="text: name, click: toggleEditingName"></span>
     <i data-bind="click: $parent.removeChild.bind($parent), visible: $root.editMode" class="fa fa-trash selections__trash" aria-hidden="true"></i>
     <!-- /ko -->
 </div>
