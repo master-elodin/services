@@ -148,8 +148,8 @@ ServiceController.prototype.stop = function() {
     this.confirmationType(ServiceController.ConfirmationType.STOP);
 };
 
-ServiceController.prototype.loadSavedData = function() {
-    var savedData = this.getSavedData();
+ServiceController.prototype.loadSavedData = function(savedData) {
+    var savedData = savedData || this.getSavedData();
     var instance = this;
     savedData.savedConfigurations.forEach(function(savedConfig) {
         var actionListGroup = new ActionListGroup(savedConfig);
@@ -194,15 +194,25 @@ ServiceController.prototype.save = function() {
     localStorage.setItem(ServiceController.DATA_NAME, JSON.stringify(saveData));
 };
 
-ServiceController.prototype.downloadConfig = function() {
+ServiceController.prototype.downloadSingleConfig = function(actionListGroup) {
+    downloadAsFile(JSON.stringify(actionListGroup.export()), removeWhitespace(actionListGroup.name()) + "-action-list");
+};
+
+ServiceController.prototype.downloadAllServiceConfig = function() {
     downloadAsFile(JSON.stringify(this.getSavedData()), ServiceController.DATA_NAME);
 };
 
 ServiceController.prototype.uploadConfig = function() {
     var instance = this;
     uploadFile(function(configText) {
-        localStorage.setItem(ServiceController.DATA_NAME, configText);
-        instance.loadSavedData();
+        var config = JSON.parse(configText);
+        if(config.savedConfigurations) {
+            // multi-config
+            this.loadSavedData(config);
+        } else {
+            this.loadSavedData({savedConfigurations: [config], activeListGroupName: config.name});
+        }
+        instance.save();
     });
 };
 

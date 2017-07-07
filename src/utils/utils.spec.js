@@ -55,4 +55,11 @@ describe("utils", function () {
             expect(array[1]).toBe(3);
         });
     });
+
+    describe("removeWhitespace", function() {
+
+        it("should remove whitespace", function() {
+            expect(removeWhitespace("some string with spaces")).toBe("some-string-with-spaces");
+        });
+    });
 });

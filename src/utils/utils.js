@@ -80,3 +80,7 @@ Array.prototype.remove = function(item) {
         this.splice(index, 1);
     }
 }
+
+var removeWhitespace = function(string) {
+    return string.split(" ").join("-");
+}
