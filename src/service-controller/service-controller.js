@@ -149,7 +149,8 @@ ServiceController.prototype.stop = function() {
 };
 
 ServiceController.prototype.loadSavedData = function(savedData) {
-    var savedData = savedData || this.getSavedData();
+    savedData = savedData || this.getSavedData();
+    console.log("Loading run configuration", savedData);
     var instance = this;
     savedData.savedConfigurations.forEach(function(savedConfig) {
         var actionListGroup = new ActionListGroup(savedConfig);
@@ -208,15 +209,18 @@ ServiceController.prototype.uploadConfig = function() {
         var config = JSON.parse(configText);
         if(config.savedConfigurations) {
             // multi-config
-            this.loadSavedData(config);
+            instance.loadSavedData(config);
         } else {
-            this.loadSavedData({savedConfigurations: [config], activeListGroupName: config.name});
+            instance.loadSavedData({savedConfigurations: [config], activeListGroupName: null});
         }
         instance.save();
     });
 };
 
 ServiceController.prototype.removeConfiguration = function(configuration) {
+    if(this.activeActionListGroup() && this.activeActionListGroup().name() === configuration.name()) {
+        this.activeActionListGroup().name("");
+    }
     this.savedConfigurations().remove(configuration);
     this.savedConfigurations.valueHasMutated();
 }
