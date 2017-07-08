@@ -46,7 +46,7 @@
 .service-controller__delay {
     display: inline-block;
     padding-left: 10px;
-    width: 45%;
+    width: 400px;
 }
 
 .service-controller__delay-input {
@@ -130,6 +130,10 @@
     display: flex;
     justify-content: space-between;
     width: 80%;
+}
+
+.service-controller__actions {
+
 }
 
 .service-controller__action-list-group-name {
