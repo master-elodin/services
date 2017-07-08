@@ -101,9 +101,13 @@
     padding: 2px 5px;
 }
 
-.service-controller__saved-config {
+.service-controller__saved-config-container {
     margin-top: 10px;
     padding: 10px;
+}
+.service-controller__saved-config {
+    display: flex;
+    justify-content: space-between;
 }
 
 .service-controller__saved-config-name {
@@ -122,6 +126,12 @@
     color: $clouds;
 }
 
+.service-controller__action-list {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+}
+
 .service-controller__action-list-group-name {
     font-size: 22px;
     padding: 10px;
@@ -131,27 +141,26 @@
     padding: 0 10px;
 }
 
-.service-controller__delete-saved-config {
-    float: right;
+.service-controller__saved-config-actions {
+    padding-right: 50px;
 }
 
-.service-controller__delete-saved-config,
-.service-controller__action-list {
+.service-controller__hover-icon-container {
     position: relative;
 }
 
-.service-controller__delete-saved-config .fa-trash,
-.service-controller__action-list .fa-trash {
+.service-controller__hover-icon-container .fa {
     color: $midnight;
     cursor: pointer;
     font-size: 22px;
-    opacity: .5;
-    position: absolute;
-    right: 0;
-    top: 0;
+    opacity: 0;
+    padding: 0 5px;
 }
 
-.service-controller__delete-saved-config .fa-trash:hover,
-.service-controller__action-list .fa-trash:hover {
+.service-controller__hover-icon-container:hover .fa {
+    opacity: .5;
+}
+
+.service-controller__hover-icon-container .fa:hover {
     opacity: 1;
 }

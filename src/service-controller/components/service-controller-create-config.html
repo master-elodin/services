@@ -1,7 +1,6 @@
 <!-- ko with: activeActionListGroup -->
 <!-- ko foreach: actionLists -->
-    <div class="service-controller__action-list">
-        <i data-bind="click: $parent.removeActionList.bind($parent)" class="fa fa-trash" aria-hidden="true"></i>
+    <div class="service-controller__action-list service-controller__hover-icon-container">
         <!-- ko ifnot: isComplete -->
         <!-- ko with: remainingDelay -->
             <!-- ko if: $data > 0 -->
@@ -17,6 +16,7 @@
         </div>
         <!-- /ko -->
         <!-- /ko -->
+        <i data-bind="click: $parent.removeActionList.bind($parent)" class="fa fa-trash" aria-hidden="true"></i>
     </div>
 <!-- /ko -->
 <!-- /ko -->
