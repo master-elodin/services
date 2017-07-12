@@ -133,6 +133,7 @@ ServiceController.prototype.run = function() {
         instance.confirmationType(null);
     }).fail(function(error) {
         page.pageMessage(new Message({text: error.error, type: Message.Type.ERROR}));
+        instance.resetCurrentRun();
     });
 };
 
