@@ -131,6 +131,8 @@ ServiceController.prototype.run = function() {
     this.currentRun().run(this.activeServices).then(function() {
         instance.isRunning(false);
         instance.confirmationType(null);
+    }).fail(function(error) {
+        page.pageMessage(new Message({text: error.error, type: Message.Type.ERROR}));
     });
 };
 

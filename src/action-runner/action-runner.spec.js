@@ -17,7 +17,7 @@ describe("ActionRunner", function() {
         var activeServices;
 
         beforeEach(function() {
-            spyOn(Data, "runAction").and.stub();
+            spyOn(Data, "runAction").and.returnValue(jQuery.Deferred().resolve());
 
             var createActionList = function(name) {
                 var actionList = new ActionList({delayInMillis: 1});
