@@ -1,5 +1,5 @@
 describe("ServiceController", function() {
-    
+
     var activeHostGroup;
     var activeServices;
     var serviceController;
@@ -224,6 +224,14 @@ describe("ServiceController", function() {
             serviceController.clear();
 
             expect(serviceController.activeActionListGroup().actionLists().length).toBe(0);
+        });
+
+        it("should clear name", function() {
+            serviceController.activeActionListGroup().name("something");
+
+            serviceController.clear();
+
+            expect(serviceController.activeActionListGroup().name()).toBe("");
         });
     });
 

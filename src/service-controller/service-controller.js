@@ -95,6 +95,7 @@ ServiceController.prototype.addAll = function() {
 
 ServiceController.prototype.clear = function() {
     this.activeActionListGroup().actionLists([]);
+    this.activeActionListGroup().name("");
 };
 
 ServiceController.prototype.pause = function() {
