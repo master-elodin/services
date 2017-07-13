@@ -123,9 +123,11 @@ task combineCss {
                 (line =~ /\$\w+/).each {
                     line = line.replace(it, cssProperties[it])
                 }
-                cssPart += "${line.trim()} "
+                // exclude comment lines
+                if(!(line ==~ /.*\/.*/)) {
+                    cssPart += "${line.trim()} "
+                }
             }
-            // TODO: check for comments
             if(!cssPart.isEmpty()) {
                 if(cssPart.contains("'")) {
                     throw new GradleScriptException("Cannot have single quotes in CSS.\nLine: ${cssPart}", null)
