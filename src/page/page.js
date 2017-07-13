@@ -81,6 +81,7 @@ function Page() {
                 instance.clearAllActive();
                 setActiveState(instance.activeApp, item.parent);
                 setActiveState(instance.activeEnv, item);
+                document.title = item.name();
             } else if(item.childrenType === Item.ChildrenTypes.HOST) {
                 instance.activeService(null);
                 if(item !== instance.activeHostGroup()) {
@@ -89,6 +90,7 @@ function Page() {
                     setActiveState(instance.activeEnv, item.parent);
                     setActiveState(instance.activeHostGroup, item);
                     instance.activeHosts(item.getChildrenNames());
+                    document.title = item.parent.name() + " " + item.name();
                 }
             }
             instance.save();
