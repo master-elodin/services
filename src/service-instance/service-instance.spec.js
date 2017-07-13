@@ -129,4 +129,25 @@ describe("A Service Instance", function() {
             });
         });
     });
+
+    describe("isChanging", function() {
+
+        it("should return true if status=STARTING", function() {
+            serviceInstance.status(ServiceInstance.Status.STARTING);
+
+            expect(serviceInstance.isChanging()).toBe(true);
+        });
+
+        it("should return true if status=STOPPING", function() {
+            serviceInstance.status(ServiceInstance.Status.STOPPING);
+
+            expect(serviceInstance.isChanging()).toBe(true);
+        });
+
+        it("should return false if not STARTING or STOPPING", function() {
+            serviceInstance.status(ServiceInstance.Status.UNKNOWN);
+
+            expect(serviceInstance.isChanging()).toBe(false);
+        });
+    });
 });

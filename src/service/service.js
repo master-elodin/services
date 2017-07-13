@@ -11,6 +11,10 @@ function Service(creationData) {
     }, this);
 }
 
+Service.SERVICE_INSTANCE_SORT = function(a, b) {
+    return a.compareTo(b);
+};
+
 Service.prototype.getInstancesForHost = function(hostName) {
     if(!this.instancesByHost()[hostName]) {
         this.instancesByHost()[hostName] = [];
@@ -19,16 +23,8 @@ Service.prototype.getInstancesForHost = function(hostName) {
 };
 
 Service.prototype.allStoppedForHost = function(serviceInstance) {
-    var nonRunningStatuses = [
-        ServiceInstance.Status.STOPPED,
-        ServiceInstance.Status.DOWN,
-        ServiceInstance.Status.UNKNOWN,
-        ServiceInstance.Status.NONE,
-        ServiceInstance.Status.START_FAILED,
-        ServiceInstance.Status.RESTART_FAILED
-    ];
     return this.getInstancesForHost(serviceInstance.hostName).every(function(serviceInstance) {
-        return nonRunningStatuses.indexOf(serviceInstance.status()) > -1;
+        return !serviceInstance.isActive();
     });
 };
 
@@ -41,6 +37,13 @@ Service.prototype.getFirstInstanceForHost = function(hostName) {
     return serviceInstance;
 }
 
+Service.prototype.sortInstances = function() {
+    Object.keys(this.instancesByHost()).forEach(function(hostName) {
+        this.getInstancesForHost(hostName).sort(Service.SERVICE_INSTANCE_SORT);
+    }, this);
+    this.instancesByHost.valueHasMutated();
+}
+
 Service.prototype.addInstance = function(newServiceInstance) {
     var existingInstances = this.getInstancesForHost(newServiceInstance.hostName);
     var existingServiceInstance = existingInstances.find(function(serviceInstance) {
@@ -51,10 +54,9 @@ Service.prototype.addInstance = function(newServiceInstance) {
         existingServiceInstance.status(newServiceInstance.status());
     } else {
         existingInstances.push(newServiceInstance);
-        existingInstances.sort(function(a, b) {
-            return a.compareTo(b);
-        });
+        existingInstances.sort(Service.SERVICE_INSTANCE_SORT);
     }
+    newServiceInstance.parent = this;
     this.instancesByHost.valueHasMutated();
 }
 

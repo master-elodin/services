@@ -23,11 +23,11 @@
 }
 
 .host-health__icon.host-health__icon--starting {
-    background-color: rgba(0, 255, 0, .5);
+    background-color: $starting;
 }
 
 .host-health__icon.host-health__icon--stopping {
-    background-color: rgba(255, 0, 0, .5);
+    background-color: $stopping;
 }
 
 .host-health__icon.host-health__icon--unknown {

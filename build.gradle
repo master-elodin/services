@@ -22,6 +22,9 @@ def cssProperties = [
     '$darkerMidnight': '#1F3143',
     '$darkestMidnight': '#152739',
     '$lightBlue': '#2683f0',
+    // status colors
+    '$starting': 'rgba(0, 255, 0, .5)',
+    '$stopping': 'rgba(255, 0, 0, .5)',
     // other
     '$pageHeaderHeight': '50px'
 ]

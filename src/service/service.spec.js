@@ -72,6 +72,13 @@ describe("Service", function() {
             expect(service.getInstancesForHost(HOST_NAME)[0].status()).toBe(ServiceInstance.Status.STOPPING);
             expect(service.getInstancesForHost(HOST_NAME)[0].id).toBe("GROUP;SERVICE;1_0_0;host1;Stopping");
         });
+
+        it("should add self as parent to instance", function() {
+            var serviceInstance = new ServiceInstance({id: "GROUP;SERVICE;1_0_0;host1;Up", version: "1.0.0", status: ServiceInstance.Status.RUNNING, hostName: HOST_NAME});
+            service.addInstance(serviceInstance);
+
+            expect(serviceInstance.parent).toBe(service);
+        });
     });
 
     describe("getInstancesForHost", function() {
@@ -167,11 +174,30 @@ describe("Service", function() {
 
         it("should return instance for given idWithoutStatus", function() {
             var serviceInstance1 = new ServiceInstance({id: "GROUP;SERVICE;1_0_0;host1;Up", version: "1.0.0", status: ServiceInstance.Status.RUNNING, hostName: HOST_NAME});
-            var serviceInstance2 = new ServiceInstance({id: "GROUP;SERVICE;1_1_0;host1;Stopping", version: "1.0.0", status: ServiceInstance.Status.RUNNING, hostName: HOST_NAME});
+            var serviceInstance2 = new ServiceInstance({id: "GROUP;SERVICE;1_1_0;host1;Stopping", version: "1.1.0", status: ServiceInstance.Status.RUNNING, hostName: HOST_NAME});
             service.addInstance(serviceInstance1);
             service.addInstance(serviceInstance2);
 
             expect(service.getInstanceWithoutStatus(serviceInstance2.idWithoutStatus)).toBe(serviceInstance2);
+        });
+    });
+
+    describe("sortInstances", function() {
+
+        it("should sort instances for all hosts using their comparison function", function() {
+            var serviceInstance1 = new ServiceInstance({id: "GROUP;SERVICE;1_0_0;host1;Up", version: "1.0.0", status: ServiceInstance.Status.RUNNING, hostName: "host1"});
+            var serviceInstance2 = new ServiceInstance({id: "GROUP;SERVICE;1_1_0;host1;Stopping", version: "1.1.0", status: ServiceInstance.Status.RUNNING, hostName: "host1"});
+            var serviceInstance3 = new ServiceInstance({id: "GROUP;SERVICE;1_0_0;host2;Up", version: "1.0.0", status: ServiceInstance.Status.RUNNING, hostName: "host2"});
+            var serviceInstance4 = new ServiceInstance({id: "GROUP;SERVICE;1_1_0;host2;Stopping", version: "1.1.0", status: ServiceInstance.Status.RUNNING, hostName: "host2"});
+            service.instancesByHost()["host1"] = [serviceInstance1, serviceInstance2];
+            service.instancesByHost()["host2"] = [serviceInstance3, serviceInstance4];
+
+            service.sortInstances();
+
+            expect(service.getInstancesForHost("host1")[0]).toBe(serviceInstance2);
+            expect(service.getInstancesForHost("host1")[1]).toBe(serviceInstance1);
+            expect(service.getInstancesForHost("host2")[0]).toBe(serviceInstance4);
+            expect(service.getInstancesForHost("host2")[1]).toBe(serviceInstance3);
         });
     });
 });

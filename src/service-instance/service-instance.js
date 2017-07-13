@@ -17,6 +17,18 @@ function ServiceInstance(creationData) {
     // for start/stop
     this.selected = ko.observable(false);
     this.toggleSelected = createToggle(this.selected);
+
+    // know which is parent to be able to re-sort when actions are taken
+    this.parent = null;
+
+    /* Not running, stopping, starting, etc */
+    this.isActive = ko.pureComputed(function() {
+        return ServiceInstance.NON_RUNNING_STATUSES.indexOf(this.status()) === -1;
+    }, this);
+
+    this.isChanging = ko.pureComputed(function() {
+        return this.status() === ServiceInstance.Status.STARTING || this.status() === ServiceInstance.Status.STOPPING;
+    }, this);
 }
 
 ServiceInstance.Status = {
@@ -86,6 +98,25 @@ ServiceInstance.Status = {
     }
 };
 
+ServiceInstance.NON_RUNNING_STATUSES = [
+    ServiceInstance.Status.STOPPED,
+    ServiceInstance.Status.DOWN,
+    ServiceInstance.Status.UNKNOWN,
+    ServiceInstance.Status.NONE,
+    ServiceInstance.Status.START_FAILED,
+    ServiceInstance.Status.RESTART_FAILED
+];
+
+ServiceInstance.prototype.getStatusChangingClass = function() {
+    if(this.status() === ServiceInstance.Status.STARTING) {
+        return "service-actions__changing-indicator--starting";
+    } else if(this.status() === ServiceInstance.Status.STOPPING) {
+        return "service-actions__changing-indicator--stopping";
+    } else {
+        return "";
+    }
+}
+
 ServiceInstance.prototype.compareTo = function(other) {
     var statusDiff = this.status().sortIndex - other.status().sortIndex;
     if(statusDiff === 0) {
@@ -114,6 +145,7 @@ ServiceInstance.prototype.run = function(confirmationType) {
     Data.runAction({id: this.id, actionType: confirmationType.actionType}).then(function(data) {
         instance.detailedData(data);
         instance.status(ServiceInstance.Status.getForText(data.status));
+        instance.parent.sortInstances();
         page.pageMessage(new Message({text: successText, type: Message.Type.SUCCESS}));
     }).fail(function(error) {
         page.pageMessage(new Message({text: error.error, type: Message.Type.ERROR}));

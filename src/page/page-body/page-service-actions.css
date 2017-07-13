@@ -41,3 +41,11 @@
 .service-actions__service-action .fa-play {
     color: green;
 }
+
+.service-actions__changing-indicator--starting {
+    color: $starting;
+}
+
+.service-actions__changing-indicator--stopping {
+    color: $stopping;
+}
