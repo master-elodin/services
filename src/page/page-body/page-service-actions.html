@@ -36,7 +36,7 @@
                             <div class="service-actions__service-action service-actions__service-action--disabled">
                                 <span data-bind="text: version"></span>
                                 <!-- ko if: isChanging -->
-                                <i data-bind="css: getStatusChangingClass()" class="fa fa-spinner fa-pulse" aria-hidden="true"></i>
+                                <i data-bind="css: getStatusChangingClass(), attr: {title: status().text}" class="fa fa-spinner fa-pulse" aria-hidden="true"></i>
                                 <!-- /ko -->
                                 <!-- ko ifnot: isChanging -->
                                 <i class="fa fa-minus-circle" aria-hidden="true"></i>
