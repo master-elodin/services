@@ -18,6 +18,7 @@ document.getElementsByTagName('head')[0].appendChild(external);
 ${src/utils/utils.js}
 ${src/message/message.js}
 ${src/data/data.js}
+${src/service-instance-details/service-instance-details.js}
 ${src/service-instance/service-instance.js}
 ${src/service/service.js}
 ${src/item/item.js}

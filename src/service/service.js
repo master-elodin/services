@@ -74,3 +74,9 @@ Service.prototype.getAllInstances = function() {
     }, this);
     return serviceInstances;
 };
+
+Service.prototype.getInstanceWithoutStatus = function(idWithoutStatus) {
+    return this.getAllInstances().find(function(serviceInstance) {
+        return serviceInstance.idWithoutStatus === idWithoutStatus;
+    });
+}

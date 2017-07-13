@@ -45,6 +45,7 @@ function Page() {
         clearIsActive(instance.activeEnv);
         clearIsActive(instance.activeHostGroup);
         instance.activeHosts([]);
+        instance.activeServices([]);
         instance.activeService(null);
     };
 
@@ -81,11 +82,14 @@ function Page() {
                 setActiveState(instance.activeApp, item.parent);
                 setActiveState(instance.activeEnv, item);
             } else if(item.childrenType === Item.ChildrenTypes.HOST) {
-                instance.clearAllActive();
-                setActiveState(instance.activeApp, item.parent.parent);
-                setActiveState(instance.activeEnv, item.parent);
-                setActiveState(instance.activeHostGroup, item);
-                instance.activeHosts(item.getChildrenNames());
+                instance.activeService(null);
+                if(item !== instance.activeHostGroup()) {
+                    instance.clearAllActive();
+                    setActiveState(instance.activeApp, item.parent.parent);
+                    setActiveState(instance.activeEnv, item.parent);
+                    setActiveState(instance.activeHostGroup, item);
+                    instance.activeHosts(item.getChildrenNames());
+                }
             }
             instance.save();
         }

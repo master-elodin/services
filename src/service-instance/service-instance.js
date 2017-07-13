@@ -5,6 +5,7 @@ function ServiceInstance(creationData) {
 
     this.idWithoutStatus = creationData.id.substring(0, creationData.id.lastIndexOf(";"));
 
+    this.detailedData = ko.observable(new ServiceInstanceDetails({}));
     this.status = ko.observable(creationData.status || ServiceInstance.Status.UNKNOWN);
     this.isRunning = ko.pureComputed(function() {
         return this.status() === ServiceInstance.Status.RUNNING;
@@ -109,7 +110,10 @@ ServiceInstance.prototype.compareTo = function(other) {
 
 ServiceInstance.prototype.run = function(confirmationType) {
     var successText = confirmationType.title + " successful for " + this.version + " on " + this.hostName;
-    Data.runAction({id: this.id, actionType: confirmationType.actionType}).then(function(success){
+    var instance = this;
+    Data.runAction({id: this.id, actionType: confirmationType.actionType}).then(function(data) {
+        instance.detailedData(data);
+        instance.status(ServiceInstance.Status.getForText(data.status));
         page.pageMessage(new Message({text: successText, type: Message.Type.SUCCESS}));
     }).fail(function(error) {
         page.pageMessage(new Message({text: error.error, type: Message.Type.ERROR}));

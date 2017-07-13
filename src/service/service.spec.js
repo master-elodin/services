@@ -1,5 +1,7 @@
 describe("Service", function() {
 
+    var HOST_NAME = "host1";
+
     var service;
 
     beforeEach(function() {
@@ -43,8 +45,6 @@ describe("Service", function() {
 
     describe("addInstance", function() {
 
-        var HOST_NAME = "host1";
-
         it("should add service instance to correct host list if not already existing", function() {
             var serviceInstance = new ServiceInstance({id: "service-instance", version: "1.0.0", status: ServiceInstance.Status.RUNNING, hostName: HOST_NAME});
             service.addInstance(serviceInstance);
@@ -76,8 +76,6 @@ describe("Service", function() {
 
     describe("getInstancesForHost", function() {
 
-        var HOST_NAME = "host1";
-
         it("should return empty list if not found for host", function() {
             expect(service.getInstancesForHost(HOST_NAME).length).toBe(0);
         });
@@ -92,8 +90,6 @@ describe("Service", function() {
     });
 
     describe("getFirstInstanceForHost", function() {
-
-        var HOST_NAME = "host1";
 
         it("should return the first instance for the host", function() {
             var instance = new ServiceInstance({id: "service-instance;", version: "1.0.0", status: ServiceInstance.Status.RUNNING});
@@ -164,6 +160,18 @@ describe("Service", function() {
             expect(service.hostNames().length).toBe(2);
             expect(service.hostNames()[0]).toBe("host1");
             expect(service.hostNames()[1]).toBe("host2");
+        });
+    });
+
+    describe("getInstanceWithoutStatus", function() {
+
+        it("should return instance for given idWithoutStatus", function() {
+            var serviceInstance1 = new ServiceInstance({id: "GROUP;SERVICE;1_0_0;host1;Up", version: "1.0.0", status: ServiceInstance.Status.RUNNING, hostName: HOST_NAME});
+            var serviceInstance2 = new ServiceInstance({id: "GROUP;SERVICE;1_1_0;host1;Stopping", version: "1.0.0", status: ServiceInstance.Status.RUNNING, hostName: HOST_NAME});
+            service.addInstance(serviceInstance1);
+            service.addInstance(serviceInstance2);
+
+            expect(service.getInstanceWithoutStatus(serviceInstance2.idWithoutStatus)).toBe(serviceInstance2);
         });
     });
 });
