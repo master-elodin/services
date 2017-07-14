@@ -198,12 +198,14 @@ function Page() {
         instance.activeServices(existingServiceList);
 
         instance.clearMessage();
+        instance.refreshMessage("Last successful refresh: " + formatTime(new Date(), "HH:mm"));
     };
 
     setInterval(function() {
         instance.refresh();
     }, REFRESH_INTERVAL_MILLIS);
     instance.isRefreshing = ko.observable(false);
+    instance.refreshMessage = ko.observable();
     instance.refresh = function() {
         if(!instance.isRefreshing() && instance.activeHostGroup()) {
             instance.isRefreshing(true);

@@ -27,7 +27,7 @@
             <input data-bind="textInput: filterValue" placeholder="filter services..." autofocus="autofocus">
         </dv>
         <!-- /ko -->
-        <div data-bind="click: refresh, css: {\'service-page__refresh--refreshing\': isRefreshing}" class="service-page__refresh">
+        <div data-bind="click: refresh, css: {\'service-page__refresh--refreshing\': isRefreshing}, attr: {title: refreshMessage}" class="service-page__refresh">
             <!-- ko if: isRefreshing -->
             <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
             <!-- /ko -->

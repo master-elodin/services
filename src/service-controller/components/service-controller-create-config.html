@@ -9,6 +9,7 @@
                 <!-- /ko -->
             <!-- /ko -->
             <!-- ko foreach: actions -->
+            <!-- ko ifnot: isCompleted -->
             <div class="service-controller__service-instances-per-host">
                 <span data-bind="text: serviceName" class="service-controller__service-name"></span>
                 <div class="service-controller__service-instance">
@@ -16,9 +17,10 @@
                 </div>
             </div>
             <!-- /ko -->
+            <!-- /ko -->
         </div>
+        <i data-bind="click: $parent.removeActionList.bind($parent), visible: !hasStarted()" class="fa fa-trash" aria-hidden="true"></i>
         <!-- /ko -->
-        <i data-bind="click: $parent.removeActionList.bind($parent)" class="fa fa-trash" aria-hidden="true"></i>
     </div>
 <!-- /ko -->
 <!-- /ko -->

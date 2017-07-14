@@ -62,4 +62,18 @@ describe("utils", function () {
             expect(removeWhitespace("some string with spaces")).toBe("some-string-with-spaces");
         });
     });
+
+    describe("pad", function() {
+
+        it("should pad with given length and padChar", function() {
+            expect(pad("4", 3, "0")).toBe("004");
+        });
+    });
+
+    describe("formatTime", function() {
+
+        it("should format for HH:mm", function() {
+            expect(formatTime(new Date("2015-03-25T12:00:00"), "HH:mm")).toBe("12:00");
+        });
+    });
 });

@@ -1,16 +1,21 @@
 function ActionList(creationData) {
     this.delayInMillis = 0;
     this.remainingDelay = ko.observable();
-    
+
     this.hasStarted = ko.observable(false);
-    this.isComplete = ko.pureComputed(function() {
+    this.isCountdownComplete = ko.pureComputed(function() {
         return this.hasStarted() && this.remainingDelay() < 1;
+    }, this);
+    this.isComplete = ko.pureComputed(function() {
+        return this.isCountdownComplete() && this.actions().every(function(action) {
+            return action.isCompleted();
+        });
     }, this);
 
     this.actions = ko.observableArray();
 
     this.countdownInterval = null;
-    this.countdownComplete = null;
+    this.countdownDeferred = null;
 
     if(creationData) {
         this.import(creationData);
@@ -38,25 +43,25 @@ ActionList.prototype.startCountdown = function() {
 
     this.hasStarted(true);
 
-    this.countdownComplete = jQuery.Deferred();
+    this.countdownDeferred = jQuery.Deferred();
     if(this.delayInMillis > 0) {
         this.countdownInterval = setInterval((function() {
             this.remainingDelay(this.remainingDelay() - 1);
-            if(this.isComplete()) {
+            if(this.isCountdownComplete()) {
                 clearInterval(this.countdownInterval);
-                this.countdownComplete.resolve();
+                this.countdownDeferred.resolve();
             }
         }).bind(this), 1000);
     } else {
-        this.countdownComplete.resolve();
+        this.countdownDeferred.resolve();
     }
-    return this.countdownComplete;
+    return this.countdownDeferred;
 }
 
 ActionList.prototype.pauseCountdown = function() {
     clearInterval(this.countdownInterval);
-    if(this.countdownComplete) {
-        this.countdownComplete.reject();
+    if(this.countdownDeferred) {
+        this.countdownDeferred.reject();
     }
 };
 

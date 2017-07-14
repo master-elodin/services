@@ -105,8 +105,8 @@ describe("ActionList", function() {
             expect(window.clearInterval).toHaveBeenCalledWith(countdownInterval);
         });
 
-        it("should reject countdownComplete if not null", function() {
-            actionList.countdownComplete = mockDeferred;
+        it("should reject countdownDeferred if not null", function() {
+            actionList.countdownDeferred = mockDeferred;
 
             actionList.pauseCountdown();
 
@@ -140,7 +140,7 @@ describe("ActionList", function() {
 
         it("should include delayInMillis", function() {
             actionList.delayInMillis = 15;
-            
+
             expect(actionList.export().delayInMillis).toBe(15);
         });
 

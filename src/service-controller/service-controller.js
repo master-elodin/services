@@ -79,6 +79,7 @@ ServiceController.prototype.add = function(filterFunction) {
     this.activeActionListGroup().addActionList(actionList);
     this.updateHostNamesForActions();
     this.delayForNext(0);
+    this.activeActionListGroup().name("");
 };
 
 ServiceController.prototype.addSelected = function() {
@@ -200,7 +201,7 @@ ServiceController.prototype.save = function() {
 };
 
 ServiceController.prototype.downloadSingleConfig = function(actionListGroup) {
-    downloadAsFile(JSON.stringify(actionListGroup.export()), removeWhitespace(actionListGroup.name()) + "-action-list");
+    downloadAsFile(JSON.stringify(actionListGroup.export()), "action-list-" + removeWhitespace(actionListGroup.name()));
 };
 
 ServiceController.prototype.downloadAllServiceConfig = function() {

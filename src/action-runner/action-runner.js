@@ -43,6 +43,7 @@ ActionRunner.prototype.run = function(activeServices) {
         var action = actionList.actions()[actionIndex];
         if(action) {
             console.log("Running action", action);
+            action.isCompleted(true);
             var service = activeServices().find(function(service) {
                 return service.name === action.serviceName;
             });

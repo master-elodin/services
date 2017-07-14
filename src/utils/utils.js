@@ -84,3 +84,14 @@ Array.prototype.remove = function(item) {
 var removeWhitespace = function(string) {
     return string.split(" ").join("-");
 }
+
+var pad = function(value, desiredLength, padChar) {
+    return (padChar.repeat(desiredLength) + value).slice(-1 * desiredLength);
+}
+
+var formatTime = function(dateTime, format) {
+    var padTime = function(timeValue) {
+        return pad(timeValue, 2, "0");
+    }
+    return format.replace("HH", padTime(dateTime.getHours())).replace("mm", padTime(dateTime.getMinutes()));
+}

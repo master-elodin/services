@@ -12,6 +12,7 @@ function Action(creationData) {
             return !!hostName;
         }).join(", ");
     }, this);
+    this.isCompleted = ko.observable(false);
 }
 
 Action.prototype.merge = function(otherAction) {
