@@ -233,6 +233,9 @@ function Page() {
     // must be declared after activeServices exists
     instance.serviceController = new ServiceController({activeServices: instance.activeServices, activeHostGroup: instance.activeHostGroup});
     instance.startStopUnlocked = instance.serviceController.startStopUnlocked;
+    instance.showHostCheckboxes = ko.pureComputed(function() {
+        return instance.startStopUnlocked() && !instance.serviceController.isRunning();
+    });
 };
 
 Page.DATA_NAME = "all-data";

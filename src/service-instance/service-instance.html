@@ -1,10 +1,10 @@
 <div class="host-health">
-    <!-- ko if: $root.startStopUnlocked -->
+    <!-- ko if: $root.showHostCheckboxes -->
     <div data-bind="click: toggleSelected, css: {\'host-health__icon__start-stop--selected\': selected}" class="host-health__icon host-health__icon__start-stop">
         <i class="fa fa-check" aria-hidden="true"></i>
     </div>
     <!-- /ko -->
-    <!-- ko ifnot: $root.startStopUnlocked -->
+    <!-- ko ifnot: $root.showHostCheckboxes -->
     <!-- ko with: status -->
     <div data-bind="css: colorClass" class="host-health__icon">
         <i data-bind="css: icon" class="fa" aria-hidden="true"></i>
