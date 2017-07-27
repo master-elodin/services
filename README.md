@@ -6,6 +6,7 @@
                 * No longer adds blank run configurations (#69)
                 * No longer adds duplicate run configurations on save (#68)
                 * No longer adds duplicate run configurations on upload (#60)
+                * No longer error out when rapidly switching between host-groups (#61)
         * 1.1.9
             * Bugfixes:
                 * Clicking a service when all nodes already selected will unselect them (#65)
