@@ -164,6 +164,10 @@ function Page() {
     });
     instance.activeHostGroup.subscribe(function(newVal) {
         if(newVal) {
+            if(instance.currentRefreshComplete && instance.currentRefreshComplete.state() === "resolved") {
+                console.log("Cancelling existing refresh because active host-group changed");
+                instance.currentRefreshComplete.reject({warning: "Cancelled refresh due to changing active host-group"});
+            }
             instance.refresh();
         }
     });
@@ -210,13 +214,17 @@ function Page() {
     }, REFRESH_INTERVAL_MILLIS);
     instance.isRefreshing = ko.observable(false);
     instance.refreshMessage = ko.observable();
+    // save deferred for current refresh so it can be cancelled if host-group changes before completing
+    instance.currentRefreshComplete = null;
     instance.refresh = function() {
         if(!instance.isRefreshing() && instance.activeHostGroup()) {
             instance.isRefreshing(true);
-            Data.getDataForHosts(instance.activeHostGroup().getChildrenNames())
-            .then(instance.addServiceData)
+            instance.currentRefreshComplete = Data.getDataForHosts(instance.activeHostGroup().getChildrenNames());
+            instance.currentRefreshComplete.then(instance.addServiceData)
             .fail(function(error) {
-                setMessage(new Message({text: error.error, type: Message.Type.ERROR}));
+                if(error.error) {
+                    setMessage(new Message({text: error.error, type: Message.Type.ERROR}));
+                }
             }).always(function() {
                 instance.isRefreshing(false);
             });
