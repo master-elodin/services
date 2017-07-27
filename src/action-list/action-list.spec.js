@@ -186,4 +186,37 @@ describe("ActionList", function() {
             expect(actionList.actions()[1].serviceName).toBe("service2");
         });
     });
+
+    describe("reset", function() {
+
+        it("should reset countdown and change all actions to completed=false", function() {
+            actionList.remainingDelay(0);
+
+            actionList.reset();
+
+            expect(actionList.remainingDelay()).toBe(actionList.delayInMillis);
+        });
+
+        it("should set hasStarted=false", function() {
+            actionList.hasStarted(true);
+
+            actionList.reset();
+
+            expect(actionList.hasStarted()).toBe(false);
+        });
+
+        it("should set completed=false for all actions", function() {
+            var action1 = new Action({serviceName: "serviceName1"});
+            action1.isCompleted(true);
+            actionList.addAction(action1);
+            var action2 = new Action({serviceName: "serviceName2"});
+            action2.isCompleted(true);
+            actionList.addAction(action2);
+
+            actionList.reset();
+
+            expect(action1.isCompleted()).toBe(false);
+            expect(action2.isCompleted()).toBe(false);
+        });
+    });
 });

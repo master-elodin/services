@@ -83,3 +83,11 @@ ActionList.prototype.export = function() {
         })
     }
 };
+
+ActionList.prototype.reset = function() {
+    this.remainingDelay(this.delayInMillis);
+    this.hasStarted(false);
+    this.actions().forEach(function(action) {
+        action.isCompleted(false);
+    });
+}

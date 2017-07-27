@@ -75,6 +75,9 @@ ActionRunner.prototype.run = function(activeServices) {
             });
         } else {
             console.log("Action runs complete!");
+            instance.actionLists().forEach(function(actionList) {
+                actionList.reset();
+            });
             runComplete.resolve();
         }
     }
