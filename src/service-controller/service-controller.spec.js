@@ -417,8 +417,8 @@ describe("ServiceController", function() {
     describe("save", function() {
 
         it("should add activeActionListGroup if does not already exist", function() {
-            localStorage.setItem(ServiceController.DATA_NAME, JSON.stringify({activeListGroupName: "group1", savedConfigurations: [{name: "group1"}]}));
             serviceController.activeActionListGroup().name("group2");
+            serviceController.savedConfigurations([new ActionListGroup({name: "group1", actionLists: []})]);
 
             serviceController.save();
 
@@ -430,8 +430,8 @@ describe("ServiceController", function() {
         });
 
         it("should overwrite existing actionListGroup if already exists", function() {
-            localStorage.setItem(ServiceController.DATA_NAME, JSON.stringify({activeListGroupName: "group1", savedConfigurations: [{name: "group1"}, {name: "group2"}]}));
             serviceController.activeActionListGroup().name("group2");
+            serviceController.savedConfigurations([new ActionListGroup({name: "group1", actionLists: []}),new ActionListGroup({name: "group2", actionLists: []})]);
 
             serviceController.save();
 
@@ -447,6 +447,14 @@ describe("ServiceController", function() {
 
             expect(serviceController.savedConfigurations()[0].name()).toBe(serviceController.activeActionListGroup().name());
         });
+
+        it("should not add active configuration if it has no name", function() {
+            serviceController.activeActionListGroup().name("");
+
+            serviceController.save();
+
+            expect(serviceController.savedConfigurations().length).toBe(0);
+        });
     });
 
     describe("load", function() {
@@ -459,6 +467,36 @@ describe("ServiceController", function() {
             serviceController.load(actionListGroup2);
 
             expect(serviceController.activeActionListGroup()).toBe(actionListGroup2);
+        });
+    });
+
+    describe("removeConfiguration", function() {
+
+        var configuration;
+
+        beforeEach(function() {
+            configuration = new ActionListGroup({name: "actionListGroup1", actionLists: []});
+            serviceController.savedConfigurations([configuration]);
+        });
+
+        afterEach(function() {
+            configuration = null;
+        });
+
+        it("should remove configuration, leaving only active configuration with no name", function() {
+            serviceController.removeConfiguration(configuration);
+
+            expect(serviceController.savedConfigurations().length).toBe(1);
+            // it's a copy of activeActionListGroup, so == won't work
+            expect(serviceController.savedConfigurations()[0].name()).toBe(serviceController.activeActionListGroup().name());
+        });
+
+        it("should save", function() {
+            spyOn(serviceController, "save").and.stub();
+
+            serviceController.removeConfiguration(configuration);
+
+            expect(serviceController.save).toHaveBeenCalled();
         });
     });
 });

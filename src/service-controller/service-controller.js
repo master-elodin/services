@@ -174,6 +174,7 @@ ServiceController.prototype.getSavedData = function() {
     if(!savedData || !savedData.savedConfigurations) {
         savedData = {savedConfigurations: [], activeListGroupName: null};
     }
+    console.log("Saved data", savedData);
     return savedData;
 };
 
@@ -183,20 +184,26 @@ ServiceController.prototype.load = function(actionListGroup) {
 };
 
 ServiceController.prototype.save = function() {
-    var saveData = this.getSavedData();
-    var nameMatches = (function(actionListGroup) {
-        return actionListGroup.name === this.activeActionListGroup().name();
-    }).bind(this);
-    var actionActionListGroupData = this.activeActionListGroup().export();
-    var existingActionListGroup = saveData.savedConfigurations.find(nameMatches);
-    if(existingActionListGroup) {
-        saveData.savedConfigurations.splice(saveData.savedConfigurations.indexOf(existingActionListGroup), 1, actionActionListGroupData);
-    } else {
-        saveData.savedConfigurations.push(actionActionListGroupData);
-        // copy active into a new ActionListGroup
-        this.savedConfigurations.push(this.activeActionListGroup().duplicate());
+    var saveData = {
+        activeListGroupName: this.activeActionListGroup().name(),
+        savedConfigurations: this.savedConfigurations().map(function(configuration) {
+            return configuration.export();
+        })
+    };
+    // don't save active action list group if it doesn't have a name
+    if(this.activeActionListGroup().name()) {
+        var actionActionListGroupData = this.activeActionListGroup().export();
+        var existingActionListGroup = saveData.savedConfigurations.find(function(actionListGroup) {
+            return actionListGroup.name === actionActionListGroupData.name;
+        });
+        if(existingActionListGroup) {
+            saveData.savedConfigurations.splice(saveData.savedConfigurations.indexOf(existingActionListGroup), 1, actionActionListGroupData);
+        } else {
+            saveData.savedConfigurations.push(actionActionListGroupData);
+            // copy active into a new ActionListGroup
+            this.savedConfigurations.push(this.activeActionListGroup().duplicate());
+        }
     }
-    saveData.activeListGroupName = actionActionListGroupData.name;
     localStorage.setItem(ServiceController.DATA_NAME, JSON.stringify(saveData));
 };
 
@@ -227,5 +234,6 @@ ServiceController.prototype.removeConfiguration = function(configuration) {
         this.activeActionListGroup().name("");
     }
     this.savedConfigurations().remove(configuration);
+    this.save();
     this.savedConfigurations.valueHasMutated();
 }
