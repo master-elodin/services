@@ -51,8 +51,12 @@ function Page() {
 
     instance.selectService = function(service) {
         if(instance.startStopUnlocked()) {
-            instance.activeHostGroup().getChildrenNames().forEach(function(hostName) {
-                service.getFirstInstanceForHost(hostName).selected(true);
+            var hostNames = instance.activeHostGroup().getChildrenNames();
+            var allSelected = hostNames.every(function(hostName) {
+                return service.getFirstInstanceForHost(hostName).selected();
+            });
+            hostNames.forEach(function(hostName) {
+                service.getFirstInstanceForHost(hostName).selected(!allSelected);
             });
         } else {
             instance.activeService(service);

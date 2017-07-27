@@ -357,6 +357,22 @@ describe("A Page", function() {
 
     describe("selectService", function() {
 
+        var service;
+
+        beforeEach(function() {
+            var activeHostGroup = new Item({});
+            activeHostGroup.addChildWithName("host1");
+            activeHostGroup.addChildWithName("host2");
+            page.activeHostGroup(activeHostGroup);
+            service = new Service({});
+            service.addInstance(new ServiceInstance({id: "id1", hostName: "host1", version: ""}));
+            service.addInstance(new ServiceInstance({id: "id2", hostName: "host2", version: ""}));
+        });
+
+        afterEach(function() {
+            service = null;
+        });
+
         it("should set active service if startStopUnlocked=false", function() {
             page.startStopUnlocked(false);
             var service = new Service({});
@@ -366,21 +382,26 @@ describe("A Page", function() {
             expect(page.activeService()).toBe(service);
         });
 
-        it("should set service instances as selected=true if startStopUnlocked=true", function() {
+        it("should set service instances as selected=true if startStopUnlocked=true and not all already selected", function() {
             page.startStopUnlocked(true);
-            var activeHostGroup = new Item({});
-            activeHostGroup.addChildWithName("host1");
-            activeHostGroup.addChildWithName("host2");
-            page.activeHostGroup(activeHostGroup);
-            var service = new Service({});
-            service.addInstance(new ServiceInstance({id: "id1", hostName: "host1", version: ""}));
-            service.addInstance(new ServiceInstance({id: "id2", hostName: "host1", version: ""}));
-            service.addInstance(new ServiceInstance({id: "id3", hostName: "host2", version: ""}));
+            service.getFirstInstanceForHost("host1").selected(true);
+            service.getFirstInstanceForHost("host2").selected(false);
 
             page.selectService(service);
 
             expect(service.getFirstInstanceForHost("host1").selected()).toBe(true);
             expect(service.getFirstInstanceForHost("host2").selected()).toBe(true);
+        });
+
+        it("should set service instances as selected=false if startStopUnlocked=true and all already selected", function() {
+            page.startStopUnlocked(true);
+            service.getFirstInstanceForHost("host1").selected(true);
+            service.getFirstInstanceForHost("host2").selected(true);
+
+            page.selectService(service);
+
+            expect(service.getFirstInstanceForHost("host1").selected()).toBe(false);
+            expect(service.getFirstInstanceForHost("host2").selected()).toBe(false);
         });
     });
 });
