@@ -1,5 +1,9 @@
 ## Patch Notes
 * 1
+    * 1.2
+        * 1.2.0
+            * Enhancements
+                * Add sign-out button
     * 1.1
         * 1.1.10
             * Bugfixes:

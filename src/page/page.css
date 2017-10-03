@@ -142,3 +142,7 @@
     position: absolute;
     right: 25px;
 }
+
+.service-page__sign-out a {
+    color: $clouds;
+}
