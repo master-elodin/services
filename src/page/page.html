@@ -85,6 +85,12 @@
         <!-- ko ifnot: showRefreshIcon -->
             ${src/selections/selections.html}
         <!-- /ko -->
+        <div class="service-page__env-links">
+            <span>Change environment:</span>
+            <a href="dev">DEV</a>
+            <a href="qa">QA</a>
+            <a href="prod">PROD</a>
+        </div>
         <div class="service-page__version">
             <span>Script version: </span>
             <span data-bind="text: scriptVersion"></span>

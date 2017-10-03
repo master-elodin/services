@@ -147,3 +147,14 @@
     color: $clouds;
     padding: 0 10px;
 }
+
+.service-page__env-links {
+    bottom: 18px;
+    font-size: 14px;
+    position: absolute;
+    right: 130px;
+}
+.service-page__env-links a {
+    font-weight: bold;
+    padding: 0 3px;
+}
