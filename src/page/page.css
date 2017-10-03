@@ -145,4 +145,5 @@
 
 .service-page__sign-out a {
     color: $clouds;
+    padding: 0 10px;
 }
