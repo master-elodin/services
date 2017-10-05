@@ -148,9 +148,10 @@ ServiceInstance.prototype.run = function(confirmationType) {
         instance.detailedData(data);
         instance.status(ServiceInstance.Status.getForText(data.status));
         instance.parent.sortInstances();
-        var successText = confirmationType.title + " successful for " + this.version + " on " + this.hostName;
+        var successText = confirmationType.title + " successful for " + instance.version + " on " + instance.hostName;
         page.pageMessage(new Message({text: successText, type: Message.Type.SUCCESS}));
     }).fail(function(error) {
+        console.log("Failed running service instance!", error);
         page.pageMessage(new Message({text: error.error, type: Message.Type.ERROR}));
     });
 }
