@@ -48,43 +48,43 @@ ServiceInstance.Status = {
         text: "Stopping" ,
         icon: "fa-times-circle-o",
         colorClass: "host-health__icon--stopping",
-        sortIndex: 1
+        sortIndex: 2
     },
     STOPPED: {
         text: "Stopped",
         icon: "fa-times-circle-o",
         colorClass: "host-health__icon--stopped",
-        sortIndex: 1
+        sortIndex: 2
     },
     START_FAILED: {
         text: "Start Failed",
         icon: "fa-exclamation-circle",
         colorClass: "host-health__icon--failed",
-        sortIndex: 1
+        sortIndex: 2
     },
     RESTART_FAILED: {
         text: "Restart Failed",
         icon: "fa-exclamation-circle",
         colorClass: "host-health__icon--failed",
-        sortIndex: 1
+        sortIndex: 2
     },
     DOWN: {
         text: "Down",
         icon: "fa-exclamation-circle",
         colorClass: "host-health__icon--down",
-        sortIndex: 1
+        sortIndex: 2
     },
     UNKNOWN: {
         text: "Unknown",
         icon: "fa-question-circle-o",
         colorClass: "host-health__icon--unknown",
-        sortIndex: 2
+        sortIndex: 3
     },
     NONE: {
         text: "N/A",
         icon: "fa-question-circle-o",
         colorClass: "host-health__icon--unknown",
-        sortIndex: 3
+        sortIndex: 4
     },
     getForText: function(statusText) {
         var foundStatus = this.UNKNOWN;
@@ -124,6 +124,9 @@ ServiceInstance.prototype.compareTo = function(other) {
             var partsA = this.version.split(".");
             var partsB = other.version.split(".");
             for(var i = 0; i < partsA.length; i++) {
+                // sort in descending order based on version
+                // if return value is a negative number, A comes first in the list
+                // so if A is a greater number than B, diff will be negative so A will come first
                 var diff = parseInt(partsB[i]) - parseInt(partsA[i]);
                 if(diff !== 0) {
                     statusDiff = diff;
@@ -140,12 +143,12 @@ ServiceInstance.prototype.compareTo = function(other) {
 }
 
 ServiceInstance.prototype.run = function(confirmationType) {
-    var successText = confirmationType.title + " successful for " + this.version + " on " + this.hostName;
     var instance = this;
     Data.runAction({id: this.id, actionType: confirmationType.actionType}).then(function(data) {
         instance.detailedData(data);
         instance.status(ServiceInstance.Status.getForText(data.status));
         instance.parent.sortInstances();
+        var successText = confirmationType.title + " successful for " + this.version + " on " + this.hostName;
         page.pageMessage(new Message({text: successText, type: Message.Type.SUCCESS}));
     }).fail(function(error) {
         page.pageMessage(new Message({text: error.error, type: Message.Type.ERROR}));

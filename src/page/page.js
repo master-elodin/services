@@ -1,7 +1,8 @@
 function Page() {
     var instance = this;
 
-    var REFRESH_INTERVAL_MILLIS = 300000;
+    // refresh every 1 minute
+    var REFRESH_INTERVAL_MILLIS = 60000;
 
     instance.scriptVersion = ko.observable(SCRIPT_VERSION);
 

@@ -1,6 +1,9 @@
 ## Patch Notes
 * 1
     * 1.2
+        * 1.2.1
+            * Bugfixes:
+                * Re-sort correctly after starting/stopping services
         * 1.2.0
             * Enhancements
                 * Add sign-out button

@@ -3,7 +3,7 @@ describe("A Service Instance", function() {
     var serviceInstance;
 
     beforeEach(function() {
-        serviceInstance = new ServiceInstance({id: "GROUP;SERVICE;1_0_0;host1;Stopping", version: "1.2.1"});
+        serviceInstance = new ServiceInstance({id: "GROUP;SERVICE;1_0_0;host1;Stopping", version: "1.22.1"});
     });
 
     afterEach(function() {
@@ -19,7 +19,7 @@ describe("A Service Instance", function() {
     });
 
     it("should set version on creation", function() {
-        expect( serviceInstance.version ).toBe( "1.2.1" );
+        expect( serviceInstance.version ).toBe( "1.22.1" );
     });
 
     it("should be able to update status", function() {
@@ -34,40 +34,44 @@ describe("A Service Instance", function() {
 
     describe("compareTo", function() {
 
+        var expectSortOrder = function(other, expectedOrder) {
+            expect([serviceInstance, other].sort(function(a, b) { return a.compareTo(b); }).indexOf(serviceInstance)).toBe(expectedOrder);
+        }
+
         it("should return 0 if equal versions", function() {
-            expect(serviceInstance.compareTo(new ServiceInstance({id: "id", version: serviceInstance.version})) === 0).toBe(true);
+            expect(serviceInstance.compareTo(new ServiceInstance({id: "otherId", version: serviceInstance.version})) === 0).toBe(true);
         });
 
-        it("should return positive if lower major version than other", function() {
-            expect(serviceInstance.compareTo(new ServiceInstance({id: "id", version: "2.2.0"})) > 0).toBe(true);
+        it("should be sorted second if lower major version than other", function() {
+            expectSortOrder(new ServiceInstance({id: "otherId", version: "2.2.0"}), 1);
         });
 
-        it("should return negative if higher major version than other", function() {
-            expect(serviceInstance.compareTo(new ServiceInstance({id: "id", version: "0.2.0"})) < 0).toBe(true);
+        it("should be sorted first if higher major version than other", function() {
+            expectSortOrder(new ServiceInstance({id: "otherId", version: "0.2.0"}), 0);
         });
 
-        it("should return positive if lower minor version than other", function() {
-            expect(serviceInstance.compareTo(new ServiceInstance({id: "id", version: "1.3.0"})) > 0).toBe(true);
+        it("should be sorted second if lower minor version than other", function() {
+            expectSortOrder(new ServiceInstance({id: "otherId", version: "1.23.0"}), 1);
         });
 
-        it("should return negative if higher minor version than other", function() {
-            expect(serviceInstance.compareTo(new ServiceInstance({id: "id", version: "1.1.0"})) < 0).toBe(true);
+        it("should be sorted first if higher minor version than other", function() {
+            expectSortOrder(new ServiceInstance({id: "otherId", version: "1.21.0"}), 0);
         });
 
-        it("should return positive if lower patch version than other", function() {
-            expect(serviceInstance.compareTo(new ServiceInstance({id: "id", version: "1.2.2"})) > 0).toBe(true);
+        it("should be sorted second if lower patch version than other", function() {
+            expectSortOrder(new ServiceInstance({id: "otherId", version: "1.22.2"}), 1);
         });
 
-        it("should return negative if higher patch version than other", function() {
-            expect(serviceInstance.compareTo(new ServiceInstance({id: "id", version: "1.2.0"})) < 0).toBe(true);
+        it("should be sorted first if higher patch version than other", function() {
+            expectSortOrder(new ServiceInstance({id: "otherId", version: "1.22.0"}), 0);
         });
 
-        it("should return negative if status not NONE and other status is NONE", function() {
+        it("should be sorted first if status not NONE and other status is NONE", function() {
             serviceInstance.status(ServiceInstance.Status.RUNNING);
             expect(serviceInstance.compareTo(new ServiceInstance({id: "INSTANCE_NOT_FOUND", status: ServiceInstance.Status.NONE})) < 0).toBe(true);
         });
 
-        it("should return positive if status NONE and other status is not NONE", function() {
+        it("should be sorted second if status NONE and other status is not NONE", function() {
             serviceInstance.status(ServiceInstance.Status.NONE);
             expect(serviceInstance.compareTo(new ServiceInstance({id: "INSTANCE_NOT_FOUND", status: ServiceInstance.Status.RUNNING})) > 0).toBe(true);
         });
@@ -77,7 +81,7 @@ describe("A Service Instance", function() {
             expect(serviceInstance.compareTo(new ServiceInstance({id: "INSTANCE_NOT_FOUND", status: ServiceInstance.Status.NONE}))).toBe(0);
         });
 
-        it("should return negative if status RUNNING and other status not RUNNING", function() {
+        it("should be sorted first if status RUNNING and other status not RUNNING", function() {
             serviceInstance.status(ServiceInstance.Status.RUNNING);
             expect(serviceInstance.compareTo(new ServiceInstance({id: "INSTANCE_NOT_FOUND", status: ServiceInstance.Status.NONE})) < 0).toBe(true);
         });
