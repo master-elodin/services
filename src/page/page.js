@@ -201,6 +201,10 @@ function Page() {
             }
         });
 
+        existingServiceList.forEach(function(service) {
+            service.sortInstances();
+        });
+
         existingServiceList.sort(function(a, b) {
             return sortStrings(a.name, b.name);
         });

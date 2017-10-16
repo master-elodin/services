@@ -1,6 +1,12 @@
 ## Patch Notes
 * 1
     * 1.2
+        * 1.2.3
+            * Bugfixes:
+                * Now correctly sorts service instances after a refresh
+        * 1.2.2
+            * Bugfixes:
+                * Fix validation fix so it requests from the correct location
         * 1.2.1
             * Bugfixes:
                 * Re-sort correctly after starting/stopping services

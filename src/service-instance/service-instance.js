@@ -78,7 +78,7 @@ ServiceInstance.Status = {
         text: "Unknown",
         icon: "fa-question-circle-o",
         colorClass: "host-health__icon--unknown",
-        sortIndex: 3
+        sortIndex: 2
     },
     NONE: {
         text: "N/A",
