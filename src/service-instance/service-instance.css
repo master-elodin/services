@@ -14,6 +14,11 @@
     width: 22px;
 }
 
+.host-health__clickable {
+    height: 100%;
+    width: 100%;
+}
+
 /* TODO: get good colors for health icons */
 .host-health__icon.host-health__icon--running {
     background-color: green;

@@ -5,8 +5,10 @@
     </div>
     <!-- /ko -->
     <!-- ko ifnot: $root.showHostCheckboxes -->
-    <div data-bind="css: status().colorClass, click: loadInfo" class="host-health__icon">
-        <i data-bind="css: status().icon" class="fa" aria-hidden="true"></i>
+    <div data-bind="css: status().colorClass" class="host-health__icon">
+        <div data-bind="click: loadInfo" class="host-health__clickable">
+            <i data-bind="css: status().icon" class="fa" aria-hidden="true"></i>
+        </div>
         <!-- ko with: detailedData -->
         <div class="host-health__detail">
             <div class="host-health__detail-row">
