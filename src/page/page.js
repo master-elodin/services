@@ -165,7 +165,7 @@ function Page() {
     });
     instance.activeHostGroup.subscribe(function(newVal) {
         if(newVal) {
-            if(instance.currentRefreshComplete && instance.currentRefreshComplete.state() === "resolved") {
+            if(instance.currentRefreshComplete && instance.currentRefreshComplete.state() !== "resolved") {
                 console.log("Cancelling existing refresh because active host-group changed");
                 instance.currentRefreshComplete.reject({warning: "Cancelled refresh due to changing active host-group"});
             }

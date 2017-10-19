@@ -3,21 +3,22 @@
     width: 450px;
 }
 
-.service-health:hover {
-    background-color: $darkerClouds;
-    border: 1px solid $midnight;
-    border-radius: 10px;
-    margin: -1px;
-}
-
 .service-health__name {
     cursor: pointer;
     float: left;
     line-height: 35px;
     height: 100%;
     overflow: hidden;
+    padding-left: 5px;
     text-overflow: ellipsis;
-    width: 250px;
+    width: 240px;
+}
+
+.service-health__name:hover {
+    background-color: $darkerClouds;
+    border: 1px solid $midnight;
+    border-radius: 10px;
+    margin: -1px;
 }
 
 .service-health__host-healths {

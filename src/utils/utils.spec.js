@@ -75,5 +75,10 @@ describe("utils", function () {
         it("should format for HH:mm", function() {
             expect(formatTime(new Date("2015-03-25T12:00:00"), "HH:mm")).toBe("12:00");
         });
+
+        it("should format for yyyy-MM-ddTHH:mmZ", function() {
+            // removes seconds
+            expect(formatTime(new Date(Date.parse("Tue, 12 Sep 2017 12:00:00 GMT-0500")), "yyyy-MM-ddTHH:mmZ")).toBe("2017-09-12T12:00-0500");
+        });
     });
 });

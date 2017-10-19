@@ -1,7 +1,8 @@
 .host-health {
+    color: $clouds;
+    cursor: pointer;
     display: inline-block;
     padding: 2px;
-    color: $clouds;
 }
 
 .host-health__icon {
@@ -84,15 +85,11 @@
 }
 
 .host-health__detail-row {
-    width: 150px;
+    width: 220px;
 }
 
 .host-health__detail-title {
     display: inline-block;
     font-weight: bold;
-    width: 55px;
-}
-
-.host-health__detail-content {
-
+    width: 110px;
 }

@@ -1,26 +1,37 @@
 describe("A Service Instance", function() {
 
+    var VERSION = "1.22.1";
+
     var serviceInstance;
 
     beforeEach(function() {
-        serviceInstance = new ServiceInstance({id: "GROUP;SERVICE;1_0_0;host1;Stopping", version: "1.22.1"});
+        serviceInstance = new ServiceInstance({id: "GROUP;SERVICE;1_0_0;host1;Stopping", version: VERSION, hostName: "host1", status: ServiceInstance.Status.STOPPING});
     });
 
     afterEach(function() {
         serviceInstance = null;
     });
 
-    it("should set ID on creation", function() {
-        expect( serviceInstance.id ).toBe( "GROUP;SERVICE;1_0_0;host1;Stopping" );
-    });
+    describe("creation", function() {
 
-    it("should set idWithoutStatus on creation", function() {
-        expect( serviceInstance.idWithoutStatus ).toBe( "GROUP;SERVICE;1_0_0;host1" );
-    });
+        it("should set ID", function() {
+            expect( serviceInstance.id ).toBe( "GROUP;SERVICE;1_0_0;host1;Stopping" );
+        });
 
-    it("should set version on creation", function() {
-        expect( serviceInstance.version ).toBe( "1.22.1" );
-    });
+        it("should set idWithoutStatus", function() {
+            expect( serviceInstance.idWithoutStatus ).toBe( "GROUP;SERVICE;1_0_0;host1" );
+        });
+
+        it("should set version", function() {
+            expect( serviceInstance.version ).toBe( VERSION );
+        });
+
+        it("should set detailedData", function() {
+            expect(serviceInstance.detailedData().hostName).toBe("host1");
+            expect(serviceInstance.detailedData().version).toBe(VERSION);
+            expect(serviceInstance.detailedData().status).toBe(ServiceInstance.Status.STOPPING.text);
+        });
+    })
 
     it("should be able to update status", function() {
         serviceInstance.status(ServiceInstance.Status.RUNNING);

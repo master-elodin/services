@@ -1,5 +1,9 @@
 ## Patch Notes
 * 1
+    * 1.3
+        * 1.3.0
+            * Enhancements:
+                * Add additional data (user actions, JMX port, etc) for service instances
     * 1.2
         * 1.2.3
             * Bugfixes:

@@ -5,8 +5,9 @@ function ServiceInstance(creationData) {
 
     this.idWithoutStatus = creationData.id.substring(0, creationData.id.lastIndexOf(";"));
 
-    this.detailedData = ko.observable(new ServiceInstanceDetails({}));
     this.status = ko.observable(creationData.status || ServiceInstance.Status.UNKNOWN);
+    this.isLoadingData = ko.observable(false);
+    this.detailedData = ko.observable(new ServiceInstanceDetails({hostName: this.hostName, version: this.version, status: this.status().text}));
     this.isRunning = ko.pureComputed(function() {
         return this.status() === ServiceInstance.Status.RUNNING;
     }, this);
@@ -145,7 +146,7 @@ ServiceInstance.prototype.compareTo = function(other) {
 ServiceInstance.prototype.run = function(confirmationType) {
     var instance = this;
     Data.runAction({id: this.id, actionType: confirmationType.actionType}).then(function(data) {
-        instance.detailedData(data);
+        instance.updateDetailedData(data);
         instance.status(ServiceInstance.Status.getForText(data.status));
         instance.parent.sortInstances();
         var successText = confirmationType.title + " successful for " + instance.version + " on " + instance.hostName;
@@ -166,4 +167,14 @@ ServiceInstance.prototype.stop = function() {
 
 ServiceInstance.prototype.restart = function() {
     this.run(ServiceController.ConfirmationType.RESTART);
+};
+
+ServiceInstance.prototype.updateDetailedData = function(data) {
+    this.detailedData(data);
+    this.isLoadingData(false);
+};
+
+ServiceInstance.prototype.loadInfo = function() {
+    this.isLoadingData(true);
+    Data.getServiceInstanceData(this.id).then(this.updateDetailedData.bind(this));
 };

@@ -5,21 +5,38 @@
     </div>
     <!-- /ko -->
     <!-- ko ifnot: $root.showHostCheckboxes -->
-    <!-- ko with: status -->
-    <div data-bind="css: colorClass" class="host-health__icon">
-        <i data-bind="css: icon" class="fa" aria-hidden="true"></i>
+    <div data-bind="css: status().colorClass, click: loadInfo" class="host-health__icon">
+        <i data-bind="css: status().icon" class="fa" aria-hidden="true"></i>
+        <!-- ko with: detailedData -->
         <div class="host-health__detail">
             <div class="host-health__detail-row">
-                <span class="host-health__detail-title">Host: </span><span data-bind="text: $parent.hostName" class="host-health__detail-content"></span>
+                <span class="host-health__detail-title">Host: </span><span data-bind="text: hostName" class="host-health__detail-content"></span>
             </div>
             <div class="host-health__detail-row">
-                <span class="host-health__detail-title">Version: </span><span data-bind="text: $parent.version" class="host-health__detail-content"></span>
+                <span class="host-health__detail-title">Version: </span><span data-bind="text: version" class="host-health__detail-content"></span>
             </div>
             <div class="host-health__detail-row">
-                <span class="host-health__detail-title">Status: </span><span data-bind="text: text" class="host-health__detail-content"></span>
+                <span class="host-health__detail-title">Status: </span><span data-bind="text: status" class="host-health__detail-content"></span>
             </div>
+            <!-- ko if: extraDataLoaded -->
+            <div class="host-health__detail-row">
+                <span class="host-health__detail-title">Last Action: </span><span data-bind="text: lastAction" class="host-health__detail-content"></span>
+            </div>
+            <div class="host-health__detail-row">
+                <span class="host-health__detail-title">Last Action Time: </span><span data-bind="text: lastActionTime" class="host-health__detail-content"></span>
+            </div>
+            <div class="host-health__detail-row">
+                <span class="host-health__detail-title">Last User: </span><span data-bind="text: lastActionUserId" class="host-health__detail-content"></span>
+            </div>
+            <div class="host-health__detail-row">
+                <span class="host-health__detail-title">JMX Port: </span><span data-bind="text: jmxPort" class="host-health__detail-content"></span>
+            </div>
+            <!-- /ko -->
+            <!-- ko if: $parent.isLoadingData -->
+            <i class="fa fa-spin" aria-hidden="true"></i>
+            <!-- /ko -->
         </div>
+        <!-- /ko -->
     </div>
-    <!-- /ko -->
     <!-- /ko -->
 </div>

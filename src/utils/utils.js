@@ -90,8 +90,19 @@ var pad = function(value, desiredLength, padChar) {
 }
 
 var formatTime = function(dateTime, format) {
+    format = format || "yyyy-MM-dd HH:mm";
     var padTime = function(timeValue) {
         return pad(timeValue, 2, "0");
     }
-    return format.replace("HH", padTime(dateTime.getHours())).replace("mm", padTime(dateTime.getMinutes()));
+    var timeZoneOffset = (dateTime.getTimezoneOffset() / 60) * -100;
+    var timeZoneOffsetString = (timeZoneOffset > 0 ? "+" : "") + timeZoneOffset;
+    if(timeZoneOffsetString.length === 4) {
+        timeZoneOffsetString = timeZoneOffsetString.substring(0, 1) + "0" + timeZoneOffsetString.substring(1);
+    }
+    return format.replace("yyyy", dateTime.getFullYear())
+            .replace("MM", padTime(dateTime.getMonth() + 1))
+            .replace("dd", padTime(dateTime.getDate()))
+            .replace("HH", padTime(dateTime.getHours()))
+            .replace("mm", padTime(dateTime.getMinutes()))
+            .replace("Z", timeZoneOffsetString);
 }
