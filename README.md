@@ -1,6 +1,9 @@
 ## Patch Notes
 * 1
     * 1.3
+        * 1.3.1
+            * Bugfixes:
+                * Don't re-request info when clicking on additional data popup
         * 1.3.0
             * Enhancements:
                 * Add additional data (user actions, JMX port, etc) for service instances
