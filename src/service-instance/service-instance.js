@@ -7,7 +7,8 @@ function ServiceInstance(creationData) {
 
     this.status = ko.observable(creationData.status || ServiceInstance.Status.UNKNOWN);
     this.isLoadingData = ko.observable(false);
-    this.detailedData = ko.observable(new ServiceInstanceDetails({hostName: this.hostName, version: this.version, status: this.status().text}));
+    this.detailedData = ko.observable();
+    this.updateDetailedData(new ServiceInstanceDetails({hostName: this.hostName, version: this.version, status: this.status().text}));
     this.isRunning = ko.pureComputed(function() {
         return this.status() === ServiceInstance.Status.RUNNING;
     }, this);
@@ -172,6 +173,7 @@ ServiceInstance.prototype.restart = function() {
 ServiceInstance.prototype.updateDetailedData = function(data) {
     this.detailedData(data);
     this.isLoadingData(false);
+    new Clipboard(".host-health__detail-row");
 };
 
 ServiceInstance.prototype.loadInfo = function() {

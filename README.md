@@ -1,6 +1,9 @@
 ## Patch Notes
 * 1
     * 1.3
+        * 1.3.4
+            * Enhancements:
+                * Easy copying of additional info!
         * 1.3.3
             * Bugfixes:
                 * Fix logout button

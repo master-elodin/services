@@ -1,3 +1,7 @@
+function Clipboard(args) {
+    // mock for testing
+}
+
 describe("A Service Instance", function() {
 
     var VERSION = "1.22.1";
