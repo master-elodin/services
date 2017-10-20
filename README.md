@@ -1,6 +1,9 @@
 ## Patch Notes
 * 1
     * 1.3
+        * 1.3.2
+            * Enhancements:
+                * Enable showing additional data from service-specific pages
         * 1.3.1
             * Bugfixes:
                 * Don't re-request info when clicking on additional data popup

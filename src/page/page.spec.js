@@ -404,4 +404,34 @@ describe("A Page", function() {
             expect(service.getFirstInstanceForHost("host2").selected()).toBe(false);
         });
     });
+
+    describe("toggleEnableStartStop", function() {
+
+        it("should toggle enableStartStop", function() {
+            expect(page.enableStartStop()).toBe(true);
+
+            page.toggleEnableStartStop();
+
+            expect(page.enableStartStop()).toBe(false);
+
+            page.toggleEnableStartStop();
+
+            expect(page.enableStartStop()).toBe(true);
+        });
+    });
+
+    describe("enableStartStopIcon", function() {
+
+        it("should return fa-toggle-on if enableStartStop=true", function() {
+            page.enableStartStop(true);
+
+            expect(page.enableStartStopIcon()).toBe("fa-toggle-on");
+        });
+
+        it("should return fa-toggle-off if enableStartStop=false", function() {
+            page.enableStartStop(false);
+
+            expect(page.enableStartStopIcon()).toBe("fa-toggle-off");
+        });
+    });
 });

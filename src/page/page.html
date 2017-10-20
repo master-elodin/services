@@ -61,6 +61,11 @@
                 <i class="fa fa-cogs" aria-hidden="true"></i>
             </div>
             <!-- /ko -->
+            <!-- ko if: activeService -->
+            <div data-bind="click: toggleEnableStartStop" class="service-page__edit-element" title="Toggle start/stop">
+                <i data-bind="css: enableStartStopIcon" class="fa" aria-hidden="true"></i>
+            </div>
+            <!-- /ko -->
         </div>
         <div class="service-page__sign-out" title="Sign out">
             <a href="logout">

@@ -14,37 +14,42 @@
                 </td>
                 <td class="service-actions__service-instances">
                     <!-- ko foreach: $parent.getInstancesForHost(hostName) -->
-                        <!-- ko if: isReal -->
-                            <!-- ko if: isRunning -->
-                            <div data-bind="click: stop" class="service-actions__service-action" title="Stop">
-                                <span data-bind="text: version"></span>
-                                <i class="fa fa-stop" aria-hidden="true"></i>
-                            </div>
-                            <div data-bind="click: restart" class="service-actions__service-action" title="Restart">
-                                <span data-bind="text: version"></span>
-                                <i class="fa fa-refresh" aria-hidden="true"></i>
-                            </div>
-                            <!-- /ko -->
-                            <!-- ko ifnot: isRunning -->
-                            <!-- ko if: $parents[1].allStoppedForHost($data) -->
-                            <div data-bind="click: start" class="service-actions__service-action" title="Start">
-                                <span data-bind="text: version"></span>
-                                <i class="fa fa-play" aria-hidden="true"></i>
-                            </div>
-                            <!-- /ko -->
-                            <!-- ko ifnot: $parents[1].allStoppedForHost($data) -->
-                            <div class="service-actions__service-action service-actions__service-action--disabled">
-                                <span data-bind="text: version"></span>
-                                <!-- ko if: isChanging -->
-                                <i data-bind="css: getStatusChangingClass(), attr: {title: status().text}" class="fa fa-spinner fa-pulse" aria-hidden="true"></i>
+                    <!-- ko if: isReal -->
+                        <!-- ko if: $root.enableStartStop -->
+                                <!-- ko if: isRunning -->
+                                <div data-bind="click: stop" class="service-actions__service-action" title="Stop">
+                                    <span data-bind="text: version"></span>
+                                    <i class="fa fa-stop" aria-hidden="true"></i>
+                                </div>
+                                <div data-bind="click: restart" class="service-actions__service-action" title="Restart">
+                                    <span data-bind="text: version"></span>
+                                    <i class="fa fa-refresh" aria-hidden="true"></i>
+                                </div>
                                 <!-- /ko -->
-                                <!-- ko ifnot: isChanging -->
-                                <i class="fa fa-minus-circle" aria-hidden="true"></i>
+                                <!-- ko ifnot: isRunning -->
+                                <!-- ko if: $parents[1].allStoppedForHost($data) -->
+                                <div data-bind="click: start" class="service-actions__service-action" title="Start">
+                                    <span data-bind="text: version"></span>
+                                    <i class="fa fa-play" aria-hidden="true"></i>
+                                </div>
                                 <!-- /ko -->
-                            </div>
+                                <!-- ko ifnot: $parents[1].allStoppedForHost($data) -->
+                                <div class="service-actions__service-action service-actions__service-action--disabled">
+                                    <span data-bind="text: version"></span>
+                                    <!-- ko if: isChanging -->
+                                    <i data-bind="css: getStatusChangingClass(), attr: {title: status().text}" class="fa fa-spinner fa-pulse" aria-hidden="true"></i>
+                                    <!-- /ko -->
+                                    <!-- ko ifnot: isChanging -->
+                                    <i class="fa fa-minus-circle" aria-hidden="true"></i>
+                                    <!-- /ko -->
+                                </div>
+                                <!-- /ko -->
+                                <!-- /ko -->
                             <!-- /ko -->
-                            <!-- /ko -->
+                        <!-- ko ifnot: $root.enableStartStop -->
+                        ${src/service-instance/service-instance.html}
                         <!-- /ko -->
+                    <!-- /ko -->
                     <!-- /ko -->
                 </td>
             </tr>

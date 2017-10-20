@@ -253,6 +253,14 @@ function Page() {
     instance.showHostCheckboxes = ko.pureComputed(function() {
         return instance.startStopUnlocked() && !instance.serviceController.isRunning();
     });
+
+    instance.enableStartStop = ko.observable(true);
+    instance.toggleEnableStartStop = function() {
+        instance.enableStartStop(!instance.enableStartStop());
+    }
+    instance.enableStartStopIcon = ko.pureComputed(function() {
+        return instance.enableStartStop() ? "fa-toggle-on" : "fa-toggle-off";
+    });
 };
 
 Page.DATA_NAME = "all-data";
