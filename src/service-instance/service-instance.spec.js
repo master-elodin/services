@@ -165,4 +165,25 @@ describe("A Service Instance", function() {
             expect(serviceInstance.isChanging()).toBe(false);
         });
     });
+
+    describe("loadInfo", function() {
+
+        it("should load info if real", function() {
+            spyOn(Data, "getServiceInstanceData").and.returnValue($.Deferred().resolve());
+            serviceInstance.isReal = ko.observable(true);
+
+            serviceInstance.loadInfo();
+
+            expect(Data.getServiceInstanceData).toHaveBeenCalled();
+        });
+
+        it("should not load info if not real", function() {
+            spyOn(Data, "getServiceInstanceData").and.stub();
+            serviceInstance.isReal = ko.observable(false);
+
+            serviceInstance.loadInfo();
+
+            expect(Data.getServiceInstanceData).not.toHaveBeenCalled();
+        });
+    });
 });

@@ -175,6 +175,8 @@ ServiceInstance.prototype.updateDetailedData = function(data) {
 };
 
 ServiceInstance.prototype.loadInfo = function() {
-    this.isLoadingData(true);
-    Data.getServiceInstanceData(this.id).then(this.updateDetailedData.bind(this));
+    if(this.isReal()) {
+        this.isLoadingData(true);
+        Data.getServiceInstanceData(this.id).then(this.updateDetailedData.bind(this));
+    }
 };
