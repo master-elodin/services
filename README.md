@@ -4,6 +4,7 @@
         * 1.3.3
             * Bugfixes:
                 * Fix logout button
+                * Non-existent service-instances no longer blank out info after clicking
         * 1.3.2
             * Enhancements:
                 * Enable showing additional data from service-specific pages
