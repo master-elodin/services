@@ -80,6 +80,7 @@
     background-color: $darkerMidnight;
     border-radius: 10px;
     color: $clouds;
+    cursor: auto;
     display: none;
     font-size: 12px;
     left: 50%;

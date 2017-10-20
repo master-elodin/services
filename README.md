@@ -1,6 +1,9 @@
 ## Patch Notes
 * 1
     * 1.3
+        * 1.3.3
+            * Bugfixes:
+                * Fix logout button
         * 1.3.2
             * Enhancements:
                 * Enable showing additional data from service-specific pages
