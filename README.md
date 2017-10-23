@@ -1,6 +1,9 @@
 ## Patch Notes
 * 1
     * 1.3
+        * 1.3.5
+            * Enhancements:
+                * Add indicator that additional info is available.
         * 1.3.4
             * Enhancements:
                 * Easy copying of additional info!

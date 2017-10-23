@@ -14,8 +14,10 @@
             <!-- ko foreach: displayInfo -->
             ${src/service-instance-details/service-instance-details.html}
             <!-- /ko -->
-            <!-- ko if: $parent.isLoadingData -->
-            <i class="fa fa-spin" aria-hidden="true"></i>
+            <!-- ko ifnot: extraDataLoaded -->
+            <div data-bind="click: $parent.loadInfo.bind($parent)" class="host-health__more-info">
+                <span>[more info available on click]</span>
+            </div>
             <!-- /ko -->
         </div>
         <!-- /ko -->

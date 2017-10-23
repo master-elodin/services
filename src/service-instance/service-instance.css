@@ -75,3 +75,7 @@
 .host-health__icon:hover .host-health__detail {
     display: block;
 }
+
+.host-health__more-info {
+    text-align: center;
+}
